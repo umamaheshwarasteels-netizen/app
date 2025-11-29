@@ -1,0 +1,3341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Billing System - Hardware Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark-color: #2c3e50;
+            --light-gray: #f5f7fa;
+            --border-color: #dfe4ea;
+            --text-primary: #2c3e50;
+            --text-secondary: #636e72;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            height: 70px;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .navbar-brand i {
+            font-size: 28px;
+            color: var(--primary-color);
+        }
+        
+        /* Sidebar Navigation */
+        .layout-wrapper {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+            min-height: calc(100vh - 70px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: white;
+            border-right: 1px solid var(--border-color);
+            padding: 20px 0;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin: 0;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 25px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            font-weight: 500;
+        }
+        
+        .sidebar-menu a:hover {
+            background: var(--light-gray);
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+        
+        .sidebar-menu a.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+        
+        .sidebar-menu i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: var(--light-gray);
+        }
+        
+        /* Section Container */
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Common Panel Styles */
+        .panel {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .panel-header i {
+            display: none;
+        }
+        
+        .panel-header h2 {
+            color: var(--text-primary);
+            font-size: 19px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        /* Checkbox inputs before headers */
+        .panel-header input[type="checkbox"],
+        .form-section-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin: 0;
+            flex-shrink: 0;
+        }
+        
+        /* Form Elements */
+        .form-section {
+            margin-bottom: 20px;
+        }
+        
+        .form-section-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-size: 13px;
+            padding: 0;
+        }
+        
+        .form-section-label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+        }
+        
+        .form-section-label i {
+            display: none;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .input-group select {
+            height: 38px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea,
+        .form-section input[type="text"] {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            width: 100%;
+            transition: all 0.2s ease;
+            background: white;
+            color: var(--text-primary);
+            height: 38px;
+        }
+        
+        .form-section input[type="text"] {
+            margin-bottom: 16px;
+        }
+        
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23636e72' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 35px;
+            height: 38px;
+        }
+        
+        .input-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23636e72' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 35px;
+            padding: 10px 35px 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            background-color: white;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            height: 38px;
+        }
+        
+        .input-group input:focus,
+        .input-group select:focus,
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus,
+        .form-section input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .input-group input::placeholder,
+        .form-group input::placeholder,
+        .form-group textarea::placeholder,
+        .form-section input[type="text"]::placeholder {
+            color: #a0aec0;
+            font-size: 13px;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
+        .btn-outline-primary {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-outline-primary.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        /* Alert */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: white;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            color: white;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        table thead {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+        
+        table th {
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 12px;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        
+        table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+        
+        table tbody tr:hover {
+            background: rgba(99, 102, 241, 0.03);
+        }
+        
+        /* Badge */
+        .badge {
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .badge-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        
+        .badge-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: #2563eb;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .badge-primary {
+            background: rgba(99, 102, 241, 0.1);
+            color: #4f46e5;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        
+        .badge-gray {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .stat-icon.red {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            color: white;
+        }
+        
+        .stat-icon.purple {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .stat-icon.green {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: white;
+        }
+        
+        .stat-details h3 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .stat-details p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s ease;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+            overflow: hidden;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+        
+        .modal-header h2 {
+            font-size: 20px;
+            color: white;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal-header i {
+            font-size: 22px;
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0.9;
+        }
+        
+        .close:hover {
+            opacity: 1;
+            transform: rotate(90deg);
+        }
+        
+        /* Billing Grid */
+        .billing-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 25px;
+        }
+        
+        /* Product Selection Full Width Panel */
+        .panel .panel-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .panel .panel-header h2::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-secondary);
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        /* Form Section - Compact Style */
+        .form-section {
+            margin-bottom: 16px;
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+        
+        .form-section > * {
+            margin-bottom: 0;
+        }
+        
+        /* Cart Items */
+        .cart-item {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .cart-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        
+        .cart-item-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .cart-item-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .cart-item-details input {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        
+        /* Payment Split */
+        .payment-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .payment-item.active {
+            background: rgba(99, 102, 241, 0.05);
+            border-color: var(--primary-color);
+        }
+        
+        .payment-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .payment-item i {
+            flex-shrink: 0;
+        }
+        
+        .payment-item label {
+            flex: 1;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .payment-item input[type="number"] {
+            width: 120px;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: right;
+            flex-shrink: 0;
+        }
+        
+        .payment-item input[type="number"]:disabled {
+            background: #f3f4f6;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .payment-item input[type="number"]:not(:disabled) {
+            background: white;
+            border-color: var(--primary-color);
+        }
+        
+        .payment-item input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        /* Summary */
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .summary-line.total {
+            border-top: 2px solid var(--text-primary);
+            border-bottom: none;
+            font-size: 18px;
+            font-weight: 700;
+            padding: 15px 0 0 0;
+        }
+        
+        /* Product Grid for Quotations */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        
+        .product-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .product-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
+        
+        .product-card.selected {
+            border-color: var(--success-color);
+            background: rgba(16, 185, 129, 0.05);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+        }
+        
+        /* Product List Items (vertical layout) */
+        #productList {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .product-item {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .product-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+        }
+        
+        .product-item-info {
+            flex: 1;
+        }
+        
+        .product-item-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .product-item-brand {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        
+        .product-item-rate {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .product-item-stock {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            white-space: nowrap;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .billing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                width: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .layout-wrapper {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+            }
+            
+            .sidebar-menu li {
+                flex-shrink: 0;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Hide elements */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Filter Section */
+        .filters {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            border: 1px solid var(--border-color);
+            align-items: flex-end;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+        
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            background: white;
+        }
+        
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        /* Selected Items Container for Quotations */
+        .selected-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .item-card {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        
+        .item-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .item-inputs input {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-store"></i>
+                <span>Hardware Store</span>
+            </div>
+            <div class="navbar-menu">
+                <a href="/staff/dashboard" class="active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/staff_billing">
+                    <i class="fas fa-cash-register"></i>
+                    <span>Billing</span>
+                </a>
+                <a href="/inventory">
+                    <i class="fas fa-boxes"></i>
+                    <span>Inventory</span>
+                </a>
+                <!-- <a href="/credit_management">
+                    <i class="fas fa-truck-loading"></i>
+                    <span>Credit</span>
+                </a>
+                <a href="/credit_notes">
+                    <i class="fas fa-undo"></i>
+                    <span>Returns</span>
+                </a>-->
+                <a href="/customers">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
+                </a>
+                <a href="/reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+				<!--<a href="/quotations">
+                    <i class="fas fa-undo"></i>
+                    <span>quotation</span>
+                </a>-->
+                <a href="/logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Layout Wrapper -->
+    <div class="layout-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="#" class="nav-link active" data-section="billing">
+                        <i class="fas fa-cash-register"></i>
+                        <span>Billing</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-section="credit-management">
+                        <i class="fas fa-money-check-alt"></i>
+                        <span>Credit Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-section="credit-notes">
+                        <i class="fas fa-receipt"></i>
+                        <span>Credit Notes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" data-section="quotations">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Quotations</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Alert Container -->
+            <div id="alertMessage"></div>
+
+            <!-- BILLING SECTION -->
+            <section id="billing-section" class="section active">
+                <div class="billing-grid">
+                    <!-- Left Panel - Product Selection -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <i class="fas fa-box"></i>
+                            <h2>Product Selection</h2>
+                        </div>
+
+                        <!-- Filters -->
+                        <div class="form-section">
+                            <div class="form-section-label">
+                                <i class="fas fa-filter"></i>
+                                <span>Filters</span><br>
+                            </div>
+                            <div class="input-group">
+                                <select id="brandFilter" onchange="loadProducts()">
+                                    <option value="">All Brands</option>
+                                </select>
+                                <select id="categoryFilter" onchange="loadProducts()">
+                                    <option value="">All Categories</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Search -->
+                        <div class="form-section">
+                            <div class="form-section-label">
+                                <i class="fas fa-search"></i>
+                                <span>Search Product</span>
+                            </div>
+							
+                            <input type="text" id="productSearch" placeholder="Type product name..." oninput="filterProducts()">
+                        </div>
+
+                        <!-- Product List -->
+                        <div id="productList" style="max-height: 400px; overflow-y: auto;"></div>
+                    </div>
+
+                    <!-- Right Panel - Cart & Payment -->
+                    <div>
+                        <!-- Customer Info -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <i class="fas fa-user"></i>
+                                <h2>Customer</h2>
+                            </div>
+                            <div class="form-group">
+                                <label>Mobile Number</label>
+                                <div class="input-group">
+                                    <input type="text" id="customerMobile" placeholder="Enter 10-digit mobile" maxlength="10">
+                                    <button class="btn btn-primary" onclick="searchCustomer()">
+                                        <i class="fas fa-search"></i> Search
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="customerInfoCard" style="display: none;">
+                                <div id="customerDetails"></div>
+                            </div>
+                        </div>
+
+                        <!-- Cart -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <i class="fas fa-shopping-cart"></i>
+                                <h2>Cart</h2>
+                            </div>
+                            <div id="cartItems"></div>
+                            
+                            <!-- Summary -->
+                            <div style="margin-top: 20px;">
+                                <div class="summary-line">
+                                    <span>Subtotal:</span>
+                                    <span id="subtotal">₹0.00</span>
+                                </div>
+                                <div class="summary-line">
+                                    <span>Item Discounts:</span>
+                                    <span id="itemDiscounts">-₹0.00</span>
+                                </div>
+                                <div class="summary-line total">
+                                    <span>Total Amount:</span>
+                                    <span id="totalAmount">₹0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Split -->
+                        <div class="panel">
+                            <div class="panel-header" style="border-bottom: none; padding-bottom: 10px;">
+                                <i class="fas fa-credit-card"></i>
+                                <h2>Payment Method</h2>
+                            </div>
+                            
+                            <!-- Quick Pay / Split Payment Buttons -->
+                            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                                <button class="btn" id="quickPayBtn" onclick="showQuickPayOptions()" style="flex: 1; background: white; color: var(--primary-color); border: 2px solid var(--primary-color);">
+                                    <i class="fas fa-bolt"></i> Quick Pay
+                                </button>
+                                <button class="btn btn-primary" id="splitPayBtn" onclick="showSplitPayment()" style="flex: 1;">
+                                    <i class="fas fa-divide"></i> Split Payment
+                                </button>
+                            </div>
+                            
+                            <!-- Quick Pay Options (Initially Hidden) -->
+                            <div id="quickPayOptions" style="display: none;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                                    <button class="btn" onclick="quickPayMethod('cash')" style="padding: 15px; background: white; border: 2px solid #10b981; color: #10b981;">
+                                        <i class="fas fa-money-bill-wave" style="font-size: 24px; display: block; margin-bottom: 5px;"></i>
+                                        <span style="font-size: 13px;">Cash</span>
+                                    </button>
+                                    <button class="btn" onclick="quickPayMethod('upi')" style="padding: 15px; background: white; border: 2px solid #6366f1; color: #6366f1;">
+                                        <i class="fas fa-mobile-alt" style="font-size: 24px; display: block; margin-bottom: 5px;"></i>
+                                        <span style="font-size: 13px;">UPI / Card</span>
+                                    </button>
+                                    <button class="btn" onclick="quickPayMethod('credit')" style="padding: 15px; background: white; border: 2px solid #f59e0b; color: #f59e0b;">
+                                        <i class="fas fa-credit-card" style="font-size: 24px; display: block; margin-bottom: 5px;"></i>
+                                        <span style="font-size: 13px;">Credit (Account)</span>
+                                    </button>
+                                    <button class="btn" onclick="quickPayMethod('creditNote')" style="padding: 15px; background: white; border: 2px solid #10b981; color: #10b981;" id="quickPayCreditNoteBtn" disabled>
+                                        <i class="fas fa-ticket-alt" style="font-size: 24px; display: block; margin-bottom: 5px;"></i>
+                                        <span style="font-size: 13px;">Credit Note</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Split Payment Options (Initially Hidden) -->
+                            <div id="splitPaymentOptions" style="display: none;">
+                                <div class="payment-item" id="cashPaymentItem">
+                                    <input type="checkbox" id="useCash" onchange="togglePaymentMethod('cash')">
+                                    <i class="fas fa-money-bill-wave" style="color: var(--success-color); font-size: 20px;"></i>
+                                    <label for="useCash">Cash</label>
+                                    <input type="number" id="cashAmount" value="0" step="0.01" min="0" disabled oninput="calculateSplitPayment()">
+                                </div>
+                                
+                                <div class="payment-item" id="upiPaymentItem">
+                                    <input type="checkbox" id="useUPI" onchange="togglePaymentMethod('upi')">
+                                    <i class="fas fa-mobile-alt" style="color: var(--primary-color); font-size: 20px;"></i>
+                                    <label for="useUPI">UPI</label>
+                                    <input type="number" id="upiAmount" value="0" step="0.01" min="0" disabled oninput="calculateSplitPayment()">
+                                </div>
+                                
+                                <div class="payment-item" id="creditPaymentItem">
+                                    <input type="checkbox" id="useCredit" onchange="togglePaymentMethod('credit')">
+                                    <i class="fas fa-credit-card" style="color: var(--warning-color); font-size: 20px;"></i>
+                                    <label for="useCredit">Credit (Account)</label>
+                                    <input type="number" id="creditAmount" value="0" step="0.01" min="0" disabled oninput="calculateSplitPayment()">
+                                </div>
+                                
+                                <div class="payment-item" id="creditNotePaymentItem" style="display: none;">
+                                    <input type="checkbox" id="useCreditNote" onchange="togglePaymentMethod('creditNote')">
+                                    <i class="fas fa-ticket-alt" style="color: var(--success-color); font-size: 20px;"></i>
+                                    <label for="useCreditNote">Credit Note</label>
+                                    <input type="number" id="creditNotePaymentAmount" value="0" step="0.01" min="0" disabled oninput="calculateSplitPayment()">
+                                </div>
+                                
+                                <!-- Remaining Amount Display -->
+                                <div id="remainingAmountBox" style="margin-top: 15px; padding: 15px; border: 2px solid var(--success-color); border-radius: 10px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="font-weight: 600; font-size: 15px;">REMAINING:</span>
+                                        <span id="remainingAmount" style="font-weight: 700; font-size: 20px; color: var(--success-color);">₹0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Selected Payment Summary (shown after Quick Pay selection) -->
+                            <div id="selectedPaymentSummary" style="display: none; margin-top: 15px; padding: 15px; background: var(--light-gray); border-radius: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    <span style="font-weight: 600;">Payment Method:</span>
+                                    <span id="selectedMethodName" style="font-weight: 700; color: var(--primary-color);"></span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-weight: 600;">Amount:</span>
+                                    <span id="selectedMethodAmount" style="font-weight: 700; font-size: 20px; color: var(--success-color);">₹0.00</span>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-success" style="width: 100%; margin-top: 15px; padding: 14px;" onclick="completeSale()">
+                                <i class="fas fa-check-circle"></i> Complete Sale
+                            </button>
+                            
+                            <button class="btn btn-danger" style="width: 100%; margin-top: 10px;" onclick="clearCart()">
+                                <i class="fas fa-times-circle"></i> Clear Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CREDIT MANAGEMENT SECTION -->
+            <section id="credit-management-section" class="section">
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon red">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="totalOutstanding">₹0.00</h3>
+                            <p>Total Outstanding</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="totalCustomers">0</h3>
+                            <p>Customers with Credit</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="totalBills">0</h3>
+                            <p>Outstanding Bills</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Search Customer</label>
+                        <input type="text" id="creditSearchInput" placeholder="Search by name or mobile..." oninput="filterCredits()">
+                    </div>
+                    <div class="filter-group">
+                        <label>Sort By</label>
+                        <select id="creditSortBy" onchange="sortCredits()">
+                            <option value="amount_desc">Amount (High to Low)</option>
+                            <option value="amount_asc">Amount (Low to High)</option>
+                            <option value="name_asc">Name (A to Z)</option>
+                            <option value="name_desc">Name (Z to A)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Credits Content -->
+                <div id="creditsContent"></div>
+            </section>
+
+            <!-- CREDIT NOTES SECTION -->
+            <section id="credit-notes-section" class="section">
+                <div class="billing-grid">
+                    <!-- Issue Credit Note -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <i class="fas fa-plus-circle"></i>
+                            <h2>Issue Credit Note</h2>
+                        </div>
+                        
+                        <!-- Credit Note Type Selection -->
+                        <div class="form-group">
+                            <label>Credit Note Type</label>
+                            <select id="cnTypeSelect" onchange="handleCreditNoteTypeChange()">
+                                <option value="return">Product Return</option>
+                                <option value="advance">Advance Payment</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Customer Mobile</label>
+                            <div class="input-group">
+                                <input type="text" id="cnCustomerMobile" placeholder="Enter mobile number" maxlength="10">
+                                <button class="btn btn-primary" onclick="searchCustomerForCreditNote()">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Return Type Section -->
+                        <div id="cnReturnSection" style="display: none;">
+                            <div id="cnCustomerDetails"></div>
+                            
+                            <div class="form-group">
+                                <label>Select Bill</label>
+                                <select id="cnBillSelect" onchange="loadBillItems()">
+                                    <option value="">Select a bill</option>
+                                </select>
+                            </div>
+                            
+                            <div id="cnBillItems" style="display: none;">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Qty Sold</th>
+                                            <th>Price</th>
+                                            <th>Return Qty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cnItemsBody"></tbody>
+                                </table>
+                                
+                                <div class="summary-line total" style="margin-top: 15px;">
+                                    <span>Total Credit:</span>
+                                    <span>₹<span id="cnTotalCredit">0.00</span></span>
+                                </div>
+                                
+                                <button class="btn btn-success" style="width: 100%; margin-top: 15px;" onclick="processCreditNote()">
+                                    <i class="fas fa-check"></i> Issue Credit Note
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Advance Payment Section -->
+                        <div id="cnAdvanceSection" style="display: none;">
+                            <div id="cnAdvanceCustomerDetails"></div>
+                            
+                            <div class="form-group">
+                                <label>Advance Amount *</label>
+                                <input type="number" id="cnAdvanceAmount" placeholder="Enter advance amount" step="0.01" min="0.01">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Payment Method *</label>
+                                <select id="cnAdvancePaymentMethod">
+                                    <option value="cash">Cash</option>
+                                    <option value="upi">UPI</option>
+                                    <option value="bank_transfer">Bank Transfer</option>
+                                    <option value="card">Card</option>
+                                    <option value="cheque">Cheque</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Payment Reference</label>
+                                <input type="text" id="cnAdvanceReference" placeholder="Transaction ID / Cheque Number (Optional)">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Notes</label>
+                                <textarea id="cnAdvanceNotes" rows="3" placeholder="Purpose of advance payment (Optional)"></textarea>
+                            </div>
+                            
+                            <button class="btn btn-success" style="width: 100%; margin-top: 15px;" onclick="processAdvancePayment()">
+                                <i class="fas fa-check"></i> Record Advance Payment
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Credit Notes List -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <i class="fas fa-list"></i>
+                            <h2>Credit Notes History</h2>
+                        </div>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>CN #</th>
+                                    <th>Type</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Remaining</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cnHistoryTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- QUOTATIONS SECTION -->
+            <section id="quotations-section" class="section">
+                <div class="billing-grid">
+                    <!-- Product Selection for Quotation -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <i class="fas fa-box"></i>
+                            <h2>Select Products</h2>
+                        </div>
+                        
+                        <div class="form-section">
+                            <div class="input-group">
+                                <select id="quoteBrandFilter" onchange="loadQuoteProducts()">
+                                    <option value="">All Brands</option>
+                                </select>
+                                <input type="text" id="quoteProductSearch" placeholder="Search products..." oninput="filterQuoteProducts()">
+                            </div>
+                        </div>
+                        
+                        <div id="quoteProductList" class="products-grid" style="max-height: 500px; overflow-y: auto;"></div>
+                    </div>
+
+                    <!-- Quotation Details -->
+                    <div>
+                        <!-- Customer Details -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <i class="fas fa-user"></i>
+                                <h2>Customer Details</h2>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Name *</label>
+                                <input type="text" id="quoteCustomerName" placeholder="Enter customer name">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Mobile *</label>
+                                <input type="text" id="quoteCustomerMobile" placeholder="10-digit mobile" maxlength="10">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Address</label>
+                                <textarea id="quoteCustomerAddress" rows="2" placeholder="Enter address"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Selected Items -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <i class="fas fa-list"></i>
+                                <h2>Selected Items</h2>
+                            </div>
+                            
+                            <div id="quoteSelectedItems"></div>
+                            
+                            <div class="form-group">
+                                <label>Overall Discount (%)</label>
+                                <input type="number" id="quoteDiscountPercent" value="0" min="0" max="100" step="0.1" oninput="updateQuoteSummary()">
+                            </div>
+                            
+                            <div style="margin-top: 20px;">
+                                <div class="summary-line">
+                                    <span>Subtotal:</span>
+                                    <span id="quoteSubtotal">₹0.00</span>
+                                </div>
+                                <div class="summary-line">
+                                    <span>Discount:</span>
+                                    <span id="quoteDiscountAmount">-₹0.00</span>
+                                </div>
+                                <div class="summary-line total">
+                                    <span>Grand Total:</span>
+                                    <span id="quoteGrandTotal">₹0.00</span>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-success" style="width: 100%; margin-top: 15px;" onclick="generateQuotation()">
+                                <i class="fas fa-download"></i> Generate PDF
+                            </button>
+                            <button class="btn btn-danger" style="width: 100%; margin-top: 10px;" onclick="clearQuotation()">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Clear Credit Modal -->
+    <div id="clearCreditModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Record Payment</h2>
+                <span class="close" onclick="closeClearModal()">&times;</span>
+            </div>
+            <div id="clearCustomerInfo"></div>
+            <form id="clearCreditForm">
+                <input type="hidden" id="clearBillId" name="bill_id">
+                <input type="hidden" id="clearCustomerId" name="customer_id">
+                
+                <div class="form-group">
+                    <label>Payment Amount</label>
+                    <input type="number" id="clearPaymentAmount" name="payment_amount" step="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select id="clearPaymentMethod" name="payment_method" required>
+                        <option value="cash">Cash</option>
+                        <option value="upi">UPI</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Reference Number</label>
+                    <input type="text" id="clearPaymentReference" name="payment_reference" placeholder="Optional">
+                </div>
+                
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="clearNotes" name="notes" rows="2" placeholder="Optional notes"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success" style="width: 100%;">
+                    <i class="fas fa-check"></i> Record Payment
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Bills Modal -->
+    <div id="viewBillsModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2>Outstanding Bills</h2>
+                <span class="close" onclick="closeViewBillsModal()">&times;</span>
+            </div>
+            <div id="billsCustomerInfo"></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bill #</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Original Credit</th>
+                        <th>Remaining</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="billsTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Global Variables
+        let cart = [];
+        let currentCustomer = null;
+        let customerCreditNotes = [];
+        let selectedCreditNoteAmount = 0;
+        let allProducts = [];
+        let selectedStore = null;
+        
+        // Credit Management Variables
+        let selectedCustomerForCredit = null;
+        let selectedBillForCredit = null;
+        let allCreditsData = {}; // Store all credits data for filtering/sorting
+        
+        // Credit Note Variables
+        let currentCustomerIdForCN = null;
+        let currentSaleIdForCN = null;
+        let currentBillItemsForCN = [];
+        
+        // Quotation Variables
+        let quoteSelectedItems = [];
+        let quoteDiscountPercentage = 0;
+        let allQuoteProducts = [];
+
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active link
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show selected section
+                const sectionId = this.dataset.section;
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(sectionId + '-section').classList.add('active');
+                
+                // Load section data
+                loadSectionData(sectionId);
+            });
+        });
+
+        function loadSectionData(section) {
+            switch(section) {
+                case 'billing':
+                    loadBrands();
+                    break;
+                case 'credit-management':
+                    loadCredits();
+                    break;
+                case 'credit-notes':
+                    loadCreditNotes();
+                    break;
+                case 'quotations':
+                    loadQuoteBrands();
+                    break;
+            }
+        }
+
+        // =========================
+        // BILLING SECTION FUNCTIONS
+        // =========================
+        
+        async function loadBrands() {
+            try {
+                // Load products first to extract brands
+                const response = await fetch('/api/products');
+                const products = await response.json();
+                
+                // Extract unique brands
+                const brands = [...new Set(products.map(p => p.brand).filter(Boolean))].sort();
+                
+                const brandFilter = document.getElementById('brandFilter');
+                brandFilter.innerHTML = '<option value="">All Brands</option>';
+                brands.forEach(brand => {
+                    brandFilter.innerHTML += `<option value="${brand}">${brand}</option>`;
+                });
+                
+                // Extract unique categories
+                const categories = [...new Set(products.map(p => p.category).filter(Boolean))].sort();
+                
+                const categoryFilter = document.getElementById('categoryFilter');
+                categoryFilter.innerHTML = '<option value="">All Categories</option>';
+                categories.forEach(category => {
+                    categoryFilter.innerHTML += `<option value="${category}">${category}</option>`;
+                });
+                
+                loadProducts();
+            } catch (error) {
+                console.error('Error loading brands:', error);
+                showAlert('Error loading brands', 'danger');
+            }
+        }
+
+        async function loadProducts() {
+            try {
+                const response = await fetch('/api/products');
+                let products = await response.json();
+                
+                // Client-side filtering
+                const brand = document.getElementById('brandFilter').value;
+                const category = document.getElementById('categoryFilter').value;
+                
+                if (brand) {
+                    products = products.filter(p => p.brand === brand);
+                }
+                if (category) {
+                    products = products.filter(p => p.category === category);
+                }
+                
+                // Map backend fields to expected frontend fields
+                allProducts = products.map(p => ({
+                    ...p,
+                    stock: p.current_stock || 0,
+                    rate: p.price || p.rate || 0
+                }));
+                
+                displayProducts(allProducts);
+            } catch (error) {
+                console.error('Error loading products:', error);
+                showAlert('Error loading products', 'danger');
+            }
+        }
+
+        function filterProducts() {
+            const search = document.getElementById('productSearch').value.toLowerCase();
+            const filtered = allProducts.filter(p => 
+                p.product_name.toLowerCase().includes(search) ||
+                (p.brand && p.brand.toLowerCase().includes(search))
+            );
+            displayProducts(filtered);
+        }
+
+        function displayProducts(products) {
+            const container = document.getElementById('productList');
+            
+            if (products.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No products found</p>';
+                return;
+            }
+            
+            container.innerHTML = products.map(product => {
+                const inCart = cart.find(item => item.product_id === product.product_id);
+                const stockClass = product.stock > 10 ? 'success' : product.stock > 0 ? 'warning' : 'danger';
+                
+                return `
+                    <div class="cart-item" style="cursor: pointer; ${inCart ? 'border-color: var(--success-color);' : ''}" 
+                         onclick="addToCart(${product.product_id})">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <div style="font-weight: 600;">${product.product_name}</div>
+                                <div style="font-size: 12px; color: #666;">${product.brand || ''}</div>
+                            </div>
+                            <span class="badge badge-${stockClass}">
+                                ${product.stock} ${product.unit}
+                            </span>
+                        </div>
+                        <div style="margin-top: 8px; font-size: 14px; color: #666;">
+                            Rate: ₹${parseFloat(product.rate || 0).toFixed(2)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addToCart(productId) {
+            const product = allProducts.find(p => p.product_id === productId);
+            if (!product) return;
+            
+            const existing = cart.find(item => item.product_id === productId);
+            if (existing) {
+                showAlert('Product already in cart', 'warning');
+                return;
+            }
+            
+            cart.push({
+                ...product,
+                quantity: 1,
+                rate: parseFloat(product.rate || 0),
+                discountPercent: 0
+            });
+            
+            renderCart();
+            displayProducts(allProducts.filter(p => 
+                p.product_name.toLowerCase().includes(document.getElementById('productSearch').value.toLowerCase())
+            ));
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItems');
+            
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Cart is empty</p>';
+                calculateTotal();
+                return;
+            }
+            
+            container.innerHTML = cart.map((item, index) => `
+                <div class="cart-item">
+                    <div class="cart-item-header">
+                        <div>
+                            <div class="cart-item-name">${item.product_name}</div>
+                            <div style="font-size: 12px; color: #666;">${item.brand || ''}</div>
+                        </div>
+                        <button class="btn btn-danger btn-sm" onclick="removeFromCart(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="cart-item-details">
+                        <div>
+                            <label style="font-size: 11px; color: #666;">Qty</label>
+                            <input type="number" value="${item.quantity}" min="0.01" step="0.01" 
+                                   onchange="updateCartItem(${index}, 'quantity', this.value)">
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; color: #666;">Rate</label>
+                            <input type="number" value="${item.rate}" min="0" step="0.01" 
+                                   onchange="updateCartItem(${index}, 'rate', this.value)">
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; color: #666;">Disc %</label>
+                            <input type="number" value="${item.discountPercent}" min="0" max="100" step="0.1" 
+                                   onchange="updateCartItem(${index}, 'discountPercent', this.value)">
+                        </div>
+                    </div>
+                    <div style="text-align: right; margin-top: 8px; font-weight: 600; color: var(--success-color);">
+                        ₹${(item.quantity * item.rate * (1 - item.discountPercent / 100)).toFixed(2)}
+                    </div>
+                </div>
+            `).join('');
+            
+            calculateTotal();
+        }
+
+        function updateCartItem(index, field, value) {
+            cart[index][field] = parseFloat(value) || 0;
+            renderCart();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            renderCart();
+            displayProducts(allProducts.filter(p => 
+                p.product_name.toLowerCase().includes(document.getElementById('productSearch').value.toLowerCase())
+            ));
+        }
+
+        function calculateTotal() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
+            const itemDiscounts = cart.reduce((sum, item) => {
+                const itemSubtotal = item.quantity * item.rate;
+                const discountAmount = (itemSubtotal * item.discountPercent) / 100;
+                return sum + discountAmount;
+            }, 0);
+            
+            const total = subtotal - itemDiscounts;
+            
+            document.getElementById('subtotal').textContent = '₹' + subtotal.toFixed(2);
+            document.getElementById('itemDiscounts').textContent = '-₹' + itemDiscounts.toFixed(2);
+            document.getElementById('totalAmount').textContent = '₹' + Math.max(0, total).toFixed(2);
+            
+            calculateSplitPayment();
+        }
+
+        async function searchCustomer() {
+            const mobile = document.getElementById('customerMobile').value.trim();
+            
+            if (!mobile || mobile.length !== 10) {
+                showAlert('Please enter a valid 10-digit mobile number', 'danger');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/customers/search?mobile=${mobile}`);
+                const data = await response.json();
+                
+                if (data.found && data.customer) {
+                    currentCustomer = data.customer;
+                    customerCreditNotes = data.credit_notes || [];
+                    
+                    document.getElementById('customerDetails').innerHTML = `
+                        <div style="padding: 15px; background: var(--light-gray); border-radius: 8px;">
+                            <div style="font-weight: 600; font-size: 16px;">${data.customer.customer_name}</div>
+                            <div style="font-size: 13px; color: #666; margin-top: 5px;">
+                                Mobile: ${data.customer.mobile}
+                            </div>
+                            ${data.customer.total_sales ? `
+                                <div style="margin-top: 8px; font-size: 13px; color: #666;">
+                                    Total Sales: ₹${data.customer.total_sales.toFixed(2)}
+                                </div>
+                            ` : ''}
+                            ${customerCreditNotes.length > 0 ? `
+                                <div style="margin-top: 10px; padding: 10px; background: #dcfce7; border-radius: 6px; color: #166534;">
+                                    <i class="fas fa-ticket-alt"></i> 
+                                    Credit Notes Available: ₹${customerCreditNotes.reduce((sum, cn) => sum + parseFloat(cn.remaining_balance || 0), 0).toFixed(2)}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                    document.getElementById('customerInfoCard').style.display = 'block';
+                    
+                    // Show credit note option if available
+                    if (customerCreditNotes.length > 0) {
+                        document.getElementById('creditNotePaymentItem').style.display = 'flex';
+                    }
+                    
+                    // Hide alert
+                    document.getElementById('alertMessage').innerHTML = '';
+                } else {
+                    // Customer not found - show form to create new customer
+                    currentCustomer = null;
+                    customerCreditNotes = [];
+                    document.getElementById('creditNotePaymentItem').style.display = 'none';
+                    
+                    document.getElementById('customerDetails').innerHTML = `
+                        <div style="padding: 15px; background: #fff3cd; border-radius: 8px; border: 1px solid #ffc107;">
+                            <div style="font-weight: 600; margin-bottom: 15px; color: #856404;">
+                                <i class="fas fa-user-plus"></i> New Customer
+                            </div>
+                            <div class="form-group">
+                                <label>Customer Name *</label>
+                                <input type="text" id="newCustomerName" placeholder="Enter customer name" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            </div>
+                            <div class="form-group" style="margin-top: 10px;">
+                                <label>Address (Optional)</label>
+                                <textarea id="newCustomerAddress" rows="2" placeholder="Enter address" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+                            </div>
+                            <button class="btn btn-success" style="width: 100%; margin-top: 10px;" onclick="createNewCustomer()">
+                                <i class="fas fa-check"></i> Create Customer
+                            </button>
+                        </div>
+                    `;
+                    document.getElementById('customerInfoCard').style.display = 'block';
+                    
+                    showAlert('Customer not found. Please enter details to create new customer.', 'warning');
+                }
+            } catch (error) {
+                showAlert('Error searching customer', 'danger');
+                console.error(error);
+            }
+        }
+        
+        async function createNewCustomer() {
+            const mobile = document.getElementById('customerMobile').value.trim();
+            const name = document.getElementById('newCustomerName').value.trim();
+            const address = document.getElementById('newCustomerAddress').value.trim();
+            
+            if (!name) {
+                showAlert('Please enter customer name', 'danger');
+                document.getElementById('newCustomerName').focus();
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/customers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customer_name: name,
+                        mobile: mobile,
+                        address: address
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showAlert('Customer created successfully!', 'success');
+                    
+                    // Set the new customer as current customer
+                    currentCustomer = {
+                        customer_id: data.customer_id,
+                        customer_name: name,
+                        mobile: mobile,
+                        address: address
+                    };
+                    
+                    // Update the display
+                    document.getElementById('customerDetails').innerHTML = `
+                        <div style="padding: 15px; background: var(--light-gray); border-radius: 8px;">
+                            <div style="font-weight: 600; font-size: 16px;">${name}</div>
+                            <div style="font-size: 13px; color: #666; margin-top: 5px;">
+                                Mobile: ${mobile}
+                            </div>
+                            ${address ? `
+                                <div style="font-size: 13px; color: #666; margin-top: 5px;">
+                                    Address: ${address}
+                                </div>
+                            ` : ''}
+                            <div style="margin-top: 10px; padding: 8px; background: #dcfce7; border-radius: 6px; color: #166534; font-size: 12px;">
+                                <i class="fas fa-check-circle"></i> New customer created
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    showAlert('Error creating customer: ' + (data.message || 'Unknown error'), 'danger');
+                }
+            } catch (error) {
+                showAlert('Error creating customer: ' + error.message, 'danger');
+                console.error(error);
+            }
+        }
+
+        function togglePaymentMethod(method) {
+            const checkbox = document.getElementById('use' + (method === 'upi' ? 'UPI' : method === 'creditNote' ? 'CreditNote' : method.charAt(0).toUpperCase() + method.slice(1)));
+            const input = document.getElementById(method + (method === 'creditNote' ? 'PaymentAmount' : 'Amount'));
+            const paymentItem = document.getElementById(method + 'PaymentItem');
+            
+            if (checkbox.checked) {
+                input.disabled = false;
+                paymentItem.classList.add('active');
+            } else {
+                input.disabled = true;
+                input.value = '0';
+                paymentItem.classList.remove('active');
+            }
+            
+            calculateSplitPayment();
+        }
+
+        function showQuickPayOptions() {
+            // Hide split payment options
+            document.getElementById('splitPaymentOptions').style.display = 'none';
+            document.getElementById('selectedPaymentSummary').style.display = 'none';
+            
+            // Show quick pay options
+            document.getElementById('quickPayOptions').style.display = 'block';
+            
+            // Enable credit note button if customer has credit notes
+            if (customerCreditNotes && customerCreditNotes.length > 0) {
+                document.getElementById('quickPayCreditNoteBtn').disabled = false;
+            } else {
+                document.getElementById('quickPayCreditNoteBtn').disabled = true;
+            }
+        }
+        
+        function quickPayMethod(method) {
+            const total = parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '')) || 0;
+            
+            // Reset all payment methods
+            resetAllPayments();
+            
+            // Set the selected method
+            let methodName = '';
+            let maxAmount = total;
+            
+            switch(method) {
+                case 'cash':
+                    document.getElementById('useCash').checked = true;
+                    document.getElementById('cashAmount').value = total.toFixed(2);
+                    document.getElementById('cashAmount').disabled = false;
+                    methodName = 'Cash';
+                    break;
+                case 'upi':
+                    document.getElementById('useUPI').checked = true;
+                    document.getElementById('upiAmount').value = total.toFixed(2);
+                    document.getElementById('upiAmount').disabled = false;
+                    methodName = 'UPI / Card';
+                    break;
+                case 'credit':
+                    document.getElementById('useCredit').checked = true;
+                    document.getElementById('creditAmount').value = total.toFixed(2);
+                    document.getElementById('creditAmount').disabled = false;
+                    methodName = 'Credit (Account)';
+                    break;
+                case 'creditNote':
+                    maxAmount = Math.min(total, customerCreditNotes.reduce((sum, cn) => sum + parseFloat(cn.remaining_balance || 0), 0));
+                    document.getElementById('useCreditNote').checked = true;
+                    document.getElementById('creditNotePaymentAmount').value = maxAmount.toFixed(2);
+                    document.getElementById('creditNotePaymentAmount').disabled = false;
+                    methodName = 'Credit Note';
+                    break;
+            }
+            
+            // Hide quick pay options
+            document.getElementById('quickPayOptions').style.display = 'none';
+            
+            // Show payment summary
+            document.getElementById('selectedMethodName').textContent = methodName;
+            document.getElementById('selectedMethodAmount').textContent = '₹' + maxAmount.toFixed(2);
+            document.getElementById('selectedPaymentSummary').style.display = 'block';
+        }
+        
+        function showSplitPayment() {
+            // Hide quick pay options and summary
+            document.getElementById('quickPayOptions').style.display = 'none';
+            document.getElementById('selectedPaymentSummary').style.display = 'none';
+            
+            // Reset all payments
+            resetAllPayments();
+            
+            // Show split payment options
+            document.getElementById('splitPaymentOptions').style.display = 'block';
+            
+            // Show credit note option if available
+            if (customerCreditNotes && customerCreditNotes.length > 0) {
+                document.getElementById('creditNotePaymentItem').style.display = 'flex';
+            }
+            
+            // Calculate initial remaining
+            calculateSplitPayment();
+        }
+        
+        function resetAllPayments() {
+            // Uncheck all
+            document.getElementById('useCash').checked = false;
+            document.getElementById('useUPI').checked = false;
+            document.getElementById('useCredit').checked = false;
+            if (document.getElementById('useCreditNote')) {
+                document.getElementById('useCreditNote').checked = false;
+            }
+            
+            // Reset amounts
+            document.getElementById('cashAmount').value = '0';
+            document.getElementById('upiAmount').value = '0';
+            document.getElementById('creditAmount').value = '0';
+            document.getElementById('creditNotePaymentAmount').value = '0';
+            
+            // Disable all
+            document.getElementById('cashAmount').disabled = true;
+            document.getElementById('upiAmount').disabled = true;
+            document.getElementById('creditAmount').disabled = true;
+            document.getElementById('creditNotePaymentAmount').disabled = true;
+            
+            // Remove active class
+            document.querySelectorAll('.payment-item').forEach(item => item.classList.remove('active'));
+        }
+        
+        function calculateSplitPayment() {
+            const total = parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '')) || 0;
+            
+            // Calculate total payment
+            const cashAmount = parseFloat(document.getElementById('cashAmount').value) || 0;
+            const upiAmount = parseFloat(document.getElementById('upiAmount').value) || 0;
+            const creditAmount = parseFloat(document.getElementById('creditAmount').value) || 0;
+            const creditNoteAmount = parseFloat(document.getElementById('creditNotePaymentAmount').value) || 0;
+            const totalPayment = cashAmount + upiAmount + creditAmount + creditNoteAmount;
+            
+            // Calculate remaining
+            const remaining = total - totalPayment;
+            
+            if (document.getElementById('remainingAmount')) {
+                document.getElementById('remainingAmount').textContent = '₹' + remaining.toFixed(2);
+                
+                // Change color based on remaining amount
+                const remainingElem = document.getElementById('remainingAmount');
+                const remainingBox = document.getElementById('remainingAmountBox');
+                
+                if (Math.abs(remaining) < 0.01) {
+                    remainingElem.style.color = 'var(--success-color)';
+                    if (remainingBox) remainingBox.style.borderColor = 'var(--success-color)';
+                } else if (remaining > 0) {
+                    remainingElem.style.color = 'var(--warning-color)';
+                    if (remainingBox) remainingBox.style.borderColor = 'var(--warning-color)';
+                } else {
+                    remainingElem.style.color = 'var(--danger-color)';
+                    if (remainingBox) remainingBox.style.borderColor = 'var(--danger-color)';
+                }
+            }
+        }
+
+        async function completeSale() {
+            if (cart.length === 0) {
+                showAlert('Cart is empty', 'danger');
+                return;
+            }
+            
+            if (!currentCustomer) {
+                showAlert('Please select a customer', 'danger');
+                return;
+            }
+            
+            const useCash = document.getElementById('useCash').checked;
+            const useUPI = document.getElementById('useUPI').checked;
+            const useCredit = document.getElementById('useCredit').checked;
+            const useCreditNote = document.getElementById('useCreditNote')?.checked || false;
+            
+            if (!useCash && !useUPI && !useCredit && !useCreditNote) {
+                showAlert('Please select at least one payment method', 'danger');
+                return;
+            }
+            
+            const totalPayable = parseFloat(document.getElementById('totalAmount').textContent.replace('₹', ''));
+            const cashAmount = parseFloat(document.getElementById('cashAmount').value) || 0;
+            const upiAmount = parseFloat(document.getElementById('upiAmount').value) || 0;
+            const creditAmount = parseFloat(document.getElementById('creditAmount').value) || 0;
+            const creditNoteAmount = parseFloat(document.getElementById('creditNotePaymentAmount').value) || 0;
+            const totalPaid = cashAmount + upiAmount + creditAmount + creditNoteAmount;
+            
+            if (Math.abs(totalPaid - totalPayable) > 0.01) {
+                showAlert('Payment amounts do not match total payable', 'danger');
+                return;
+            }
+            
+            const itemsForSale = cart.map(item => {
+                const itemSubtotal = item.quantity * item.rate;
+                const discountAmount = (itemSubtotal * item.discountPercent) / 100;
+                return {
+                    ...item,
+                    discount: discountAmount
+                };
+            });
+            
+            const saleData = {
+                customer_id: currentCustomer.customer_id,
+                items: itemsForSale,
+                payment_split: {
+                    cash: cashAmount,
+                    upi: upiAmount,
+                    credit: creditAmount,
+                    credit_note: creditNoteAmount
+                },
+                credit_notes_used: useCreditNote ? customerCreditNotes : []
+            };
+            
+            try {
+                const response = await fetch('/api/sales', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(saleData)
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    const billNumber = data.bill_number;
+                    const billId = data.bill_id || data.sale_id;
+                    
+                    showAlert(`Sale completed successfully! Bill #${billNumber} <button class="btn btn-sm btn-primary" onclick="printBill(${billId})" style="margin-left: 10px;"><i class="fas fa-print"></i> Print</button>`, 'success');
+                    
+                    setTimeout(() => {
+                        clearCart();
+                    }, 5000);
+                } else {
+                    showAlert('Error: ' + data.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error completing sale: ' + error.message, 'danger');
+            }
+        }
+        
+        // Print Bill Function
+        function printBill(billId) {
+            window.open(`/api/bills/${billId}/print`, '_blank');
+        }
+
+        function clearCart() {
+            cart = [];
+            currentCustomer = null;
+            customerCreditNotes = [];
+            
+            document.getElementById('customerMobile').value = '';
+            document.getElementById('customerInfoCard').style.display = 'none';
+            document.getElementById('creditNotePaymentItem').style.display = 'none';
+            
+            // Reset payment UI
+            document.getElementById('quickPayOptions').style.display = 'none';
+            document.getElementById('splitPaymentOptions').style.display = 'none';
+            document.getElementById('selectedPaymentSummary').style.display = 'none';
+            
+            document.getElementById('useCash').checked = false;
+            document.getElementById('useUPI').checked = false;
+            document.getElementById('useCredit').checked = false;
+            if (document.getElementById('useCreditNote')) {
+                document.getElementById('useCreditNote').checked = false;
+            }
+            
+            document.getElementById('cashAmount').value = '0';
+            document.getElementById('upiAmount').value = '0';
+            document.getElementById('creditAmount').value = '0';
+            document.getElementById('creditNotePaymentAmount').value = '0';
+            
+            document.getElementById('cashAmount').disabled = true;
+            document.getElementById('upiAmount').disabled = true;
+            document.getElementById('creditAmount').disabled = true;
+            document.getElementById('creditNotePaymentAmount').disabled = true;
+            
+            document.getElementById('cashPaymentItem').classList.remove('active');
+            document.getElementById('upiPaymentItem').classList.remove('active');
+            document.getElementById('creditPaymentItem').classList.remove('active');
+            document.getElementById('creditNotePaymentItem').classList.remove('active');
+            
+            renderCart();
+        }
+
+        // ===================================
+        // CREDIT MANAGEMENT SECTION FUNCTIONS
+        // ===================================
+        
+        async function loadCredits() {
+            try {
+                const response = await fetch('/api/admin/customers-with-credits');
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load credits');
+                }
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.message || 'Failed to load credits');
+                }
+                
+                // Calculate totals
+                let totalOutstanding = 0;
+                let totalBills = 0;
+                
+                data.customers.forEach(customer => {
+                    customer.bills.forEach(bill => {
+                        totalOutstanding += parseFloat(bill.remaining_credit || 0);
+                        totalBills++;
+                    });
+                });
+                
+                // Update stats
+                document.getElementById('totalOutstanding').textContent = `₹${totalOutstanding.toFixed(2)}`;
+                document.getElementById('totalCustomers').textContent = data.customers.length;
+                document.getElementById('totalBills').textContent = totalBills;
+                
+                // Group credits by store (all will be in one store for staff)
+                allCreditsData = {};
+                
+                data.customers.forEach(customer => {
+                    if (customer.bills.length > 0) {
+                        const storeName = customer.bills[0].store_name || 'Main Store';
+                        if (!allCreditsData[storeName]) {
+                            allCreditsData[storeName] = [];
+                        }
+                        allCreditsData[storeName].push(customer);
+                    }
+                });
+                
+                // Apply initial sort
+                sortCredits();
+                
+            } catch (error) {
+                console.error('Error loading credits:', error);
+                showAlert('Error loading credit data: ' + error.message, 'danger');
+                
+                // Show empty state
+                document.getElementById('totalOutstanding').textContent = '₹0.00';
+                document.getElementById('totalCustomers').textContent = '0';
+                document.getElementById('totalBills').textContent = '0';
+                document.getElementById('creditsContent').innerHTML = `
+                    <div class="panel">
+                        <div style="text-align: center; padding: 60px 20px; color: #666;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #999; margin-bottom: 20px;"></i>
+                            <h3 style="margin-bottom: 10px; color: #333;">Unable to Load Credits</h3>
+                            <p>${error.message}</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function filterCredits() {
+            const searchTerm = document.getElementById('creditSearchInput').value.toLowerCase();
+            
+            if (!searchTerm) {
+                sortCredits();
+                return;
+            }
+            
+            // Filter credits by customer name or mobile
+            const filteredData = {};
+            
+            Object.entries(allCreditsData).forEach(([storeName, customers]) => {
+                const filteredCustomers = customers.filter(customer => 
+                    customer.customer_name.toLowerCase().includes(searchTerm) ||
+                    (customer.mobile && customer.mobile.includes(searchTerm))
+                );
+                
+                if (filteredCustomers.length > 0) {
+                    filteredData[storeName] = filteredCustomers;
+                }
+            });
+            
+            displayCredits(filteredData);
+        }
+
+        function sortCredits() {
+            const sortBy = document.getElementById('creditSortBy').value;
+            const sortedData = {};
+            
+            Object.entries(allCreditsData).forEach(([storeName, customers]) => {
+                const sorted = [...customers];
+                
+                switch(sortBy) {
+                    case 'amount_desc':
+                        sorted.sort((a, b) => {
+                            const aTotal = a.bills.reduce((sum, bill) => sum + parseFloat(bill.remaining_credit || 0), 0);
+                            const bTotal = b.bills.reduce((sum, bill) => sum + parseFloat(bill.remaining_credit || 0), 0);
+                            return bTotal - aTotal;
+                        });
+                        break;
+                    case 'amount_asc':
+                        sorted.sort((a, b) => {
+                            const aTotal = a.bills.reduce((sum, bill) => sum + parseFloat(bill.remaining_credit || 0), 0);
+                            const bTotal = b.bills.reduce((sum, bill) => sum + parseFloat(bill.remaining_credit || 0), 0);
+                            return aTotal - bTotal;
+                        });
+                        break;
+                    case 'name_asc':
+                        sorted.sort((a, b) => a.customer_name.localeCompare(b.customer_name));
+                        break;
+                    case 'name_desc':
+                        sorted.sort((a, b) => b.customer_name.localeCompare(a.customer_name));
+                        break;
+                }
+                
+                sortedData[storeName] = sorted;
+            });
+            
+            displayCredits(sortedData);
+        }
+
+        function displayCredits(creditsByStore) {
+            const container = document.getElementById('creditsContent');
+            
+            if (Object.keys(creditsByStore).length === 0) {
+                container.innerHTML = '<div class="panel"><p style="text-align: center; color: #999; padding: 40px;">No outstanding credits found</p></div>';
+                return;
+            }
+            
+            container.innerHTML = Object.entries(creditsByStore).map(([storeName, credits]) => {
+                const storeTotal = credits.reduce((sum, c) => 
+                    sum + c.bills.reduce((s, b) => s + parseFloat(b.remaining_credit || 0), 0), 0
+                );
+                const storeBillsCount = credits.reduce((sum, c) => sum + c.bills.length, 0);
+                
+                return `
+                    <div class="panel">
+                        <div style="background: var(--light-gray); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                            <h3 style="font-size: 18px; margin-bottom: 10px;">${storeName}</h3>
+                            <div style="display: flex; gap: 20px; font-size: 14px;">
+                                <div><strong>Customers:</strong> ${credits.length}</div>
+                                <div><strong>Bills:</strong> ${storeBillsCount}</div>
+                                <div><strong>Total:</strong> ₹${storeTotal.toFixed(2)}</div>
+                            </div>
+                        </div>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Mobile</th>
+                                    <th>Bills</th>
+                                    <th>Total Credit</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${credits.map(customer => {
+                                    const customerTotal = customer.bills.reduce((sum, b) => sum + parseFloat(b.remaining_credit || 0), 0);
+                                    return `
+                                        <tr>
+                                            <td><strong>${customer.customer_name}</strong></td>
+                                            <td>${customer.mobile || '-'}</td>
+                                            <td>${customer.bills.length}</td>
+                                            <td><strong style="color: var(--danger-color);">₹${customerTotal.toFixed(2)}</strong></td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm" onclick="viewCustomerBills(${customer.customer_id})">
+                                                    <i class="fas fa-eye"></i> View
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function viewCustomerBills(customerId) {
+            try {
+                const response = await fetch(`/api/credit-settlement/outstanding/${customerId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load bills');
+                }
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.message || 'Failed to load bills');
+                }
+                
+                selectedCustomerForCredit = data.customer;
+                
+                document.getElementById('billsCustomerInfo').innerHTML = `
+                    <div style="padding: 15px; background: var(--light-gray); border-radius: 8px; margin-bottom: 20px;">
+                        <h3>${data.customer.customer_name}</h3>
+                        <p><strong>Mobile:</strong> ${data.customer.mobile || 'N/A'}</p>
+                        <p><strong>Total Outstanding:</strong> ₹${data.total_outstanding.toFixed(2)}</p>
+                    </div>
+                `;
+                
+                const tbody = document.getElementById('billsTable');
+                
+                if (data.outstanding_bills.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: #999;">No outstanding bills</td></tr>';
+                } else {
+                    tbody.innerHTML = data.outstanding_bills.map(bill => `
+                        <tr>
+                            <td><strong>${bill.bill_number}</strong></td>
+                            <td>${formatDate(bill.created_at)}</td>
+                            <td>₹${parseFloat(bill.total_amount).toFixed(2)}</td>
+                            <td>₹${parseFloat(bill.original_credit_amount).toFixed(2)}</td>
+                            <td><strong style="color: var(--danger-color);">₹${parseFloat(bill.remaining_credit).toFixed(2)}</strong></td>
+                            <td>
+                                <button class="btn btn-success btn-sm" onclick="openClearModal(${bill.bill_id}, ${customerId}, ${parseFloat(bill.remaining_credit).toFixed(2)})">
+                                    <i class="fas fa-money-bill-wave"></i> Clear
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+                
+                document.getElementById('viewBillsModal').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading bills:', error);
+                showAlert('Error loading bills: ' + error.message, 'danger');
+            }
+        }
+
+        function openClearModal(billId, customerId, remainingAmount) {
+            // Close the Outstanding Bills modal first
+            document.getElementById('viewBillsModal').style.display = 'none';
+            
+            document.getElementById('clearBillId').value = billId;
+            document.getElementById('clearCustomerId').value = customerId;
+            document.getElementById('clearPaymentAmount').value = remainingAmount;
+            
+            const billInfo = selectedCustomerForCredit ? `
+                <div style="padding: 15px; background: var(--light-gray); border-radius: 8px; margin-bottom: 20px;">
+                    <h3>${selectedCustomerForCredit.customer_name}</h3>
+                    <p><strong>Remaining Credit:</strong> ₹${remainingAmount}</p>
+                </div>
+            ` : '<p>Loading bill details...</p>';
+            
+            document.getElementById('clearCustomerInfo').innerHTML = billInfo;
+            
+            document.getElementById('clearCreditModal').style.display = 'block';
+        }
+
+        function closeClearModal() {
+            document.getElementById('clearCreditModal').style.display = 'none';
+            document.getElementById('clearCreditForm').reset();
+            selectedBillForCredit = null;
+            
+            // Reopen the Outstanding Bills modal if we have a selected customer
+            if (selectedCustomerForCredit) {
+                document.getElementById('viewBillsModal').style.display = 'block';
+            }
+        }
+
+        function closeViewBillsModal() {
+            document.getElementById('viewBillsModal').style.display = 'none';
+            selectedCustomerForCredit = null;
+        }
+
+        document.getElementById('clearCreditForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            
+            const formData = new FormData(e.target);
+            const data = {
+                bill_id: parseInt(formData.get('bill_id')),
+                customer_id: parseInt(formData.get('customer_id')),
+                payment_amount: parseFloat(formData.get('payment_amount')),
+                payment_method: formData.get('payment_method'),
+                payment_reference: formData.get('payment_reference') || null,
+                notes: formData.get('notes') || null
+            };
+            
+            try {
+                const response = await fetch('/api/credit-settlement/record-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    showAlert(`Payment of ₹${data.payment_amount.toFixed(2)} recorded successfully!`, 'success');
+                    closeClearModal();
+                    
+                    if (data.customer_id) {
+                        viewCustomerBills(data.customer_id);
+                    }
+                    
+                    loadCredits();
+                } else {
+                    showAlert('Error: ' + (result.message || 'Failed to record payment'), 'danger');
+                }
+            } catch (error) {
+                showAlert('Network error: ' + error.message, 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Record Payment';
+            }
+        });
+
+        // ==============================
+        // CREDIT NOTES SECTION FUNCTIONS
+        // ==============================
+        
+        // Handle credit note type change
+        function handleCreditNoteTypeChange() {
+            const cnType = document.getElementById('cnTypeSelect').value;
+            const returnSection = document.getElementById('cnReturnSection');
+            const advanceSection = document.getElementById('cnAdvanceSection');
+            
+            // Reset mobile input
+            document.getElementById('cnCustomerMobile').value = '';
+            currentCustomerIdForCN = null;
+            
+            if (cnType === 'return') {
+                returnSection.style.display = 'none';
+                advanceSection.style.display = 'none';
+            } else if (cnType === 'advance') {
+                returnSection.style.display = 'none';
+                advanceSection.style.display = 'none';
+            }
+        }
+        
+        async function searchCustomerForCreditNote() {
+            const mobile = document.getElementById('cnCustomerMobile').value.trim();
+            const cnType = document.getElementById('cnTypeSelect').value;
+            
+            if (!mobile || mobile.length !== 10) {
+                showAlert('Please enter a valid 10-digit mobile number', 'danger');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/customers/search?mobile=${mobile}`);
+                const data = await response.json();
+                
+                if (data.found && data.customer) {
+                    currentCustomerIdForCN = data.customer.customer_id;
+                    
+                    if (cnType === 'return') {
+                        // Load customer's bills for returns
+                        const billsResponse = await fetch(`/api/customers/${data.customer.customer_id}/bills`);
+                        const billsData = await billsResponse.json();
+                        
+                        document.getElementById('cnCustomerDetails').innerHTML = `
+                            <div style="padding: 15px; background: var(--light-gray); border-radius: 8px; margin-bottom: 15px;">
+                                <div style="font-weight: 600; font-size: 16px;">${data.customer.customer_name}</div>
+                                <div style="font-size: 13px; color: #666; margin-top: 5px;">Mobile: ${data.customer.mobile}</div>
+                            </div>
+                        `;
+                        
+                        const billSelect = document.getElementById('cnBillSelect');
+                        billSelect.innerHTML = '<option value="">Select a bill</option>';
+                        
+                        const bills = Array.isArray(billsData) ? billsData : (billsData.bills || []);
+                        
+                        if (bills.length === 0) {
+                            billSelect.innerHTML = '<option value="">No bills found for this customer</option>';
+                        } else {
+                            bills.forEach(sale => {
+                                billSelect.innerHTML += `<option value="${sale.sale_id || sale.bill_id}">Bill #${sale.bill_number} - ${formatDate(sale.created_at)}</option>`;
+                            });
+                        }
+                        
+                        document.getElementById('cnReturnSection').style.display = 'block';
+                        document.getElementById('cnAdvanceSection').style.display = 'none';
+                        
+                    } else if (cnType === 'advance') {
+                        // Show advance payment form
+                        document.getElementById('cnAdvanceCustomerDetails').innerHTML = `
+                            <div style="padding: 15px; background: var(--light-gray); border-radius: 8px; margin-bottom: 15px;">
+                                <div style="font-weight: 600; font-size: 16px;">${data.customer.customer_name}</div>
+                                <div style="font-size: 13px; color: #666; margin-top: 5px;">Mobile: ${data.customer.mobile}</div>
+                            </div>
+                        `;
+                        
+                        document.getElementById('cnReturnSection').style.display = 'none';
+                        document.getElementById('cnAdvanceSection').style.display = 'block';
+                    }
+                } else {
+                    // Customer not found - show form to create new customer
+                    currentCustomerIdForCN = null;
+                    
+                    const customerForm = `
+                        <div style="padding: 15px; background: #fff3cd; border-radius: 8px; border: 1px solid #ffc107; margin-bottom: 15px;">
+                            <div style="font-weight: 600; margin-bottom: 15px; color: #856404;">
+                                <i class="fas fa-user-plus"></i> New Customer
+                            </div>
+                            <div class="form-group">
+                                <label>Customer Name *</label>
+                                <input type="text" id="cnNewCustomerName" placeholder="Enter customer name" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            </div>
+                            <div class="form-group" style="margin-top: 10px;">
+                                <label>Address (Optional)</label>
+                                <textarea id="cnNewCustomerAddress" rows="2" placeholder="Enter address" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;"></textarea>
+                            </div>
+                            <button class="btn btn-success" style="width: 100%; margin-top: 10px;" onclick="createNewCustomerForCN()">
+                                <i class="fas fa-check"></i> Create Customer
+                            </button>
+                        </div>
+                    `;
+                    
+                    if (cnType === 'return') {
+                        document.getElementById('cnCustomerDetails').innerHTML = customerForm;
+                        document.getElementById('cnReturnSection').style.display = 'block';
+                        document.getElementById('cnAdvanceSection').style.display = 'none';
+                    } else if (cnType === 'advance') {
+                        document.getElementById('cnAdvanceCustomerDetails').innerHTML = customerForm;
+                        document.getElementById('cnReturnSection').style.display = 'none';
+                        document.getElementById('cnAdvanceSection').style.display = 'block';
+                    }
+                    
+                    showAlert('Customer not found. Please enter details to create new customer.', 'warning');
+                }
+            } catch (error) {
+                console.error('Error searching customer:', error);
+                showAlert('Error searching customer', 'danger');
+            }
+        }
+        
+        async function createNewCustomerForCN() {
+            const mobile = document.getElementById('cnCustomerMobile').value.trim();
+            const name = document.getElementById('cnNewCustomerName').value.trim();
+            const address = document.getElementById('cnNewCustomerAddress').value.trim();
+            
+            if (!name) {
+                showAlert('Please enter customer name', 'danger');
+                document.getElementById('cnNewCustomerName').focus();
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/customers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customer_name: name,
+                        mobile: mobile,
+                        address: address
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showAlert('Customer created successfully! Note: This customer has no bills yet, so credit notes cannot be issued.', 'success');
+                    
+                    currentCustomerIdForCN = data.customer_id;
+                    
+                    // Update the display
+                    document.getElementById('cnCustomerDetails').innerHTML = `
+                        <div style="padding: 15px; background: var(--light-gray); border-radius: 8px; margin-bottom: 15px;">
+                            <div style="font-weight: 600; font-size: 16px;">${name}</div>
+                            <div style="font-size: 13px; color: #666; margin-top: 5px;">Mobile: ${mobile}</div>
+                            <div style="margin-top: 10px; padding: 8px; background: #dcfce7; border-radius: 6px; color: #166534; font-size: 12px;">
+                                <i class="fas fa-check-circle"></i> New customer created
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Show empty bill select
+                    const billSelect = document.getElementById('cnBillSelect');
+                    billSelect.innerHTML = '<option value="">No bills found for this customer</option>';
+                } else {
+                    showAlert('Error creating customer: ' + (data.message || 'Unknown error'), 'danger');
+                }
+            } catch (error) {
+                showAlert('Error creating customer: ' + error.message, 'danger');
+                console.error(error);
+            }
+        }
+
+        async function loadBillItems() {
+            const saleId = document.getElementById('cnBillSelect').value;
+            
+            if (!saleId) {
+                document.getElementById('cnBillItems').style.display = 'none';
+                return;
+            }
+            
+            currentSaleIdForCN = saleId;
+            
+            try {
+                const response = await fetch(`/api/sales/${saleId}/with-returns`);
+                const sale = await response.json();
+                currentBillItemsForCN = sale.items;
+                
+                const tbody = document.getElementById('cnItemsBody');
+                tbody.innerHTML = sale.items.map((item, idx) => {
+                    const price = parseFloat(item.price || item.rate || 0);
+                    const originalQty = parseFloat(item.quantity);
+                    const returnableQty = parseFloat(item.returnable_quantity || 0);
+                    const canReturn = returnableQty > 0;
+                    
+                    return `
+                        <tr style="${!canReturn ? 'opacity: 0.5;' : ''}">
+                            <td><strong>${item.product_name}</strong></td>
+                            <td>${originalQty.toFixed(2)} ${item.unit || ''}</td>
+                            <td>₹${price.toFixed(2)}</td>
+                            <td>
+                                <input type="number" id="cn_return_qty_${idx}" value="0" min="0" max="${returnableQty}" 
+                                       step="0.01" oninput="calculateCNCredit()" ${!canReturn ? 'disabled' : ''}
+                                       style="width: 100px; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px;">
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+                
+                document.getElementById('cnBillItems').style.display = 'block';
+                calculateCNCredit();
+            } catch (error) {
+                showAlert('Error loading bill items', 'danger');
+            }
+        }
+
+        function calculateCNCredit() {
+            let total = 0;
+            currentBillItemsForCN.forEach((item, idx) => {
+                const returnQty = parseFloat(document.getElementById(`cn_return_qty_${idx}`).value) || 0;
+                const price = parseFloat(item.price || item.rate || 0);
+                total += returnQty * price;
+            });
+            document.getElementById('cnTotalCredit').textContent = total.toFixed(2);
+        }
+
+        async function processCreditNote() {
+            const items = [];
+            
+            currentBillItemsForCN.forEach((item, idx) => {
+                const returnQty = parseFloat(document.getElementById(`cn_return_qty_${idx}`).value) || 0;
+                if (returnQty > 0) {
+                    const price = parseFloat(item.price || item.rate || 0);
+                    items.push({
+                        product_id: item.product_id,
+                        return_qty: returnQty,
+                        original_rate: price
+                    });
+                }
+            });
+            
+            if (items.length === 0) {
+                showAlert('Please enter return quantities', 'danger');
+                return;
+            }
+            
+            const data = {
+                customer_id: currentCustomerIdForCN,
+                sale_id: currentSaleIdForCN,
+                items: items
+            };
+            
+            try {
+                const response = await fetch('/api/credit_notes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Credit note issued successfully! CN #' + result.credit_note_id, 'success');
+                    document.getElementById('cnReturnSection').style.display = 'none';
+                    document.getElementById('cnCustomerMobile').value = '';
+                    currentCustomerIdForCN = null;
+                    currentSaleIdForCN = null;
+                    currentBillItemsForCN = [];
+                    loadCreditNotes();
+                } else {
+                    showAlert('Error: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error processing credit note', 'danger');
+            }
+        }
+
+        async function processAdvancePayment() {
+            const amount = parseFloat(document.getElementById('cnAdvanceAmount').value);
+            const paymentMethod = document.getElementById('cnAdvancePaymentMethod').value;
+            const reference = document.getElementById('cnAdvanceReference').value.trim();
+            const notes = document.getElementById('cnAdvanceNotes').value.trim();
+            
+            // Validation
+            if (!currentCustomerIdForCN) {
+                showAlert('Please search and select a customer first', 'danger');
+                return;
+            }
+            
+            if (!amount || amount <= 0) {
+                showAlert('Please enter a valid advance amount', 'danger');
+                return;
+            }
+            
+            if (!paymentMethod) {
+                showAlert('Please select a payment method', 'danger');
+                return;
+            }
+            
+            const data = {
+                customer_id: currentCustomerIdForCN,
+                amount: amount,
+                payment_method: paymentMethod,
+                payment_reference: reference || null,
+                notes: notes || null
+            };
+            
+            try {
+                const response = await fetch('/api/credit-notes/advance-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(`Advance payment of ₹${amount.toFixed(2)} recorded successfully! CN #${result.credit_number}`, 'success');
+                    
+                    // Reset form
+                    document.getElementById('cnAdvanceSection').style.display = 'none';
+                    document.getElementById('cnCustomerMobile').value = '';
+                    document.getElementById('cnAdvanceAmount').value = '';
+                    document.getElementById('cnAdvancePaymentMethod').value = 'cash';
+                    document.getElementById('cnAdvanceReference').value = '';
+                    document.getElementById('cnAdvanceNotes').value = '';
+                    currentCustomerIdForCN = null;
+                    
+                    // Reload credit notes list
+                    loadCreditNotes();
+                } else {
+                    showAlert('Error: ' + (result.message || 'Failed to record advance payment'), 'danger');
+                }
+            } catch (error) {
+                console.error('Error processing advance payment:', error);
+                showAlert('Error processing advance payment: ' + error.message, 'danger');
+            }
+        }
+
+        async function loadCreditNotes() {
+            try {
+                const response = await fetch('/api/credit_notes');
+                const creditNotes = await response.json();
+                
+                const tbody = document.getElementById('cnHistoryTable');
+                
+                if (creditNotes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #999;">No credit notes found</td></tr>';
+                } else {
+                    tbody.innerHTML = creditNotes.map(cn => {
+                        const amount = parseFloat(cn.amount || cn.total_amount || 0);
+                        const remaining = parseFloat(cn.remaining_balance || 0);
+                        
+                        // Determine type - check bill_number pattern or is_advance flag
+                        const isAdvance = cn.is_advance || 
+                                        (cn.bill_number && cn.bill_number.startsWith('ADV-')) ||
+                                        (cn.credit_number && cn.credit_number.includes('ADV'));
+                        
+                        const typeBadge = isAdvance ? 
+                            '<span class="badge" style="background: #8b5cf6; color: white;">Advance</span>' :
+                            '<span class="badge badge-primary">Return</span>';
+                        
+                        let badgeClass = 'badge-success';
+                        let statusText = 'Active';
+                        
+                        if (remaining <= 0) {
+                            badgeClass = 'badge-gray';
+                            statusText = 'Used';
+                        } else if (remaining > 0 && remaining < amount) {
+                            badgeClass = 'badge-warning';
+                            statusText = 'Partial';
+                        }
+                        
+                        const creditId = cn.credit_id;
+                        
+                        return `
+                            <tr>
+                                <td><strong>#${cn.credit_number || cn.credit_id}</strong></td>
+                                <td>${typeBadge}</td>
+                                <td>${cn.customer_name || 'N/A'}<br><small style="color: #666;">${cn.mobile || ''}</small></td>
+                                <td><strong>₹${amount.toFixed(2)}</strong></td>
+                                <td><strong style="color: ${remaining > 0 ? 'var(--success-color)' : '#999'};">₹${remaining.toFixed(2)}</strong></td>
+                                <td><span class="badge ${badgeClass}">${statusText}</span></td>
+                                <td>${formatDate(cn.created_at)}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" onclick="printCreditNote(${creditId})" title="Print Credit Note">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            } catch (error) {
+                console.error('Error loading credit notes:', error);
+                showAlert('Error loading credit notes', 'danger');
+            }
+        }
+        
+        // Print Credit Note Function
+        function printCreditNote(creditId) {
+            window.open(`/api/credit-notes/${creditId}/print`, '_blank');
+        }
+
+        // ============================
+        // QUOTATIONS SECTION FUNCTIONS
+        // ============================
+        
+        async function loadQuoteBrands() {
+            try {
+                // Load products first to extract brands
+                const response = await fetch('/api/products');
+                const products = await response.json();
+                
+                // Extract unique brands
+                const brands = [...new Set(products.map(p => p.brand).filter(Boolean))].sort();
+                
+                const brandFilter = document.getElementById('quoteBrandFilter');
+                brandFilter.innerHTML = '<option value="">All Brands</option>';
+                brands.forEach(brand => {
+                    brandFilter.innerHTML += `<option value="${brand}">${brand}</option>`;
+                });
+                
+                loadQuoteProducts();
+            } catch (error) {
+                console.error('Error loading brands:', error);
+                showAlert('Error loading brands', 'danger');
+            }
+        }
+
+        async function loadQuoteProducts() {
+            try {
+                const response = await fetch('/api/products');
+                let products = await response.json();
+                
+                // Client-side filtering
+                const brand = document.getElementById('quoteBrandFilter').value;
+                if (brand) {
+                    products = products.filter(p => p.brand === brand);
+                }
+                
+                // Map backend fields to expected frontend fields
+                allQuoteProducts = products.map(p => ({
+                    ...p,
+                    stock: p.current_stock || 0,
+                    rate: p.price || p.rate || 0
+                }));
+                
+                displayQuoteProducts(allQuoteProducts);
+            } catch (error) {
+                console.error('Error loading products:', error);
+                showAlert('Error loading products', 'danger');
+            }
+        }
+
+        function filterQuoteProducts() {
+            const search = document.getElementById('quoteProductSearch').value.toLowerCase();
+            const filtered = allQuoteProducts.filter(p => 
+                p.product_name.toLowerCase().includes(search) ||
+                (p.brand && p.brand.toLowerCase().includes(search))
+            );
+            displayQuoteProducts(filtered);
+        }
+
+        function displayQuoteProducts(products) {
+            const container = document.getElementById('quoteProductList');
+            
+            if (products.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No products found</p>';
+                return;
+            }
+            
+            container.innerHTML = products.map(product => {
+                const isSelected = quoteSelectedItems.find(item => item.product_id === product.product_id);
+                
+                return `
+                    <div class="product-card ${isSelected ? 'selected' : ''}" onclick="toggleQuoteProduct(${product.product_id})">
+                        <div style="font-weight: 600; margin-bottom: 5px;">${product.product_name}</div>
+                        <div style="font-size: 12px; color: #666; margin-bottom: 8px;">${product.brand || ''}</div>
+                        <div style="font-size: 13px; color: var(--success-color); font-weight: 600;">
+                            ₹${parseFloat(product.rate || 0).toFixed(2)} / ${product.unit}
+                        </div>
+                        ${isSelected ? '<div style="margin-top: 8px; color: var(--success-color);"><i class="fas fa-check-circle"></i> Added</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleQuoteProduct(productId) {
+            const product = allQuoteProducts.find(p => p.product_id === productId);
+            if (!product) return;
+            
+            const existingIndex = quoteSelectedItems.findIndex(item => item.product_id === productId);
+            
+            if (existingIndex >= 0) {
+                quoteSelectedItems.splice(existingIndex, 1);
+            } else {
+                quoteSelectedItems.push({
+                    ...product,
+                    quantity: 1,
+                    unit_price: parseFloat(product.rate || 0),
+                    discount_percentage: 0
+                });
+            }
+            
+            displayQuoteProducts(allQuoteProducts.filter(p => 
+                p.product_name.toLowerCase().includes(document.getElementById('quoteProductSearch').value.toLowerCase())
+            ));
+            renderQuoteSelectedItems();
+        }
+
+        function renderQuoteSelectedItems() {
+            const container = document.getElementById('quoteSelectedItems');
+            
+            if (quoteSelectedItems.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No items selected</p>';
+                updateQuoteSummary();
+                return;
+            }
+            
+            container.innerHTML = quoteSelectedItems.map((item, index) => `
+                <div class="item-card">
+                    <div class="item-header">
+                        <div>
+                            <div style="font-weight: 600;">${item.product_name}</div>
+                            <div style="font-size: 12px; color: #666;">${item.brand || ''}</div>
+                        </div>
+                        <button class="btn btn-danger btn-sm" onclick="removeQuoteItem(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="item-inputs">
+                        <div>
+                            <label style="font-size: 11px; color: #666;">Quantity</label>
+                            <input type="number" value="${item.quantity}" min="0.01" step="0.01" 
+                                   onchange="updateQuoteItem(${index}, 'quantity', this.value)">
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; color: #666;">Unit Price</label>
+                            <input type="number" value="${item.unit_price}" min="0" step="0.01" 
+                                   onchange="updateQuoteItem(${index}, 'unit_price', this.value)">
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; color: #666;">Discount %</label>
+                            <input type="number" value="${item.discount_percentage}" min="0" max="100" step="0.1" 
+                                   onchange="updateQuoteItem(${index}, 'discount_percentage', this.value)">
+                        </div>
+                    </div>
+                    <div style="text-align: right; margin-top: 8px; font-weight: 600; color: var(--success-color);">
+                        ₹${calculateQuoteItemTotal(item).toFixed(2)}
+                    </div>
+                </div>
+            `).join('');
+            
+            updateQuoteSummary();
+        }
+
+        function calculateQuoteItemTotal(item) {
+            const baseTotal = item.quantity * item.unit_price;
+            const discountAmount = (baseTotal * (item.discount_percentage || 0)) / 100;
+            return baseTotal - discountAmount;
+        }
+
+        function updateQuoteItem(index, field, value) {
+            quoteSelectedItems[index][field] = parseFloat(value) || 0;
+            renderQuoteSelectedItems();
+        }
+
+        function removeQuoteItem(index) {
+            quoteSelectedItems.splice(index, 1);
+            renderQuoteSelectedItems();
+            displayQuoteProducts(allQuoteProducts.filter(p => 
+                p.product_name.toLowerCase().includes(document.getElementById('quoteProductSearch').value.toLowerCase())
+            ));
+        }
+
+        function updateQuoteSummary() {
+            const subtotal = quoteSelectedItems.reduce((sum, item) => sum + calculateQuoteItemTotal(item), 0);
+            quoteDiscountPercentage = parseFloat(document.getElementById('quoteDiscountPercent').value) || 0;
+            const discountAmount = (subtotal * quoteDiscountPercentage) / 100;
+            const grandTotal = subtotal - discountAmount;
+            
+            document.getElementById('quoteSubtotal').textContent = '₹' + subtotal.toFixed(2);
+            document.getElementById('quoteDiscountAmount').textContent = '-₹' + discountAmount.toFixed(2);
+            document.getElementById('quoteGrandTotal').textContent = '₹' + grandTotal.toFixed(2);
+        }
+
+        async function generateQuotation() {
+            const customerName = document.getElementById('quoteCustomerName').value.trim();
+            const customerMobile = document.getElementById('quoteCustomerMobile').value.trim();
+            const customerAddress = document.getElementById('quoteCustomerAddress').value.trim();
+            
+            if (!customerName) {
+                showAlert('Please enter customer name', 'danger');
+                return;
+            }
+            
+            if (!customerMobile || customerMobile.length !== 10) {
+                showAlert('Please enter a valid 10-digit mobile number', 'danger');
+                return;
+            }
+            
+            if (quoteSelectedItems.length === 0) {
+                showAlert('Please add at least one item', 'danger');
+                return;
+            }
+            
+            const itemsWithoutPrice = quoteSelectedItems.filter(item => !item.unit_price || item.unit_price === 0);
+            if (itemsWithoutPrice.length > 0) {
+                showAlert('Please enter prices for all items', 'danger');
+                return;
+            }
+            
+            const quotationData = {
+                customer_name: customerName,
+                customer_mobile: customerMobile,
+                customer_address: customerAddress,
+                items: quoteSelectedItems,
+                discount_percentage: quoteDiscountPercentage
+            };
+            
+            try {
+                const response = await fetch('/api/quotations/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(quotationData)
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to generate quotation');
+                }
+                
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Quotation_${customerName.replace(/\s+/g, '_')}_${Date.now()}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                showAlert('Quotation generated successfully!', 'success');
+                
+                if (confirm('Quotation downloaded! Do you want to create another quotation?')) {
+                    clearQuotation();
+                }
+            } catch (error) {
+                showAlert('Error generating quotation: ' + error.message, 'danger');
+            }
+        }
+
+        function clearQuotation() {
+            if (confirm('Are you sure you want to clear this quotation?')) {
+                quoteSelectedItems = [];
+                quoteDiscountPercentage = 0;
+                document.getElementById('quoteCustomerName').value = '';
+                document.getElementById('quoteCustomerMobile').value = '';
+                document.getElementById('quoteCustomerAddress').value = '';
+                document.getElementById('quoteDiscountPercent').value = '0';
+                renderQuoteSelectedItems();
+                displayQuoteProducts(allQuoteProducts);
+            }
+        }
+
+        // ====================
+        // UTILITY FUNCTIONS
+        // ====================
+        
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            const icon = type === 'success' ? 'check-circle' : 
+                        type === 'warning' ? 'exclamation-triangle' : 'exclamation-triangle';
+            
+            alertDiv.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i class="fas fa-${icon}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                alertDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        // Close modals on outside click
+        window.onclick = function(event) {
+            const clearModal = document.getElementById('clearCreditModal');
+            const billsModal = document.getElementById('viewBillsModal');
+            
+            if (event.target === clearModal) {
+                closeClearModal();
+            }
+            if (event.target === billsModal) {
+                closeViewBillsModal();
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadBrands();
+        });
+    </script>
+</body>
+</html>

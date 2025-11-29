@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Management - {{ app_name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #16a085;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .page-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .tab-section {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .nav-tabs .nav-link {
+            color: #6c757d;
+            border: none;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--primary-color);
+            border: none;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            background-color: transparent;
+            border: none;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            border-left: 4px solid;
+            height: 100%;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .stats-card.blue { border-left-color: var(--info-color); }
+        .stats-card.green { border-left-color: var(--success-color); }
+        .stats-card.orange { border-left-color: var(--warning-color); }
+        .stats-card.red { border-left-color: var(--danger-color); }
+        .stats-card.purple { border-left-color: #9b59b6; }
+
+        .stats-icon {
+            font-size: 2.5rem;
+            opacity: 0.7;
+        }
+
+        .filter-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .table thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .badge-active {
+            background-color: var(--success-color);
+            padding: 0.35rem 0.75rem;
+        }
+
+        .badge-fully-used {
+            background-color: var(--warning-color);
+            padding: 0.35rem 0.75rem;
+        }
+
+        .badge-expired {
+            background-color: var(--danger-color);
+            padding: 0.35rem 0.75rem;
+        }
+
+        .credit-badge {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            margin: 0 0.125rem;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .bill-item, .note-item {
+            border-left: 3px solid var(--secondary-color);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .payment-breakdown {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            background-color: white;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+        }
+
+        .payment-breakdown-item {
+            text-align: center;
+        }
+
+        .payment-breakdown-item small {
+            display: block;
+            color: #6c757d;
+        }
+
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .usage-history-item {
+            border-left: 3px solid var(--info-color);
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner-border text-light" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('admin_dashboard') }}">
+                <i class="fas fa-tools me-2"></i>{{ app_name }}
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-home me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_credit_management') }}">
+                            <i class="fas fa-file-invoice-dollar me-1"></i>Credit Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2 class="mb-0">
+                        <i class="fas fa-file-invoice-dollar me-2"></i>Credit Management
+                    </h2>
+                    <p class="text-muted mb-0 mt-2">Manage credit notes and track customer credit balances</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-info" onclick="exportCurrentView()">
+                        <i class="fas fa-file-csv me-2"></i>Export CSV
+                    </button>
+                    <button class="btn btn-secondary" onclick="refreshCurrentView()">
+                        <i class="fas fa-sync-alt me-2"></i>Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-section">
+            <ul class="nav nav-tabs" id="creditTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="credit-notes-tab" data-bs-toggle="tab" 
+                            data-bs-target="#credit-notes" type="button" role="tab">
+                        <i class="fas fa-sticky-note me-2"></i>Credit Notes
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="customers-notes-tab" data-bs-toggle="tab" 
+                            data-bs-target="#customers-notes" type="button" role="tab">
+                        <i class="fas fa-users me-2"></i>Customers with Credit Notes
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="credit-balance-tab" data-bs-toggle="tab" 
+                            data-bs-target="#credit-balance" type="button" role="tab">
+                        <i class="fas fa-balance-scale me-2"></i>Credit Balance Tracking
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content mt-4" id="creditTabsContent">
+                <!-- Tab 1: Credit Notes -->
+                <div class="tab-pane fade show active" id="credit-notes" role="tabpanel">
+                    <!-- Statistics -->
+                    <div class="row mb-4">
+                        <div class="col-md-2">
+                            <div class="stats-card blue">
+                                <div class="text-center">
+                                    <i class="fas fa-file-invoice stats-icon text-info"></i>
+                                    <h3 class="mb-1 mt-2" id="statNotesTotal">0</h3>
+                                    <small class="text-muted">Total Notes</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="stats-card green">
+                                <div class="text-center">
+                                    <i class="fas fa-check-circle stats-icon text-success"></i>
+                                    <h3 class="mb-1 mt-2" id="statNotesActive">0</h3>
+                                    <small class="text-muted">Active</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="stats-card orange">
+                                <div class="text-center">
+                                    <i class="fas fa-coins stats-icon text-warning"></i>
+                                    <h3 class="mb-1 mt-2" id="statNotesUsed">0</h3>
+                                    <small class="text-muted">Fully Used</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="stats-card red">
+                                <div class="text-center">
+                                    <i class="fas fa-ban stats-icon text-danger"></i>
+                                    <h3 class="mb-1 mt-2" id="statNotesExpired">0</h3>
+                                    <small class="text-muted">Expired</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="stats-card purple">
+                                <div class="text-center">
+                                    <i class="fas fa-dollar-sign stats-icon" style="color: #9b59b6;"></i>
+                                    <h3 class="mb-1 mt-2" id="statNotesAmount">₹0</h3>
+                                    <small class="text-muted">Total Amount</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="stats-card green">
+                                <div class="text-center">
+                                    <i class="fas fa-wallet stats-icon text-success"></i>
+                                    <h3 class="mb-1 mt-2" id="statNotesRemaining">₹0</h3>
+                                    <small class="text-muted">Remaining</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="filter-card">
+                        <h6 class="mb-3"><i class="fas fa-filter me-2"></i>Filters</h6>
+                        <div class="row g-3">
+                            <div class="col-md-2">
+                                <label class="form-label">Store</label>
+                                <select class="form-select form-select-sm" id="notesFilterStore">
+                                    <option value="">All Stores</option>
+                                    {% for store in stores %}
+                                    <option value="{{ store.store_id }}">{{ store.store_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Status</label>
+                                <select class="form-select form-select-sm" id="notesFilterStatus">
+                                    <option value="">All Status</option>
+                                    <option value="active">Active</option>
+                                    <option value="fully_used">Fully Used</option>
+                                    <option value="expired">Expired</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Search</label>
+                                <input type="text" class="form-control form-control-sm" id="notesSearch" 
+                                       placeholder="Customer/Credit #">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">From Date</label>
+                                <input type="date" class="form-control form-control-sm" id="notesDateFrom">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">To Date</label>
+                                <input type="date" class="form-control form-control-sm" id="notesDateTo">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">&nbsp;</label>
+                                <button class="btn btn-primary btn-sm w-100" onclick="loadCreditNotes()">
+                                    <i class="fas fa-search me-1"></i>Apply
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Credit #</th>
+                                        <th>Bill #</th>
+                                        <th>Customer</th>
+                                        <th>Store</th>
+                                        <th>Total Amount</th>
+                                        <th>Used</th>
+                                        <th>Remaining</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="creditNotesTable">
+                                    <tr><td colspan="10" class="text-center"><div class="spinner-border text-primary"></div></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="notesEmpty" class="empty-state" style="display:none;">
+                            <i class="fas fa-inbox"></i>
+                            <h5>No Credit Notes Found</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Customers with Credit Notes -->
+                <div class="tab-pane fade" id="customers-notes" role="tabpanel">
+                    <!-- Statistics -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stats-card blue">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-1">Total Customers</h6>
+                                        <h3 class="mb-0" id="statCustomersTotal">0</h3>
+                                    </div>
+                                    <i class="fas fa-users stats-icon text-info"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card purple">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-1">Total Notes</h6>
+                                        <h3 class="mb-0" id="statCustomersNotes">0</h3>
+                                    </div>
+                                    <i class="fas fa-sticky-note stats-icon" style="color: #9b59b6;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card orange">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-1">Total Amount</h6>
+                                        <h3 class="mb-0" id="statCustomersAmount">₹0</h3>
+                                    </div>
+                                    <i class="fas fa-dollar-sign stats-icon text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card green">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-1">Total Remaining</h6>
+                                        <h3 class="mb-0" id="statCustomersRemaining">₹0</h3>
+                                    </div>
+                                    <i class="fas fa-wallet stats-icon text-success"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="filter-card">
+                        <h6 class="mb-3"><i class="fas fa-filter me-2"></i>Filters</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Store</label>
+                                <select class="form-select form-select-sm" id="customersNotesFilterStore">
+                                    <option value="">All Stores</option>
+                                    {% for store in stores %}
+                                    <option value="{{ store.store_id }}">{{ store.store_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Search Customer</label>
+                                <input type="text" class="form-control form-control-sm" id="customersNotesSearch" 
+                                       placeholder="Name or Mobile">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">&nbsp;</label>
+                                <button class="btn btn-primary btn-sm w-100" onclick="loadCustomersWithCredits()">
+                                    <i class="fas fa-search me-1"></i>Apply
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Customer Name</th>
+                                        <th>Mobile</th>
+                                        <th>Address</th>
+                                        <th>Total Notes</th>
+                                        <th>Active Notes</th>
+                                        <th>Total Amount</th>
+                                        <th>Used</th>
+                                        <th>Remaining</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customersNotesTable">
+                                    <tr><td colspan="9" class="text-center"><div class="spinner-border text-primary"></div></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="customersNotesEmpty" class="empty-state" style="display:none;">
+                            <i class="fas fa-inbox"></i>
+                            <h5>No Customers Found</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Credit Balance Tracking -->
+                <div class="tab-pane fade" id="credit-balance" role="tabpanel">
+                    <!-- Statistics -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stats-card blue">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-1">Total Customers</h6>
+                                        <h3 class="mb-0" id="statBalanceCustomers">0</h3>
+                                    </div>
+                                    <i class="fas fa-users stats-icon text-info"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card purple">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-1">Total Purchases</h6>
+                                        <h3 class="mb-0" id="statBalancePurchases">₹0</h3>
+                                    </div>
+                                    <i class="fas fa-shopping-cart stats-icon" style="color: #9b59b6;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card green">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-1">Total Paid</h6>
+                                        <h3 class="mb-0" id="statBalancePaid">₹0</h3>
+                                    </div>
+                                    <i class="fas fa-check-circle stats-icon text-success"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card red">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-1">Credit Due</h6>
+                                        <h3 class="mb-0 text-danger" id="statBalanceCredit">₹0</h3>
+                                    </div>
+                                    <i class="fas fa-exclamation-triangle stats-icon text-danger"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="filter-card">
+                        <h6 class="mb-3"><i class="fas fa-filter me-2"></i>Filters</h6>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Store</label>
+                                <select class="form-select form-select-sm" id="balanceFilterStore">
+                                    <option value="">All Stores</option>
+                                    {% for store in stores %}
+                                    <option value="{{ store.store_id }}">{{ store.store_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Search Customer</label>
+                                <input type="text" class="form-control form-control-sm" id="balanceSearch" 
+                                       placeholder="Name or Mobile">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Minimum Balance</label>
+                                <input type="number" class="form-control form-control-sm" id="balanceMinAmount" 
+                                       placeholder="0.00" step="0.01">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">&nbsp;</label>
+                                <button class="btn btn-primary btn-sm w-100" onclick="loadCreditBalance()">
+                                    <i class="fas fa-search me-1"></i>Apply
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Customer</th>
+                                        <th>Mobile</th>
+                                        <th>Address</th>
+                                        <th>Total Bills</th>
+                                        <th>Total Purchases</th>
+                                        <th>Total Paid</th>
+                                        <th>Credit Due</th>
+                                        <th>Last Purchase</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="creditBalanceTable">
+                                    <tr><td colspan="9" class="text-center"><div class="spinner-border text-primary"></div></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="balanceEmpty" class="empty-state" style="display:none;">
+                            <i class="fas fa-inbox"></i>
+                            <h5>No Customers Found</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credit Note Details Modal -->
+    <div class="modal fade" id="noteDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-file-invoice me-2"></i>Credit Note Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="noteDetailsContent">
+                    <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Credit Notes Modal -->
+    <div class="modal fade" id="customerNotesModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user me-2"></i><span id="customerNotesTitle">Customer Credit Notes</span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="customerNotesContent">
+                    <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Balance Details Modal -->
+    <div class="modal fade" id="balanceDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-balance-scale me-2"></i><span id="balanceDetailsTitle">Credit Balance Details</span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="balanceDetailsContent">
+                    <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let noteDetailsModal, customerNotesModal, balanceDetailsModal;
+        let currentTab = 'credit-notes';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            noteDetailsModal = new bootstrap.Modal(document.getElementById('noteDetailsModal'));
+            customerNotesModal = new bootstrap.Modal(document.getElementById('customerNotesModal'));
+            balanceDetailsModal = new bootstrap.Modal(document.getElementById('balanceDetailsModal'));
+            
+            // Tab change handler
+            document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+                tab.addEventListener('shown.bs.tab', function(e) {
+                    currentTab = e.target.getAttribute('data-bs-target').replace('#', '');
+                    if (currentTab === 'credit-notes' && document.getElementById('creditNotesTable').innerHTML.includes('spinner')) {
+                        loadCreditNotes();
+                    } else if (currentTab === 'customers-notes' && document.getElementById('customersNotesTable').innerHTML.includes('spinner')) {
+                        loadCustomersWithCredits();
+                    } else if (currentTab === 'credit-balance' && document.getElementById('creditBalanceTable').innerHTML.includes('spinner')) {
+                        loadCreditBalance();
+                    }
+                });
+            });
+
+            loadCreditNotes();
+        });
+
+        function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
+        function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
+
+        // Credit Notes Functions
+        async function loadCreditNotes() {
+            try {
+                showLoading();
+                const params = new URLSearchParams({
+                    store_id: document.getElementById('notesFilterStore').value,
+                    customer_search: document.getElementById('notesSearch').value,
+                    date_from: document.getElementById('notesDateFrom').value,
+                    date_to: document.getElementById('notesDateTo').value,
+                    status: document.getElementById('notesFilterStatus').value
+                });
+
+                const response = await fetch(`/api/admin/credit-notes?${params}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    renderCreditNotes(data.credit_notes);
+                    updateNotesStats(data.summary);
+                } else {
+                    showAlert('Error loading credit notes', 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error loading credit notes', 'danger');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function renderCreditNotes(notes) {
+            const tbody = document.getElementById('creditNotesTable');
+            const empty = document.getElementById('notesEmpty');
+
+            if (!notes || notes.length === 0) {
+                tbody.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            tbody.innerHTML = notes.map(note => `
+                <tr onclick="viewNoteDetails(${note.credit_id})">
+                    <td><strong>${note.credit_number}</strong></td>
+                    <td>${note.bill_number}</td>
+                    <td>${note.customer_name || 'Walk-in'}<br><small class="text-muted">${note.customer_contact || ''}</small></td>
+                    <td>${note.store_name}</td>
+                    <td><strong>{{ currency }}${parseFloat(note.total_amount).toFixed(2)}</strong></td>
+                    <td>{{ currency }}${parseFloat(note.used_amount).toFixed(2)}</td>
+                    <td class="text-success"><strong>{{ currency }}${parseFloat(note.remaining_balance).toFixed(2)}</strong></td>
+                    <td><span class="badge badge-${note.status}">${note.status.replace('_', ' ').toUpperCase()}</span></td>
+                    <td>${formatDate(note.created_at)}</td>
+                    <td><button class="btn btn-sm btn-info btn-action" onclick="event.stopPropagation(); viewNoteDetails(${note.credit_id})"><i class="fas fa-eye"></i></button></td>
+                </tr>
+            `).join('');
+        }
+
+        function updateNotesStats(summary) {
+            document.getElementById('statNotesTotal').textContent = summary.total_notes || 0;
+            document.getElementById('statNotesActive').textContent = summary.active_count || 0;
+            document.getElementById('statNotesUsed').textContent = summary.fully_used_count || 0;
+            document.getElementById('statNotesExpired').textContent = summary.expired_count || 0;
+            document.getElementById('statNotesAmount').textContent = `{{ currency }}${parseFloat(summary.total_amount || 0).toFixed(2)}`;
+            document.getElementById('statNotesRemaining').textContent = `{{ currency }}${parseFloat(summary.total_remaining || 0).toFixed(2)}`;
+        }
+
+        async function viewNoteDetails(creditId) {
+            try {
+                noteDetailsModal.show();
+                const response = await fetch(`/api/admin/credit-note/${creditId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const note = data.credit_note;
+                    const usage = data.usage_history || [];
+                    
+                    document.getElementById('noteDetailsContent').innerHTML = `
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="detail-label">Credit Number</div>
+                                <div class="detail-value">${note.credit_number}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-label">Bill Number</div>
+                                <div class="detail-value">${note.bill_number}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-label">Customer</div>
+                                <div class="detail-value">${note.customer_name || 'Walk-in'}<br><small>${note.customer_contact || ''}</small></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-label">Store</div>
+                                <div class="detail-value">${note.store_name}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="detail-label">Total Amount</div>
+                                <div class="detail-value">{{ currency }}${parseFloat(note.total_amount).toFixed(2)}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="detail-label">Used Amount</div>
+                                <div class="detail-value">{{ currency }}${parseFloat(note.used_amount).toFixed(2)}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="detail-label">Remaining</div>
+                                <div class="detail-value text-success">{{ currency }}${parseFloat(note.remaining_balance).toFixed(2)}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="detail-label">Status</div>
+                                <div class="detail-value"><span class="badge badge-${note.status}">${note.status.toUpperCase()}</span></div>
+                            </div>
+                        </div>
+                        ${usage.length > 0 ? `
+                            <h6 class="mb-3"><i class="fas fa-history me-2"></i>Usage History</h6>
+                            ${usage.map(u => `
+                                <div class="usage-history-item">
+                                    <div class="row">
+                                        <div class="col-md-4"><strong>Bill #${u.bill_number}</strong></div>
+                                        <div class="col-md-4">Amount: {{ currency }}${parseFloat(u.amount_used).toFixed(2)}</div>
+                                        <div class="col-md-4 text-end">${formatDate(u.used_at)}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        ` : '<p class="text-muted text-center">No usage history</p>'}
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Customers with Credits Functions
+        async function loadCustomersWithCredits() {
+            try {
+                showLoading();
+                const params = new URLSearchParams({
+                    store_id: document.getElementById('customersNotesFilterStore').value,
+                    customer_search: document.getElementById('customersNotesSearch').value
+                });
+
+                const response = await fetch(`/api/admin/customers-with-credits?${params}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    renderCustomersWithCredits(data.customers);
+                    updateCustomersStats(data.summary);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error loading customers', 'danger');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function renderCustomersWithCredits(customers) {
+            const tbody = document.getElementById('customersNotesTable');
+            const empty = document.getElementById('customersNotesEmpty');
+
+            if (!customers || customers.length === 0) {
+                tbody.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            tbody.innerHTML = customers.map(c => `
+                <tr onclick="viewCustomerNotes(${c.customer_id})">
+                    <td><strong>${c.customer_name}</strong></td>
+                    <td>${c.mobile || '-'}</td>
+                    <td>${c.address || '-'}</td>
+                    <td><span class="badge bg-secondary">${c.total_credit_notes}</span></td>
+                    <td><span class="badge bg-success">${c.active_notes}</span></td>
+                    <td><strong>{{ currency }}${parseFloat(c.total_credit_amount).toFixed(2)}</strong></td>
+                    <td>{{ currency }}${parseFloat(c.total_used).toFixed(2)}</td>
+                    <td class="text-success"><strong>{{ currency }}${parseFloat(c.total_remaining).toFixed(2)}</strong></td>
+                    <td><button class="btn btn-sm btn-info btn-action" onclick="event.stopPropagation(); viewCustomerNotes(${c.customer_id})"><i class="fas fa-eye"></i></button></td>
+                </tr>
+            `).join('');
+        }
+
+        function updateCustomersStats(summary) {
+            document.getElementById('statCustomersTotal').textContent = summary.total_customers || 0;
+            document.getElementById('statCustomersNotes').textContent = summary.total_notes || 0;
+            document.getElementById('statCustomersAmount').textContent = `{{ currency }}${parseFloat(summary.total_amount || 0).toFixed(2)}`;
+            document.getElementById('statCustomersRemaining').textContent = `{{ currency }}${parseFloat(summary.total_remaining || 0).toFixed(2)}`;
+        }
+
+        async function viewCustomerNotes(customerId) {
+            try {
+                customerNotesModal.show();
+                const response = await fetch(`/api/admin/customer-credit-notes/${customerId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const customer = data.customer;
+                    const notes = data.credit_notes || [];
+                    const summary = data.summary;
+
+                    document.getElementById('customerNotesTitle').textContent = customer.customer_name;
+                    document.getElementById('customerNotesContent').innerHTML = `
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="stats-card blue">
+                                    <div class="detail-label">Total Notes</div>
+                                    <h3>${summary.total_notes}</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card purple">
+                                    <div class="detail-label">Total Amount</div>
+                                    <h3>{{ currency }}${parseFloat(summary.total_amount).toFixed(2)}</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card orange">
+                                    <div class="detail-label">Used</div>
+                                    <h3>{{ currency }}${parseFloat(summary.total_used).toFixed(2)}</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card green">
+                                    <div class="detail-label">Remaining</div>
+                                    <h3>{{ currency }}${parseFloat(summary.total_remaining).toFixed(2)}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <h6 class="mb-3"><i class="fas fa-list me-2"></i>Credit Notes</h6>
+                        ${notes.map(note => `
+                            <div class="note-item">
+                                <div class="row">
+                                    <div class="col-md-3"><strong>${note.credit_number}</strong><br><small>Bill #${note.bill_number}</small></div>
+                                    <div class="col-md-2">${note.store_name}</div>
+                                    <div class="col-md-2">{{ currency }}${parseFloat(note.total_amount).toFixed(2)}</div>
+                                    <div class="col-md-2 text-success">{{ currency }}${parseFloat(note.remaining_balance).toFixed(2)}</div>
+                                    <div class="col-md-2"><span class="badge badge-${note.status}">${note.status.toUpperCase()}</span></div>
+                                    <div class="col-md-1 text-end">${formatDate(note.created_at)}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Credit Balance Functions
+        async function loadCreditBalance() {
+            try {
+                showLoading();
+                const params = new URLSearchParams({
+                    store_id: document.getElementById('balanceFilterStore').value,
+                    customer_search: document.getElementById('balanceSearch').value,
+                    min_balance: document.getElementById('balanceMinAmount').value
+                });
+
+                const response = await fetch(`/api/admin/customers-with-credit-balance?${params}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    renderCreditBalance(data.customers);
+                    updateBalanceStats(data.summary);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error loading credit balance', 'danger');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function renderCreditBalance(customers) {
+            const tbody = document.getElementById('creditBalanceTable');
+            const empty = document.getElementById('balanceEmpty');
+
+            if (!customers || customers.length === 0) {
+                tbody.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            tbody.innerHTML = customers.map(c => `
+                <tr onclick="viewBalanceDetails(${c.customer_id})">
+                    <td><strong>${c.customer_name}</strong></td>
+                    <td>${c.mobile || '-'}</td>
+                    <td>${c.address || '-'}</td>
+                    <td><span class="badge bg-secondary">${c.total_bills}</span></td>
+                    <td><strong>{{ currency }}${parseFloat(c.total_purchases).toFixed(2)}</strong></td>
+                    <td class="text-success">{{ currency }}${parseFloat(c.total_paid).toFixed(2)}</td>
+                    <td><span class="credit-badge">{{ currency }}${parseFloat(c.amount_due_credit).toFixed(2)}</span></td>
+                    <td>${formatDate(c.last_purchase_date)}</td>
+                    <td><button class="btn btn-sm btn-info btn-action" onclick="event.stopPropagation(); viewBalanceDetails(${c.customer_id})"><i class="fas fa-eye"></i></button></td>
+                </tr>
+            `).join('');
+        }
+
+        function updateBalanceStats(summary) {
+            document.getElementById('statBalanceCustomers').textContent = summary.total_customers || 0;
+            document.getElementById('statBalancePurchases').textContent = `{{ currency }}${parseFloat(summary.total_purchases || 0).toFixed(2)}`;
+            document.getElementById('statBalancePaid').textContent = `{{ currency }}${parseFloat(summary.total_paid || 0).toFixed(2)}`;
+            document.getElementById('statBalanceCredit').textContent = `{{ currency }}${parseFloat(summary.total_credit_due || 0).toFixed(2)}`;
+        }
+
+        async function viewBalanceDetails(customerId) {
+            try {
+                balanceDetailsModal.show();
+                const response = await fetch(`/api/admin/customer-credit-balance/${customerId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const customer = data.customer;
+                    const summary = data.summary;
+                    const bills = data.credit_bills || [];
+
+                    document.getElementById('balanceDetailsTitle').textContent = customer.customer_name;
+                    document.getElementById('balanceDetailsContent').innerHTML = `
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="stats-card blue">
+                                    <div class="detail-label">Total Bills</div>
+                                    <h3>${summary.total_bills}</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card purple">
+                                    <div class="detail-label">Total Purchases</div>
+                                    <h3>{{ currency }}${parseFloat(summary.total_purchases).toFixed(2)}</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card green">
+                                    <div class="detail-label">Total Paid</div>
+                                    <h3>{{ currency }}${parseFloat(summary.total_paid).toFixed(2)}</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card red">
+                                    <div class="detail-label">Credit Due</div>
+                                    <h3>{{ currency }}${parseFloat(summary.amount_due_credit).toFixed(2)}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <h6 class="mb-3"><i class="fas fa-receipt me-2"></i>Bills with Credit Payment</h6>
+                        ${bills.map(bill => `
+                            <div class="bill-item">
+                                <div class="row">
+                                    <div class="col-md-3"><strong>Bill #${bill.bill_number}</strong></div>
+                                    <div class="col-md-2">${bill.store_name}</div>
+                                    <div class="col-md-2">Total: {{ currency }}${parseFloat(bill.total_amount).toFixed(2)}</div>
+                                    <div class="col-md-2 text-danger">Credit: {{ currency }}${parseFloat(bill.credit_amount).toFixed(2)}</div>
+                                    <div class="col-md-3 text-end">${formatDate(bill.created_at)}</div>
+                                </div>
+                                <div class="payment-breakdown">
+                                    <div class="payment-breakdown-item"><small>Cash</small><strong>{{ currency }}${parseFloat(bill.cash_paid).toFixed(2)}</strong></div>
+                                    <div class="payment-breakdown-item"><small>UPI</small><strong>{{ currency }}${parseFloat(bill.upi_paid).toFixed(2)}</strong></div>
+                                    <div class="payment-breakdown-item"><small>Card</small><strong>{{ currency }}${parseFloat(bill.card_paid).toFixed(2)}</strong></div>
+                                    <div class="payment-breakdown-item"><small>Credit</small><strong class="text-danger">{{ currency }}${parseFloat(bill.credit_amount).toFixed(2)}</strong></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function exportCurrentView() {
+            let url = '';
+            if (currentTab === 'credit-notes') {
+                const params = new URLSearchParams({ store_id: document.getElementById('notesFilterStore').value });
+                url = `/api/admin/credit-notes/export?${params}`;
+            } else if (currentTab === 'customers-notes') {
+                const params = new URLSearchParams({ store_id: document.getElementById('customersNotesFilterStore').value });
+                url = `/api/admin/customers-credits/export?${params}`;
+            } else if (currentTab === 'credit-balance') {
+                const params = new URLSearchParams({ store_id: document.getElementById('balanceFilterStore').value });
+                url = `/api/admin/customers-credit-balance/export?${params}`;
+            }
+            if (url) {
+                window.location.href = url;
+                showAlert('Export started', 'success');
+            }
+        }
+
+        function refreshCurrentView() {
+            if (currentTab === 'credit-notes') loadCreditNotes();
+            else if (currentTab === 'customers-notes') loadCustomersWithCredits();
+            else if (currentTab === 'credit-balance') loadCreditBalance();
+            showAlert('Data refreshed', 'info');
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show alert-fixed`;
+            alertDiv.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 5000);
+        }
+    </script>
+</body>
+</html>

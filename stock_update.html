@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Update - Hardware Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+        
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .navbar-brand i {
+            font-size: 28px;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .navbar-menu a {
+            color: #4a5568;
+            text-decoration: none;
+            padding: 20px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .navbar-menu a:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .navbar-menu a.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        /* Page Header */
+        .page-header {
+            margin-bottom: 30px;
+        }
+        
+        .page-header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .page-header p {
+            font-size: 16px;
+            color: #6b7280;
+        }
+        
+        /* Alert */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: white;
+            display: flex;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            color: white;
+            display: flex;
+        }
+        
+        /* Toolbar */
+        .toolbar {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-cancel {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn-cancel:hover {
+            background: #4b5563;
+        }
+        
+        /* Panel */
+        .panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table thead {
+            background: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        table th {
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #374151;
+        }
+        
+        table tbody tr {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        table tbody tr:hover {
+            background: #f9fafb;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #9ca3af;
+        }
+        
+        .no-data i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-content {
+            background: white;
+            max-width: 600px;
+            margin: 80px auto;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .modal-header h2 {
+            color: #1f2937;
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .product-info {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .product-info h3 {
+            color: #667eea;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .product-info p {
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+        
+        .product-info strong {
+            color: #1f2937;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .close-icon {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .close-icon:hover {
+            color: #ef4444;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-menu a span {
+                display: none;
+            }
+            
+            .toolbar {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            table {
+                font-size: 13px;
+            }
+            
+            table th,
+            table td {
+                padding: 12px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-store"></i>
+                <span>Hardware Store</span>
+            </div>
+            <div class="navbar-menu">
+                <a href="/staff/dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/billing">
+                    <i class="fas fa-cash-register"></i>
+                    <span>Billing</span>
+                </a>
+                <a href="/inventory">
+                    <i class="fas fa-boxes"></i>
+                    <span>Inventory</span>
+                </a>
+                <a href="/stock_update" class="active">
+                    <i class="fas fa-truck-loading"></i>
+                    <span>Stock</span>
+                </a>
+                <a href="/credit_notes">
+                    <i class="fas fa-undo"></i>
+                    <span>Returns</span>
+                </a>
+                <a href="/customers">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
+                </a>
+                <a href="/reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+				<a href="/quotations">
+                    <i class="fas fa-undo"></i>
+                    <span>quotation</span>
+                </a>
+                <a href="/logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+       <!-- <div class="page-header">
+            <h1><i class="fas fa-truck-loading"></i> Stock Management</h1>
+            <p>Add stock to your inventory by clicking on any product</p>
+        </div>-->
+        
+        <div id="alertMessage" class="alert"></div>
+        
+        <div class="toolbar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search products by name or brand..." oninput="filterProducts()">
+            </div>
+        </div>
+        
+        <div class="panel">
+            <table>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-box"></i> Product Name</th>
+                        <th><i class="fas fa-tag"></i> Brand</th>
+                        <th><i class="fas fa-warehouse"></i> Current Stock</th>
+                        <th><i class="fas fa-ruler"></i> Unit</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTable">
+                    <tr>
+                        <td colspan="4" class="no-data">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading products...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Add Stock Modal -->
+    <div id="addStockModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Add Stock</h2>
+                <button class="close-icon" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="product-info" id="selectedProductInfo">
+                </div>
+                
+                <form id="addStockForm">
+                    <input type="hidden" id="productId" name="product_id">
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-alt"></i> Purchase Date *</label>
+                        <input type="date" id="purchaseDate" name="purchase_date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-box-open"></i> Quantity to Add *</label>
+                        <input type="number" id="quantity" name="quantity" min="0.01" step="0.01" placeholder="0.00" required>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-cancel" onclick="closeModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check"></i> Add Stock
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allProducts = [];
+        let selectedProduct = null;
+        
+        async function loadProducts() {
+            try {
+                const response = await fetch('/api/products');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                allProducts = await response.json();
+                console.log('Loaded products:', allProducts);
+                
+                displayProducts(allProducts);
+                
+            } catch (error) {
+                console.error('Error loading products:', error);
+                document.getElementById('productsTable').innerHTML = `
+                    <tr>
+                        <td colspan="4" class="no-data">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Error loading products. Please refresh the page.</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        function displayProducts(products) {
+            const tbody = document.getElementById('productsTable');
+            
+            if (products.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="no-data">
+                            <i class="fas fa-box-open"></i>
+                            <p>No products found</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = products.map(p => `
+                <tr onclick="openAddStockModal(${p.product_id})">
+                    <td><strong>${p.product_name}</strong></td>
+                    <td>${p.brand || '-'}</td>
+                    <td><strong>${parseFloat(p.current_stock).toFixed(2)}</strong></td>
+                    <td>${p.unit}</td>
+                </tr>
+            `).join('');
+        }
+        
+        function filterProducts() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (!search) {
+                displayProducts(allProducts);
+                return;
+            }
+            
+            const filtered = allProducts.filter(p => 
+                p.product_name.toLowerCase().includes(search) ||
+                (p.brand && p.brand.toLowerCase().includes(search))
+            );
+            
+            displayProducts(filtered);
+        }
+        
+        function openAddStockModal(productId) {
+            selectedProduct = allProducts.find(p => p.product_id === productId);
+            
+            if (!selectedProduct) {
+                showAlert('Product not found', 'danger');
+                return;
+            }
+            
+            // Display product info
+            document.getElementById('selectedProductInfo').innerHTML = `
+                <h3>${selectedProduct.product_name}</h3>
+                <p><strong>Brand:</strong> ${selectedProduct.brand || 'N/A'}</p>
+                <p><strong>Current Stock:</strong> ${parseFloat(selectedProduct.current_stock).toFixed(2)} ${selectedProduct.unit}</p>
+            `;
+            
+            // Set product ID
+            document.getElementById('productId').value = selectedProduct.product_id;
+            
+            // Set today's date as default
+            document.getElementById('purchaseDate').value = new Date().toISOString().split('T')[0];
+            
+            // Show modal
+            document.getElementById('addStockModal').style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('addStockModal').style.display = 'none';
+            document.getElementById('addStockForm').reset();
+            selectedProduct = null;
+        }
+        
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('addStockModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+        
+        document.getElementById('addStockForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            
+            const formData = new FormData(e.target);
+            const quantity = parseFloat(formData.get('quantity'));
+            
+            if (isNaN(quantity) || quantity <= 0) {
+                showAlert('Please enter a valid quantity', 'danger');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Add Stock';
+                return;
+            }
+            
+            const data = {
+                supplier_name: '',
+                purchase_date: formData.get('purchase_date'),
+                items: [{
+                    product_id: parseInt(formData.get('product_id')),
+                    quantity: quantity,
+                    purchase_price: 0
+                }]
+            };
+            
+            try {
+                const response = await fetch('/api/stock/purchase', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    showAlert(`Successfully added ${quantity.toFixed(2)} ${selectedProduct.unit} to ${selectedProduct.product_name}`, 'success');
+                    closeModal();
+                    loadProducts(); // Reload to show updated stock
+                } else {
+                    const errorMsg = result.message || 'Unknown error occurred';
+                    showAlert('Error: ' + errorMsg, 'danger');
+                }
+            } catch (error) {
+                console.error('Error adding stock:', error);
+                showAlert('Network error: ' + error.message, 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Add Stock';
+            }
+        });
+        
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            const icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
+            alertDiv.className = 'alert alert-' + type;
+            alertDiv.innerHTML = `<i class="fas fa-${icon}"></i><span>${message}</span>`;
+            alertDiv.style.display = 'flex';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Load products on page load
+        loadProducts();
+    </script>
+</body>
+</html>

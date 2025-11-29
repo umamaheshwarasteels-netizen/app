@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Staff Member - {{ app_name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --sidebar-width: 250px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            overflow-y: auto;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-menu .menu-item {
+            padding: 12px 25px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-menu .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: white;
+        }
+        
+        .sidebar-menu .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left-color: white;
+        }
+        
+        .sidebar-menu .menu-item i {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 20px;
+        }
+        
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+        
+        .top-navbar {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .content-area {
+            padding: 30px;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            padding: 10px 15px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <i class="bi bi-shop" style="font-size: 40px;"></i>
+            <h4>{{ app_name }}</h4>
+            <p>Admin Panel</p>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="{{ url_for('admin_dashboard') }}" class="menu-item">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ url_for('admin_stores') }}" class="menu-item">
+                <i class="bi bi-shop"></i>
+                <span>Stores</span>
+            </a>
+            <a href="{{ url_for('admin_staff') }}" class="menu-item active">
+                <i class="bi bi-people"></i>
+                <span>Staff</span>
+            </a>
+            <a href="{{ url_for('admin_products') }}" class="menu-item">
+                <i class="bi bi-box-seam"></i>
+                <span>Products</span>
+            </a>
+            <a href="{{ url_for('admin_inventory') }}" class="menu-item">
+                <i class="bi bi-boxes"></i>
+                <span>Inventory</span>
+            </a>
+            <a href="{{ url_for('admin_reports') }}" class="menu-item">
+                <i class="bi bi-graph-up"></i>
+                <span>Reports</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="menu-item">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="top-navbar">
+            <h5><i class="bi bi-pencil-square"></i> Edit Staff Member</h5>
+        </div>
+        
+        <div class="content-area">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <div class="content-card">
+                <div class="mb-4">
+                    <h4><i class="bi bi-person-badge"></i> Edit Staff Information</h4>
+                    <p class="text-muted">Update the details for {{ user.full_name }}</p>
+                </div>
+                
+                <!-- Current Username Info -->
+                <div class="info-box">
+                    <strong><i class="bi bi-info-circle"></i> Current Username:</strong> {{ user.username }}
+                    <br>
+                    <small class="text-muted">Note: Username cannot be changed after creation</small>
+                </div>
+                
+                <form method="POST" action="{{ url_for('admin_edit_staff', user_id=user.user_id) }}">
+                    <div class="row">
+                        <!-- Full Name -->
+                        <div class="col-md-6 mb-3">
+                            <label for="full_name" class="form-label">
+                                <i class="bi bi-person"></i> Full Name <span class="required">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="full_name" 
+                                   name="full_name" 
+                                   value="{{ user.full_name }}"
+                                   required>
+                        </div>
+                        
+                        <!-- Email 
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">
+                                <i class="bi bi-envelope"></i> Email
+                            </label>
+                            <input type="email" 
+                                   class="form-control" 
+                                   id="email" 
+                                   name="email" 
+                                   value="{{ user.email or '' }}"
+                                   placeholder="staff@email.com">
+                        </div>-->
+                        
+                        <!-- Contact
+                        <div class="col-md-6 mb-3">
+                            <label for="contact" class="form-label">
+                                <i class="bi bi-telephone"></i> Contact Number
+                            </label>
+                            <input type="tel" 
+                                   class="form-control" 
+                                   id="contact" 
+                                   name="contact" 
+                                   value="{{ user.contact or '' }}"
+                                   placeholder="1234567890">
+                        </div>
+                         -->
+                        <!-- Assigned Store -->
+                        <div class="col-md-6 mb-3">
+                            <label for="store_id" class="form-label">
+                                <i class="bi bi-shop"></i> Assigned Store <span class="required">*</span>
+                            </label>
+                            <select class="form-select" id="store_id" name="store_id" required>
+                                <option value="">-- Select Store --</option>
+                                {% for store in stores %}
+                                    <option value="{{ store.store_id }}" 
+                                            {% if user.store_id == store.store_id %}selected{% endif %}>
+                                        {{ store.store_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Password Change Section -->
+                    <div class="mb-4">
+                        <h5><i class="bi bi-shield-lock"></i> Change Password (Optional)</h5>
+                        <p class="text-muted">Leave blank to keep current password</p>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="new_password" class="form-label">
+                                    <i class="bi bi-lock"></i> New Password
+                                </label>
+                                <input type="password" 
+                                       class="form-control" 
+                                       id="new_password" 
+                                       name="new_password" 
+                                       placeholder="Enter new password">
+                                <small class="text-muted">Only fill if you want to change the password</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('admin_staff') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Update Staff Member
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

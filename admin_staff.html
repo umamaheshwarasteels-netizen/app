@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Management - {{ app_name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --topbar-height: 75px;
+            --primary-dark: #1e293b;
+            --primary-accent: #334155;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --bg-main: #f1f5f9;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-blue: #3b82f6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --accent-purple: #9333ea;
+            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 12px 40px rgba(0, 0, 0, 0.15);
+            --hover-bg: #f8fafc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        
+        /* Sidebar Styles - Same as previous */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+        
+        .sidebar-header {
+            padding: 32px 28px;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+        }
+        
+        .sidebar-header h4 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-header h4::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-success));
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.95); }
+        }
+        
+        .sidebar-header p {
+            margin: 6px 0 0 18px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        .sidebar-menu {
+            padding: 24px 0;
+        }
+        
+        .menu-section-title {
+            padding: 24px 28px 12px 28px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .sidebar-menu .menu-item {
+            padding: 14px 28px;
+            margin: 3px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .sidebar-menu .menu-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--primary-dark);
+            transform: scaleY(0);
+            transition: transform 0.25s;
+        }
+        
+        .sidebar-menu .menu-item:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+            transform: translateX(4px);
+        }
+        
+        .sidebar-menu .menu-item:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .sidebar-menu .menu-item.active {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-accent) 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .sidebar-menu .menu-item i {
+            margin-right: 14px;
+            font-size: 19px;
+            width: 24px;
+            opacity: 0.85;
+        }
+        
+        .sidebar-menu .menu-item.active i {
+            opacity: 1;
+        }
+        
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 24px 16px;
+            border-top: 1px solid var(--border-color);
+            background: linear-gradient(180deg, transparent 0%, #f8fafc 100%);
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+        
+        .top-navbar {
+            background: var(--bg-card);
+            padding: 0 40px;
+            height: var(--topbar-height);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .top-navbar h5 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 19px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .top-navbar h5 i {
+            color: var(--text-secondary);
+            font-size: 22px;
+        }
+        
+        .user-info span {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .user-info strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .content-area {
+            padding: 40px;
+        }
+        
+        .content-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+        
+        .page-header h4 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .page-header h4 i {
+            color: var(--accent-purple);
+        }
+        
+        /* Search Box */
+        .search-box {
+            margin-bottom: 24px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            font-size: 14px;
+            transition: all 0.25s ease;
+            background: var(--bg-card);
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 0 4px rgba(30, 41, 59, 0.1);
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+        }
+        
+        /* Filter Buttons */
+        .filter-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            background: white;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-btn:hover {
+            background: var(--hover-bg);
+            border-color: var(--primary-dark);
+            color: var(--text-primary);
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-accent));
+            color: white;
+            border-color: var(--primary-dark);
+        }
+        
+        /* Staff Avatar */
+        .staff-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            margin-right: 14px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* Table */
+        .table-responsive {
+            margin-top: 24px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .custom-table thead th {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 16px 18px;
+            text-align: left;
+            border-bottom: 2px solid var(--border-color);
+            background: var(--hover-bg);
+        }
+        
+        .custom-table tbody tr {
+            transition: all 0.2s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .custom-table tbody tr:hover {
+            background-color: var(--hover-bg);
+            transform: scale(1.005);
+        }
+        
+        .custom-table tbody td {
+            padding: 18px;
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: 500;
+            vertical-align: middle;
+        }
+        
+        /* Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .badge-success {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: var(--accent-success);
+        }
+        
+        .badge-danger {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: var(--accent-danger);
+        }
+        
+        .badge-info {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: var(--accent-blue);
+        }
+        
+        .bg-secondary {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0) !important;
+            color: var(--text-secondary) !important;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-accent));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .btn-info {
+            background-color: var(--accent-blue);
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background-color: #2563eb;
+            transform: scale(1.05);
+        }
+        
+        .btn-warning {
+            background-color: var(--accent-warning);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #d97706;
+            transform: scale(1.05);
+        }
+        
+        .btn-success {
+            background-color: var(--accent-success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #059669;
+            transform: scale(1.05);
+        }
+        
+        /* Alerts */
+        .alert {
+            border-radius: 12px;
+            border: 1px solid;
+            padding: 18px 24px;
+            margin-bottom: 28px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: var(--shadow-xs);
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            color: #15803d;
+            border-color: #86efac;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            color: #2563eb;
+            border-color: #93c5fd;
+            text-align: center;
+            padding: 48px 32px;
+        }
+        
+        .alert-info i {
+            font-size: 64px;
+            opacity: 0.4;
+        }
+        
+        /* Mobile Toggle */
+        .mobile-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            font-size: 26px;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+                box-shadow: var(--shadow-xl);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .top-navbar {
+                padding: 0 24px;
+            }
+            
+            .content-area {
+                padding: 24px;
+            }
+            
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6);
+                z-index: 999;
+                display: none;
+                backdrop-filter: blur(4px);
+            }
+            
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .content-card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h4>{{ app_name or 'Admin Panel' }}</h4>
+            <p>Management System</p>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-section-title">Main</div>
+            <a href="{{ url_for('admin_dashboard') }}" class="menu-item">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ url_for('admin_stores') }}" class="menu-item">
+                <i class="bi bi-shop"></i>
+                <span>Stores</span>
+            </a>
+            <a href="{{ url_for('admin_staff') }}" class="menu-item active">
+                <i class="bi bi-people"></i>
+                <span>Staff</span>
+            </a>
+            
+            <div class="menu-section-title">Inventory</div>
+            <a href="{{ url_for('admin_products') }}" class="menu-item">
+                <i class="bi bi-box-seam"></i>
+                <span>Products</span>
+            </a>
+            <a href="{{ url_for('admin_inventory') }}" class="menu-item">
+                <i class="bi bi-boxes"></i>
+                <span>Inventory</span>
+            </a>
+            
+            <div class="menu-section-title">Business</div>
+            <a href="{{ url_for('admin_reports') }}" class="menu-item">
+                <i class="bi bi-graph-up"></i>
+                <span>Reports</span>
+            </a>
+            <a href="{{ url_for('quotations') }}" class="menu-item">
+                <i class="bi bi-file-text"></i>
+                <span>Quotations</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="menu-item">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="top-navbar">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <button class="mobile-toggle" id="menuToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h5>
+                    <i class="bi bi-people"></i>
+                    Staff Management
+                </h5>
+            </div>
+            <div class="user-info">
+                <span>Welcome, <strong>{{ session.full_name or 'Admin' }}</strong></span>
+            </div>
+        </div>
+        
+        <div class="content-area">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <div class="content-card">
+                <div class="page-header">
+                    <h4>
+                        <i class="bi bi-people-fill"></i>
+                        All Staff Members
+                    </h4>
+                    <a href="{{ url_for('admin_add_staff') }}" class="btn btn-primary">
+                        <i class="bi bi-person-plus"></i>
+                        Add New Staff
+                    </a>
+                </div>
+                
+                <!-- Search Box -->
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search by name, username, or store...">
+                </div>
+                
+                <!-- Filter Buttons -->
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterStaff('all')">
+                        <i class="bi bi-people"></i>
+                        All Staff
+                    </button>
+                    <button class="filter-btn" onclick="filterStaff('active')">
+                        <i class="bi bi-check-circle"></i>
+                        Active Only
+                    </button>
+                    <button class="filter-btn" onclick="filterStaff('inactive')">
+                        <i class="bi bi-x-circle"></i>
+                        Inactive Only
+                    </button>
+                </div>
+                
+                {% if staff %}
+                <div class="table-responsive">
+                    <table class="custom-table table" id="staffTable">
+                        <thead>
+                            <tr>
+                                <th>Staff Member</th>
+                                <th>Username</th>
+                                <th>Contact</th>
+                                <th>Assigned Store</th>
+                                <th>Status</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for member in staff %}
+                            <tr class="staff-row" data-status="{{ 'active' if member.is_active else 'inactive' }}">
+                                <td>
+                                    <div style="display: flex; align-items: center;">
+                                        <div class="staff-avatar">
+                                            {{ member.full_name[0].upper() }}
+                                        </div>
+                                        <div>
+                                            <strong>{{ member.full_name }}</strong>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge badge-info">
+                                        <i class="bi bi-person"></i> {{ member.username }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if member.contact %}
+                                        <i class="bi bi-telephone"></i> {{ member.contact }}
+                                    {% else %}
+                                        <span style="color: var(--text-muted);">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if member.store_name %}
+                                        <i class="bi bi-shop"></i> <strong>{{ member.store_name }}</strong>
+                                    {% else %}
+                                        <span class="badge bg-secondary">No Store</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if member.is_active %}
+                                        <span class="badge badge-success">
+                                            <i class="bi bi-check-circle"></i> Active
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-danger">
+                                            <i class="bi bi-x-circle"></i> Inactive
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div style="display: flex; gap: 8px; justify-content: center;">
+                                        <a href="{{ url_for('admin_edit_staff', user_id=member.user_id) }}" 
+                                           class="btn btn-sm btn-info" title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        {% if member.is_active %}
+                                            <a href="{{ url_for('admin_delete_staff', user_id=member.user_id) }}" 
+                                               class="btn btn-sm btn-warning" 
+                                               onclick="return confirm('Deactivate {{ member.full_name }}?')" title="Deactivate">
+                                                <i class="bi bi-x-circle"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ url_for('admin_delete_staff', user_id=member.user_id) }}" 
+                                               class="btn btn-sm btn-success" title="Activate">
+                                                <i class="bi bi-check-circle"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <p style="color: var(--text-muted); font-size: 14px;">
+                        <i class="bi bi-info-circle"></i> 
+                        Showing <strong id="visibleCount">{{ staff|length }}</strong> of <strong>{{ staff|length }}</strong> staff members
+                    </p>
+                </div>
+                
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-people"></i>
+                    <h5 style="margin-top: 16px; margin-bottom: 8px;">No Staff Members Found</h5>
+                    <p style="margin-bottom: 20px;">Get started by adding your first staff member</p>
+                    <a href="{{ url_for('admin_add_staff') }}" class="btn btn-primary">
+                        <i class="bi bi-person-plus"></i>
+                        Add First Staff Member
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mobile menu
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        
+        if (menuToggle) {
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+            });
+        }
+        
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', function() {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+            });
+        }
+        
+        // Auto-dismiss alerts
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+        
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                const searchValue = this.value.toLowerCase();
+                const rows = document.querySelectorAll('.staff-row');
+                let visibleCount = 0;
+                
+                rows.forEach(function(row) {
+                    const text = row.textContent.toLowerCase();
+                    if (text.includes(searchValue)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                
+                const visibleCountEl = document.getElementById('visibleCount');
+                if (visibleCountEl) {
+                    visibleCountEl.textContent = visibleCount;
+                }
+            });
+        }
+        
+        // Filter functionality
+        function filterStaff(filter) {
+            const rows = document.querySelectorAll('.staff-row');
+            const buttons = document.querySelectorAll('.filter-btn');
+            let visibleCount = 0;
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.filter-btn').classList.add('active');
+            
+            rows.forEach(function(row) {
+                const status = row.dataset.status;
+                let shouldShow = false;
+                
+                if (filter === 'all') {
+                    shouldShow = true;
+                } else if (filter === 'active' && status === 'active') {
+                    shouldShow = true;
+                } else if (filter === 'inactive' && status === 'inactive') {
+                    shouldShow = true;
+                }
+                
+                if (shouldShow) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            const visibleCountEl = document.getElementById('visibleCount');
+            if (visibleCountEl) {
+                visibleCountEl.textContent = visibleCount;
+            }
+        }
+    </script>
+</body>
+</html>
