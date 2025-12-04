@@ -26,8 +26,8 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
 # MySQL Configuration - Hardcoded
 DB_CONFIG = {
     'host': 'localhost',
-    'user': 'root',
-    'password': 'Advithreddy@12',  # Set your MySQL password here
+    'user': 'flaskuser',
+    'password': 'Flask@123',
     'database': 'hardware_inventory'
 }
 
