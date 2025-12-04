@@ -27,7 +27,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
 DB_CONFIG = {
     'host': 'localhost',
     'user': 'root',
-    'password': '12345',  # Set your MySQL password here
+    'password': 'Advithreddy@12',  # Set your MySQL password here
     'database': 'hardware_inventory'
 }
 
@@ -7390,4 +7390,5 @@ def api_print_credit_note(credit_id):
         traceback.print_exc()
         return jsonify({'success': False, 'message': str(e)}), 500
 if __name__ == '__main__':
+
     app.run(debug=True, host='0.0.0.0', port=5000)
