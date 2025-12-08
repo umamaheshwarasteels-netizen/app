@@ -167,9 +167,13 @@
         .btn { padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; transition: all 0.3s; }
         .btn:hover { background: #2980b9; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4); }
         .btn:active { transform: translateY(0); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
         
         .btn-secondary { background: #95a5a6; }
         .btn-secondary:hover { background: #7f8c8d; }
+        
+        .btn-export { background: linear-gradient(135deg, #059669 0%, #10B981 100%); }
+        .btn-export:hover { background: linear-gradient(135deg, #047857 0%, #059669 100%); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); }
         
         /* Table */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
@@ -774,6 +778,9 @@
                     <button class="btn" onclick="loadSalesReport()" style="align-self: flex-end;">
                         <i class="fas fa-search"></i> Load Report
                     </button>
+                    <button class="btn" onclick="exportSalesReport()" style="align-self: flex-end; background: linear-gradient(135deg, #059669 0%, #10B981 100%);">
+                        <i class="fas fa-file-pdf"></i> Export PDF
+                    </button>
                 </div>
                 
                 <div id="salesSummary" class="summary-cards">
@@ -1244,6 +1251,77 @@
                 console.error('Error loading sales report:', error);
                 showAlert('Error loading sales report: ' + error.message);
                 document.getElementById('salesTable').innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #f44;">Error loading data. Please try again.</td></tr>';
+            }
+        }
+        
+        // Export Sales Report as PDF
+        async function exportSalesReport() {
+            const dateRangeStr = document.getElementById('salesDateRange').value;
+            
+            if (!dateRangeStr) {
+                showAlert('Please select a date range first');
+                return;
+            }
+            
+            // Parse the date range (Flatpickr uses " to " separator)
+            let startDate, endDate;
+            if (dateRangeStr.includes(' to ')) {
+                [startDate, endDate] = dateRangeStr.split(' to ');
+            } else {
+                // Single date selected
+                startDate = endDate = dateRangeStr;
+            }
+            
+            try {
+                // Show loading state
+                const exportBtn = event.target.closest('button');
+                const originalContent = exportBtn.innerHTML;
+                exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+                exportBtn.disabled = true;
+                
+                // Trigger the download
+                const response = await fetch(`/api/reports/sales/export?start_date=${startDate}&end_date=${endDate}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to export report');
+                }
+                
+                // Get the blob from response
+                const blob = await response.blob();
+                
+                // Create download link
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                
+                // Generate filename
+                if (startDate === endDate) {
+                    a.download = `Sales_Report_${startDate}.pdf`;
+                } else {
+                    a.download = `Sales_Report_${startDate}_to_${endDate}.pdf`;
+                }
+                
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                // Restore button state
+                exportBtn.innerHTML = originalContent;
+                exportBtn.disabled = false;
+                
+                showAlert('Report exported successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error exporting sales report:', error);
+                showAlert('Error exporting report: ' + error.message);
+                
+                // Restore button state on error
+                const exportBtn = document.querySelector('button[onclick="exportSalesReport()"]');
+                if (exportBtn) {
+                    exportBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Export PDF';
+                    exportBtn.disabled = false;
+                }
             }
         }
         
