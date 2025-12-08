@@ -14,6 +14,8 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
 import io
+import uuid
+import threading
 from datetime import datetime
 # ============================================
 # FLASK APPLICATION CONFIGURATION
@@ -22,6 +24,26 @@ from datetime import datetime
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-change-in-production-12345'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
+
+# Temporary PDF storage for WhatsApp sharing
+TEMP_PDF_STORAGE = {}  # {file_id: {'path': path, 'created_at': datetime, 'filename': name}}
+TEMP_PDF_DIR = os.path.join(os.getcwd(), 'temp_pdfs')
+os.makedirs(TEMP_PDF_DIR, exist_ok=True)
+
+def cleanup_old_pdfs():
+    """Remove PDFs older than 1 hour"""
+    current_time = datetime.now()
+    expired_ids = []
+    for file_id, data in TEMP_PDF_STORAGE.items():
+        if (current_time - data['created_at']).total_seconds() > 3600:  # 1 hour
+            try:
+                if os.path.exists(data['path']):
+                    os.remove(data['path'])
+                expired_ids.append(file_id)
+            except:
+                pass
+    for file_id in expired_ids:
+        TEMP_PDF_STORAGE.pop(file_id, None)
 
 # MySQL Configuration - Hardcoded
 DB_CONFIG = {
@@ -2564,6 +2586,161 @@ def generate_quotation_pdf():
     except Exception as e:
         print(f"Error in api_admin_sales_summary: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+# ============================================
+# WHATSAPP QUOTATION SHARING ENDPOINTS
+# ============================================
+
+@app.route('/api/quotations/generate-for-whatsapp', methods=['POST'])
+@admin_or_staff_required
+def generate_quotation_for_whatsapp():
+    """Generate a quotation PDF and return a shareable link for WhatsApp"""
+    try:
+        # Cleanup old PDFs first
+        cleanup_old_pdfs()
+        
+        data = request.json
+        customer_name = data.get('customer_name', '').strip()
+        customer_mobile = data.get('customer_mobile', '').strip()
+        customer_address = data.get('customer_address', '').strip()
+        items = data.get('items', [])
+        discount_percentage = float(data.get('discount_percentage', 0))
+        
+        if not customer_name:
+            return jsonify({'error': 'Customer name is required'}), 400
+        if not customer_mobile or len(customer_mobile) != 10:
+            return jsonify({'error': 'Valid 10-digit mobile number is required'}), 400
+        if not items or len(items) == 0:
+            return jsonify({'error': 'At least one item is required'}), 400
+        
+        store_id = session.get('store_id')
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT store_name, address, contact as contact_number FROM stores WHERE store_id = %s", (store_id,))
+        store = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        
+        if not store:
+            return jsonify({'error': 'Store not found'}), 400
+        
+        quotation_number = f"QT-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+        quotation_date = datetime.now().strftime('%d %B, %Y')
+        
+        meta_info = [
+            ['Quotation No:', quotation_number, '', 'Date:', quotation_date],
+            ['From:', store['store_name'], '', 'To:', customer_name],
+            ['', store['address'] or 'N/A', '', 'Mobile:', customer_mobile],
+            ['Phone:', store['contact_number'] or 'N/A', '', 'Address:', customer_address or 'N/A'],
+        ]
+        
+        items_data = [['#', 'Product Name', 'Qty', 'Unit Price', 'Disc.%', 'Total']]
+        subtotal = 0
+        
+        for idx, item in enumerate(items, 1):
+            quantity = float(item.get('quantity', 0))
+            unit_price = float(item.get('unit_price', 0))
+            discount = float(item.get('discount', 0))
+            discount_percentage_item = float(item.get('discount_percentage', 0))
+            item_total = (quantity * unit_price) - discount
+            subtotal += item_total
+            
+            brand = item.get('brand', '').strip()
+            product_name = item.get('product_name', '')
+            full_product_name = f"{brand} - {product_name}" if brand else product_name
+            disc_display = f"{discount_percentage_item:.1f}%" if discount_percentage_item > 0 else '-'
+            
+            items_data.append([str(idx), full_product_name, f"{quantity:.2f}",
+                f"Rs {unit_price:.2f}", disc_display, f"Rs {item_total:.2f}"])
+        
+        discount_amount = (subtotal * discount_percentage) / 100
+        grand_total = subtotal - discount_amount
+        
+        summary_data = [['Subtotal:', f"Rs {subtotal:.2f}"]]
+        if discount_percentage > 0:
+            summary_data.append([f'Discount ({discount_percentage}%):', f"Rs {discount_amount:.2f}"])
+        summary_data.extend([['', ''], ['Grand Total:', f"Rs {grand_total:.2f}"]])
+        
+        terms = [
+            "Terms & Conditions:",
+            "1. This quotation is valid for 30 days from the date of issue.",
+            "2. Prices are subject to change without prior notice.",
+            "3. Goods once sold will not be taken back or exchanged.",
+            "4. Payment terms: As per agreed terms.",
+            "5. All disputes are subject to local jurisdiction only."
+        ]
+        
+        pdf_data = {
+            'store_name': store['store_name'], 'store_address': store['address'] or '',
+            'store_contact': store['contact_number'] or '', 'store_email': '',
+            'meta_info': meta_info, 'items': items_data, 'summary': summary_data,
+            'additional_info': terms, 'footer_text': 'Thank you for your business!'
+        }
+        
+        pdf_buffer = generate_unified_pdf(pdf_data, pdf_type="QUOTATION")
+        
+        # Generate unique file ID
+        file_id = str(uuid.uuid4())[:8]
+        pdf_filename = f"Quotation_{customer_name.replace(' ', '_')}_{file_id}.pdf"
+        pdf_path = os.path.join(TEMP_PDF_DIR, pdf_filename)
+        
+        with open(pdf_path, 'wb') as f:
+            f.write(pdf_buffer.getvalue())
+        
+        # Store reference for later retrieval
+        TEMP_PDF_STORAGE[file_id] = {
+            'path': pdf_path,
+            'created_at': datetime.now(),
+            'filename': pdf_filename
+        }
+        
+        # Return the file ID and download URL
+        return jsonify({
+            'success': True,
+            'file_id': file_id,
+            'filename': pdf_filename,
+            'download_url': f'/api/quotations/download/{file_id}',
+            'quotation_number': quotation_number,
+            'grand_total': grand_total,
+            'customer_mobile': customer_mobile,
+            'store_name': store['store_name']
+        })
+        
+    except Exception as e:
+        print(f"Error generating quotation for WhatsApp: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/quotations/download/<file_id>', methods=['GET'])
+def download_quotation_pdf(file_id):
+    """Download a temporarily stored quotation PDF"""
+    try:
+        if file_id not in TEMP_PDF_STORAGE:
+            return jsonify({'error': 'File not found or expired'}), 404
+        
+        file_data = TEMP_PDF_STORAGE[file_id]
+        pdf_path = file_data['path']
+        
+        if not os.path.exists(pdf_path):
+            TEMP_PDF_STORAGE.pop(file_id, None)
+            return jsonify({'error': 'File not found'}), 404
+        
+        return send_file(
+            pdf_path, 
+            mimetype='application/pdf', 
+            as_attachment=True, 
+            download_name=file_data['filename']
+        )
+        
+    except Exception as e:
+        print(f"Error downloading quotation PDF: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# ============================================
+# END OF WHATSAPP QUOTATION SHARING ENDPOINTS
+# ============================================
    
 #________________INVENTORY API'S__________________________________________
 
@@ -6121,4 +6298,3 @@ def api_admin_reports_bill_details(bill_id):
 # ============================================
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
-
