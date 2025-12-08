@@ -3161,6 +3161,270 @@ def api_reports_stocks():
         print(f"Error in api_reports_stock: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/reports/sales/export', methods=['GET'])
+@staff_required
+def api_export_sales_report():
+    """
+    Export sales report as PDF for the selected date range
+    Query params: start_date, end_date
+    Returns: PDF file download
+    """
+    try:
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+        
+        if not start_date or not end_date:
+            return jsonify({'error': 'start_date and end_date are required'}), 400
+        
+        store_id = session.get('store_id')
+        
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        try:
+            cursor = connection.cursor(dictionary=True)
+            
+            # Get store details
+            cursor.execute("""
+                SELECT store_name, address, contact, email 
+                FROM stores WHERE store_id = %s
+            """, (store_id,))
+            store = cursor.fetchone()
+            
+            # Query to get daily sales summary
+            query = """
+                SELECT 
+                    DATE(b.created_at) as date,
+                    COUNT(DISTINCT b.bill_id) as total_bills,
+                    COALESCE(SUM(b.total_amount), 0) as total_sales,
+                    COALESCE(SUM(
+                        CASE 
+                            WHEN JSON_EXTRACT(b.payment_split, '$.cash') IS NOT NULL 
+                            THEN CAST(JSON_EXTRACT(b.payment_split, '$.cash') AS DECIMAL(10,2))
+                            ELSE 0 
+                        END
+                    ), 0) as cash_sales,
+                    COALESCE(SUM(
+                        CASE 
+                            WHEN JSON_EXTRACT(b.payment_split, '$.upi') IS NOT NULL 
+                            THEN CAST(JSON_EXTRACT(b.payment_split, '$.upi') AS DECIMAL(10,2))
+                            ELSE 0 
+                        END
+                    ), 0) as upi_sales,
+                    COALESCE(SUM(
+                        CASE 
+                            WHEN JSON_EXTRACT(b.payment_split, '$.credit') IS NOT NULL 
+                            THEN CAST(JSON_EXTRACT(b.payment_split, '$.credit') AS DECIMAL(10,2))
+                            ELSE 0 
+                        END
+                    ), 0) as credit_sales
+                FROM bills b
+                WHERE b.store_id = %s 
+                    AND DATE(b.created_at) BETWEEN %s AND %s
+                GROUP BY DATE(b.created_at)
+                ORDER BY date DESC
+            """
+            
+            cursor.execute(query, (store_id, start_date, end_date))
+            results = cursor.fetchall()
+            
+            cursor.close()
+            connection.close()
+            
+            # Calculate totals
+            total_bills = sum(int(row['total_bills']) for row in results)
+            total_sales = sum(float(row['total_sales']) for row in results)
+            total_cash = sum(float(row['cash_sales']) for row in results)
+            total_upi = sum(float(row['upi_sales']) for row in results)
+            total_credit = sum(float(row['credit_sales']) for row in results)
+            
+            # Generate PDF
+            buffer = io.BytesIO()
+            doc = SimpleDocTemplate(buffer, pagesize=A4,
+                                  rightMargin=30, leftMargin=30,
+                                  topMargin=30, bottomMargin=30)
+            
+            elements = []
+            styles = getSampleStyleSheet()
+            
+            # Custom styles
+            title_style = ParagraphStyle(
+                'CustomTitle',
+                parent=styles['Heading1'],
+                fontSize=24,
+                textColor=colors.HexColor('#1e293b'),
+                spaceAfter=12,
+                alignment=TA_CENTER,
+                fontName='Helvetica-Bold'
+            )
+            
+            subheading_style = ParagraphStyle(
+                'SubHeading',
+                parent=styles['Heading1'],
+                fontSize=18,
+                textColor=colors.HexColor('#6366f1'),
+                alignment=TA_CENTER,
+                spaceAfter=12,
+                fontName='Helvetica-Bold'
+            )
+            
+            normal_style = ParagraphStyle(
+                'CustomNormal',
+                parent=styles['Normal'],
+                fontSize=10,
+                textColor=colors.HexColor('#374151'),
+                alignment=TA_CENTER
+            )
+            
+            # Store Header
+            elements.append(Paragraph(store.get('store_name', 'Hardware Store') if store else 'Hardware Store', title_style))
+            
+            store_info = f"""
+            <para alignment="center">
+            {store.get('address', '') if store else ''}<br/>
+            Phone: {store.get('contact', '') if store else ''} | Email: {store.get('email', '') if store else ''}<br/>
+            </para>
+            """
+            elements.append(Paragraph(store_info, normal_style))
+            elements.append(Spacer(1, 0.2*inch))
+            
+            # Report Title
+            elements.append(Paragraph("SALES REPORT", subheading_style))
+            
+            # Date Range
+            date_range_text = f"From: {start_date} To: {end_date}"
+            if start_date == end_date:
+                date_range_text = f"Date: {start_date}"
+            elements.append(Paragraph(date_range_text, normal_style))
+            elements.append(Spacer(1, 0.2*inch))
+            
+            # Summary Cards
+            summary_data = [
+                ['Total Bills', 'Total Sales', 'Cash Sales', 'UPI Sales', 'Credit Sales'],
+                [str(total_bills), f'Rs {total_sales:,.2f}', f'Rs {total_cash:,.2f}', f'Rs {total_upi:,.2f}', f'Rs {total_credit:,.2f}']
+            ]
+            summary_table = Table(summary_data, colWidths=[1.4*inch, 1.4*inch, 1.4*inch, 1.4*inch, 1.4*inch])
+            summary_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#6366f1')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, 0), 9),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('FONTNAME', (0, 1), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 1), (-1, -1), 10),
+                ('BACKGROUND', (0, 1), (-1, 1), colors.HexColor('#f0f9ff')),
+                ('TEXTCOLOR', (0, 1), (-1, 1), colors.HexColor('#1e293b')),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e5e7eb')),
+                ('TOPPADDING', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(summary_table)
+            elements.append(Spacer(1, 0.3*inch))
+            
+            # Daily Breakdown Table
+            if results:
+                table_data = [['Date', 'Bills', 'Total Sales', 'Cash', 'UPI', 'Credit']]
+                
+                for row in results:
+                    date_str = row['date'].strftime('%d %b %Y') if hasattr(row['date'], 'strftime') else str(row['date'])
+                    table_data.append([
+                        date_str,
+                        str(row['total_bills']),
+                        f"Rs {float(row['total_sales']):,.2f}",
+                        f"Rs {float(row['cash_sales']):,.2f}",
+                        f"Rs {float(row['upi_sales']):,.2f}",
+                        f"Rs {float(row['credit_sales']):,.2f}"
+                    ])
+                
+                # Add total row
+                table_data.append([
+                    'TOTAL',
+                    str(total_bills),
+                    f"Rs {total_sales:,.2f}",
+                    f"Rs {total_cash:,.2f}",
+                    f"Rs {total_upi:,.2f}",
+                    f"Rs {total_credit:,.2f}"
+                ])
+                
+                items_table = Table(table_data, colWidths=[1.3*inch, 0.8*inch, 1.3*inch, 1.2*inch, 1.2*inch, 1.2*inch])
+                items_table.setStyle(TableStyle([
+                    # Header
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#6366f1')),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, 0), 10),
+                    ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+                    
+                    # Body
+                    ('FONTNAME', (0, 1), (-1, -2), 'Helvetica'),
+                    ('FONTSIZE', (0, 1), (-1, -2), 9),
+                    ('ALIGN', (0, 1), (0, -1), 'LEFT'),
+                    ('ALIGN', (1, 1), (-1, -1), 'RIGHT'),
+                    
+                    # Total row
+                    ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#f0f9ff')),
+                    ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, -1), (-1, -1), 10),
+                    ('TEXTCOLOR', (0, -1), (-1, -1), colors.HexColor('#1e293b')),
+                    
+                    # Grid
+                    ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e5e7eb')),
+                    ('ROWBACKGROUNDS', (0, 1), (-1, -2), [colors.white, colors.HexColor('#f9fafb')]),
+                    
+                    # Padding
+                    ('TOPPADDING', (0, 0), (-1, -1), 8),
+                    ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                    ('LEFTPADDING', (0, 0), (-1, -1), 5),
+                    ('RIGHTPADDING', (0, 0), (-1, -1), 5),
+                ]))
+                elements.append(Paragraph("<b>Daily Breakdown</b>", ParagraphStyle('Heading', fontSize=12, spaceAfter=10, textColor=colors.HexColor('#1e293b'))))
+                elements.append(items_table)
+            else:
+                elements.append(Paragraph("No sales data found for the selected date range.", normal_style))
+            
+            # Footer
+            elements.append(Spacer(1, 0.3*inch))
+            footer_style = ParagraphStyle(
+                'Footer',
+                parent=styles['Normal'],
+                fontSize=8,
+                textColor=colors.HexColor('#94a3b8'),
+                alignment=TA_CENTER
+            )
+            generated_at = datetime.now().strftime('%d %b %Y, %I:%M %p')
+            elements.append(Paragraph(f"Generated on: {generated_at}", footer_style))
+            
+            # Build PDF
+            doc.build(elements)
+            pdf_data = buffer.getvalue()
+            buffer.close()
+            
+            # Generate filename
+            if start_date == end_date:
+                filename = f'Sales_Report_{start_date}.pdf'
+            else:
+                filename = f'Sales_Report_{start_date}_to_{end_date}.pdf'
+            
+            return send_file(
+                io.BytesIO(pdf_data),
+                mimetype='application/pdf',
+                as_attachment=True,
+                download_name=filename
+            )
+            
+        except Exception as e:
+            if connection:
+                connection.close()
+            print(f"Error in export sales report: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return jsonify({'error': str(e)}), 500
+            
+    except Exception as e:
+        print(f"Error in api_export_sales_report: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/reports/bills-by-date', methods=['GET'])
 @staff_required
 def api_reports_bills_by_date():
@@ -5842,4 +6106,4 @@ def api_admin_reports_bill_details(bill_id):
 # END OF ADMIN REPORTS ROUTES
 # ============================================
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)    
+    app.run(debug=True, host='0.0.0.0', port=5000)
