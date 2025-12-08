@@ -2788,7 +2788,7 @@ def api_get_customer_credit_notess(customer_id):
         
 #====================================CUSTOMERS API'S======================================================
 
-@app.route('/api/customers', methods=['GET'])
+@app.route('/api/customers', methods=['POST'])
 @staff_required
 def api_get_customers():
     """Get all customers with their total sales and credit balance"""
@@ -6107,3 +6107,4 @@ def api_admin_reports_bill_details(bill_id):
 # ============================================
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
+
