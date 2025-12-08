@@ -2788,7 +2788,7 @@ def api_get_customer_credit_notess(customer_id):
         
 #====================================CUSTOMERS API'S======================================================
 
-@app.route('/api/customers', methods=['GET'])
+@app.route('/api/customers', methods=['POST'])
 @staff_required
 def api_get_customers():
     """Get all customers with their total sales and credit balance"""
