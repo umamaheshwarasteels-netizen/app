@@ -2798,89 +2798,109 @@ def api_get_customers():
             return jsonify({'error': 'Database connection failed'}), 500
         
         cursor = connection.cursor(dictionary=True)
-        
-        # Get all customers with their totals and credit due
+
+@app.route('/api/customers', methods=['GET', 'POST'])
+@staff_required
+def api_customers():
+    try:
+
+        # ----------------------------------------------------
+        # 1️⃣  HANDLE CUSTOMER CREATION (POST)
+        # ----------------------------------------------------
+        if request.method == 'POST':
+            data = request.get_json()
+
+            customer_name = data.get('customer_name')
+            mobile = data.get('mobile')
+            address = data.get('address', '')
+
+            if not customer_name or not mobile:
+                return jsonify({
+                    "success": False,
+                    "message": "Customer name and mobile are required"
+                }), 400
+
+            connection = get_db_connection()
+            cursor = connection.cursor(dictionary=True)
+
+            cursor.execute("""
+                INSERT INTO customers (customer_name, mobile, address)
+                VALUES (%s, %s, %s)
+            """, (customer_name, mobile, address))
+
+            connection.commit()
+            customer_id = cursor.lastrowid
+            cursor.close()
+            connection.close()
+
+            return jsonify({
+                "success": True,
+                "customer_id": customer_id,
+                "message": "Customer created successfully"
+            }), 200
+
+
+        # ----------------------------------------------------
+        # 2️⃣  HANDLE GET (RETURN CUSTOMERS LIST)
+        # ----------------------------------------------------
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
         cursor.execute("""
             SELECT 
                 c.customer_id,
                 c.customer_name,
                 c.mobile,
                 c.address,
-                COALESCE(SUM(b.total_amount), 0) as total_sales,
-                COALESCE(
-                    (SELECT SUM(cn.remaining_balance) 
-                     FROM credit_notes cn 
-                     WHERE cn.customer_id = c.customer_id 
-                     AND cn.status = 'active'), 0
-                ) as credit_balance,
-                COALESCE(
-                    (SELECT SUM(
-                        CASE 
-                            WHEN JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.cash')) IS NOT NULL 
-                            THEN CAST(JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.cash')) AS DECIMAL(10,2))
-                            ELSE 0 
-                        END +
-                        CASE 
-                            WHEN JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.upi')) IS NOT NULL 
-                            THEN CAST(JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.upi')) AS DECIMAL(10,2))
-                            ELSE 0 
-                        END +
-                        CASE 
-                            WHEN JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.card')) IS NOT NULL 
-                            THEN CAST(JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.card')) AS DECIMAL(10,2))
-                            ELSE 0 
-                        END
+                COALESCE(SUM(b.total_amount), 0) AS total_sales,
+                COALESCE((
+                    SELECT SUM(cn.remaining_balance)
+                    FROM credit_notes cn
+                    WHERE cn.customer_id = c.customer_id
+                      AND cn.status = 'active'
+                ), 0) AS credit_balance,
+                COALESCE((
+                    SELECT SUM(
+                        COALESCE(CAST(JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.cash')) AS DECIMAL(10,2)), 0) +
+                        COALESCE(CAST(JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.upi')) AS DECIMAL(10,2)), 0) +
+                        COALESCE(CAST(JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.card')) AS DECIMAL(10,2)), 0)
                     )
                     FROM bills b2 
-                    WHERE b2.customer_id = c.customer_id), 0
-                ) as total_paid,
-                COALESCE(SUM(b.total_amount), 0) - 
-                COALESCE(
-                    (SELECT SUM(
-                        CASE 
-                            WHEN JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.cash')) IS NOT NULL 
-                            THEN CAST(JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.cash')) AS DECIMAL(10,2))
-                            ELSE 0 
-                        END +
-                        CASE 
-                            WHEN JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.upi')) IS NOT NULL 
-                            THEN CAST(JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.upi')) AS DECIMAL(10,2))
-                            ELSE 0 
-                        END +
-                        CASE 
-                            WHEN JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.card')) IS NOT NULL 
-                            THEN CAST(JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.card')) AS DECIMAL(10,2))
-                            ELSE 0 
-                        END
+                    WHERE b2.customer_id = c.customer_id
+                ), 0) AS total_paid,
+                COALESCE(SUM(b.total_amount), 0) -
+                COALESCE((
+                    SELECT SUM(
+                        COALESCE(CAST(JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.cash')) AS DECIMAL(10,2)), 0) +
+                        COALESCE(CAST(JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.upi')) AS DECIMAL(10,2)), 0) +
+                        COALESCE(CAST(JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.card')) AS DECIMAL(10,2)), 0)
                     )
                     FROM bills b2 
-                    WHERE b2.customer_id = c.customer_id), 0
-                ) as amount_due
+                    WHERE b2.customer_id = c.customer_id
+                ), 0) AS amount_due
             FROM customers c
             LEFT JOIN bills b ON c.customer_id = b.customer_id
             GROUP BY c.customer_id, c.customer_name, c.mobile, c.address
             ORDER BY c.customer_name
         """)
-        
+
         customers = cursor.fetchall()
-        
-        # Convert Decimal to float for JSON serialization
-        for customer in customers:
-            customer['total_sales'] = float(customer['total_sales'])
-            customer['credit_balance'] = float(customer['credit_balance'])
-            customer['total_paid'] = float(customer.get('total_paid', 0))
-            customer['amount_due'] = float(customer.get('amount_due', 0))
-        
+
+        for c in customers:
+            c['total_sales'] = float(c['total_sales'])
+            c['credit_balance'] = float(c['credit_balance'])
+            c['total_paid'] = float(c.get('total_paid', 0))
+            c['amount_due'] = float(c.get('amount_due', 0))
+
         cursor.close()
         connection.close()
-        
-        return jsonify(customers)
-        
+
+        return jsonify(customers), 200
+
     except Exception as e:
-        print(f"Error in api_get_customers: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({'error': str(e)}), 500
+        print("Error in /api/customers:", str(e))
+        return jsonify({"success": False, "message": str(e)}), 500
+
             
 @app.route('/api/sales/<int:sale_id>')
 @staff_required
