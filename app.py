@@ -2798,7 +2798,7 @@ def api_get_customers():
             return jsonify({'error': 'Database connection failed'}), 500
         
         cursor = connection.cursor(dictionary=True)
-
+        
 @app.route('/api/customers', methods=['GET', 'POST'])
 @staff_required
 def api_customers():
