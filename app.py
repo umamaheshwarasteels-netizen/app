@@ -4,7 +4,7 @@ from decimal import Decimal
 import mysql.connector
 from mysql.connector import Error
 import json
-import os
+import os 
 from flask import request, jsonify, send_file
 from functools import wraps
 from reportlab.lib import colors
