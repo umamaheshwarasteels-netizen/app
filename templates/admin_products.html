@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products Management - Hardware Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --topbar-height: 60px;
+            --primary-color: #4a5568;
+            --secondary-color: #718096;
+            --accent-color: #2d3748;
+            --success-color: #48bb78;
+            --danger-color: #e53e3e;
+            --warning-color: #ed8936;
+            --info-color: #4299e1;
+            --bg-color: #f7fafc;
+            --card-bg: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --sidebar-bg: #2d3748;
+            --sidebar-hover: #4a5568;
+            --sidebar-active: #1a202c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            padding: 0;
+            z-index: 1000;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem 1.25rem;
+            background-color: var(--sidebar-active);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-brand {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-brand i {
+            font-size: 1.5rem;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin: 0.25rem 0.75rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            color: #cbd5e0;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .nav-link i {
+            font-size: 1.25rem;
+            width: 24px;
+        }
+
+        .nav-link:hover {
+            background-color: var(--sidebar-hover);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: var(--sidebar-active);
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-link.logout {
+            color: #fc8181;
+        }
+
+        .nav-link.logout:hover {
+            background-color: rgba(252, 129, 129, 0.1);
+            color: #f56565;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            height: var(--topbar-height);
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .topbar h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .content-wrapper {
+            padding: 2rem;
+            overflow-y: auto;
+            flex: 1;
+            height: calc(100vh - var(--topbar-height));
+        }
+
+        .content-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content-wrapper::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .content-wrapper::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
+        }
+
+        .content-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--info-color);
+        }
+
+        /* Section Card */
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+
+        .section-body {
+            padding: 2rem;
+        }
+
+        /* Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 600px;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .custom-table thead {
+            position: sticky;
+            top: 0;
+            background-color: #f8f9fa;
+            z-index: 10;
+        }
+
+        .custom-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .custom-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Action Icons */
+        .action-icon {
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin: 0 0.25rem;
+            transition: all 0.2s;
+        }
+
+        .action-icon.view {
+            color: var(--info-color);
+        }
+
+        .action-icon.edit {
+            color: var(--warning-color);
+        }
+
+        .action-icon.delete {
+            color: var(--danger-color);
+        }
+
+        .action-icon:hover {
+            transform: scale(1.2);
+            opacity: 0.8;
+        }
+
+        /* Badge Styles */
+        .badge-custom {
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .badge-active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-inactive {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Button Styles */
+        .btn-custom {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: var(--accent-color);
+        }
+
+        .btn-success-custom {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success-custom:hover {
+            background-color: #38a169;
+        }
+
+        .btn-danger-custom {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger-custom:hover {
+            background-color: #c53030;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--info-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Store Tags */
+        .store-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .store-tag {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 0.25rem 0.625rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Modal Enhancements */
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--info-color);
+            box-shadow: 0 0 0 0.2rem rgba(66, 153, 225, 0.25);
+        }
+
+        .text-danger {
+            color: var(--danger-color);
+        }
+
+        /* Store Selection in Modal */
+        .store-checkbox-group {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.75rem;
+        }
+
+        .store-checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .store-checkbox-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .store-checkbox-item input {
+            margin-right: 0.5rem;
+        }
+
+        /* Mobile */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .topbar {
+                padding: 0 1rem;
+            }
+
+            .content-wrapper {
+                padding: 1rem;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .table-wrapper {
+                max-height: 400px;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/admin_dashboard" class="sidebar-brand">
+                <i class="bi bi-gear-fill"></i>
+                <span>Hardware Admin</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-item">
+                <a href="/admin_dashboard" class="nav-link">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/admin" class="nav-link">
+                    <i class="bi bi-building"></i>
+                    <span>Stores & Users</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/admin_inventory" class="nav-link">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventory</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/admin/products" class="nav-link active">
+                    <i class="bi bi-tag"></i>
+                    <span>Products</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/admin/reports" class="nav-link">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
+            <div class="nav-item" style="margin-top: auto; padding-top: 2rem;">
+                <a href="/logout" class="nav-link logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <header class="topbar">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h1>Products Management</h1>
+            </div>
+            <div class="user-info">
+                <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+                <span>Admin User</span>
+            </div>
+        </header>
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label>Category</label>
+                    <select id="filter-category" onchange="loadProducts()">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Brand</label>
+                    <select id="filter-brand" onchange="loadProducts()">
+                        <option value="">All Brands</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Product Search</label>
+                    <input type="text" id="filter-search" placeholder="Search by name or ID..." oninput="loadProducts()">
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="filter-status" onchange="loadProducts()">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="filter-group" style="flex: 0;">
+                    <button class="btn-custom btn-primary-custom" onclick="resetFilters()">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="bi bi-box-seam"></i>
+                        All Products
+                    </h2>
+                    <button class="btn-custom btn-success-custom" onclick="showAddProductModal()">
+                        <i class="bi bi-plus-circle"></i>Add New Product
+                    </button>
+                </div>
+                <div class="section-body" style="padding: 0;">
+                    <div class="table-wrapper">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Product ID</th>
+                                    <th>Brand</th>
+                                    <th>Product Name</th>
+                                    <th>Category</th>
+                                    <th>Unit</th>
+                                    <th>Available In</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-table-body">
+                                <tr>
+                                    <td colspan="9">
+                                        <div class="loading-spinner">
+                                            <div class="spinner"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div class="modal fade" id="productModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalTitle">Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="productForm">
+                        <input type="hidden" id="product_id">
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="product_name" class="form-label">Product Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="product_name" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="brand" class="form-label">Brand <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="brand" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
+                                <select class="form-select" id="category" onchange="handleCategoryChange()" required>
+                                    <option value="">Select Category</option>
+                                    <!-- Categories will be loaded dynamically from database -->
+                                    <option value="__add_new__">➕ Add New Category</option>
+                                </select>
+                                
+                                <!-- Hidden input for new category -->
+                                <input type="text" class="form-control mt-2" id="new_category_input" 
+                                       style="display: none;" placeholder="Enter new category name">
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="unit" class="form-label">Unit <span class="text-danger">*</span></label>
+                                <select class="form-select" id="unit" required>
+                                    <option value="">Select Unit</option>
+                                    <option value="pcs">Pieces (pcs)</option>
+                                    <option value="box">Box</option>
+                                    <option value="kg">Kilogram (kg)</option>
+                                    <option value="ltr">Liter (ltr)</option>
+                                    <option value="mtr">Meter (mtr)</option>
+                                    <option value="sqft">Square Feet (sqft)</option>
+                                    <option value="bag">Bag</option>
+                                    <option value="roll">Roll</option>
+                                    <option value="set">Set</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Available in Stores</label>
+                            <div class="store-checkbox-group" id="store-checkboxes">
+                                <!-- Stores will be loaded here dynamically -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn-custom btn-success-custom" onclick="saveProduct()">
+                        <i class="bi bi-check-circle"></i>
+                        Save Product
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Product Details Modal -->
+    <div class="modal fade" id="viewProductModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Product Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="product-details-content">
+                    <!-- Product details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let productModal, viewProductModal;
+        let storesData = [];
+        let productsData = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            productModal = new bootstrap.Modal(document.getElementById('productModal'));
+            viewProductModal = new bootstrap.Modal(document.getElementById('viewProductModal'));
+            
+            loadStores();
+            loadProducts();
+            loadFilters();
+        });
+
+        // Toggle sidebar for mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'login';
+            }
+        }
+
+        // Load stores for checkboxes
+        async function loadStores() {
+            try {
+                const response = await fetch('/api/admin/stores');
+                storesData = await response.json();
+                
+                const container = document.getElementById('store-checkboxes');
+                let html = '';
+                
+                storesData.forEach(store => {
+                    if (store.is_active) {
+                        html += `
+                            <div class="store-checkbox-item">
+                                <input type="checkbox" class="form-check-input" id="store_${store.store_id}" value="${store.store_id}">
+                                <label class="form-check-label" for="store_${store.store_id}">
+                                    ${store.store_name}
+                                </label>
+                            </div>
+                        `;
+                    }
+                });
+                
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading stores:', error);
+            }
+        }
+
+        // Load filter dropdowns (categories and brands)
+        async function loadFilters() {
+            try {
+                // Get filters from API
+                const response = await fetch('/api/admin/products/filters');
+                const data = await response.json();
+                
+                // Populate filter dropdown for categories
+                const catSelect = document.getElementById('filter-category');
+                let catHtml = '<option value="">All Categories</option>';
+                data.categories.forEach(cat => {
+                    catHtml += `<option value="${cat}">${cat}</option>`;
+                });
+                catSelect.innerHTML = catHtml;
+                
+                // Populate filter dropdown for brands
+                const brandSelect = document.getElementById('filter-brand');
+                let brandHtml = '<option value="">All Brands</option>';
+                data.brands.forEach(brand => {
+                    brandHtml += `<option value="${brand}">${brand}</option>`;
+                });
+                brandSelect.innerHTML = brandHtml;
+                
+                // Populate category dropdown in Add/Edit form
+                const categorySelect = document.getElementById('category');
+                let categoryHtml = '<option value="">Select Category</option>';
+                data.categories.forEach(cat => {
+                    categoryHtml += `<option value="${cat}">${cat}</option>`;
+                });
+                categoryHtml += '<option value="__add_new__">➕ Add New Category</option>';
+                categorySelect.innerHTML = categoryHtml;
+            } catch (error) {
+                console.error('Error loading filters:', error);
+            }
+        }
+        
+        // Handle category dropdown change
+        function handleCategoryChange() {
+            const categorySelect = document.getElementById('category');
+            const newCategoryInput = document.getElementById('new_category_input');
+            
+            if (categorySelect.value === '__add_new__') {
+                // Show input field for new category
+                newCategoryInput.style.display = 'block';
+                newCategoryInput.required = true;
+                newCategoryInput.focus();
+            } else {
+                // Hide input field
+                newCategoryInput.style.display = 'none';
+                newCategoryInput.required = false;
+                newCategoryInput.value = '';
+            }
+        }
+
+        // Load products
+        async function loadProducts() {
+            try {
+                const categoryFilter = document.getElementById('filter-category').value;
+                const brandFilter = document.getElementById('filter-brand').value;
+                const searchFilter = document.getElementById('filter-search').value;
+                const statusFilter = document.getElementById('filter-status').value;
+                
+                let url = '/api/admin/products?';
+                if (categoryFilter) url += `category=${encodeURIComponent(categoryFilter)}&`;
+                if (brandFilter) url += `brand=${encodeURIComponent(brandFilter)}&`;
+                if (searchFilter) url += `search=${encodeURIComponent(searchFilter)}&`;
+                if (statusFilter) url += `status=${statusFilter}&`;
+                
+                const response = await fetch(url);
+                productsData = await response.json();
+                
+                const tbody = document.getElementById('products-table-body');
+                
+                if (!productsData || productsData.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="9">
+                                <div class="empty-state">
+                                    <i class="bi bi-box-seam"></i>
+                                    <p>No products found</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                productsData.forEach(product => {
+                    const statusBadge = product.is_active 
+                        ? '<span class="badge-custom badge-active">Active</span>'
+                        : '<span class="badge-custom badge-inactive">Inactive</span>';
+                    
+                    // Store tags
+                    let storeTags = '';
+                    if (product.stores && product.stores.length > 0) {
+                        storeTags = '<div class="store-tags">';
+                        product.stores.forEach(store => {
+                            storeTags += `<span class="store-tag">${store}</span>`;
+                        });
+                        storeTags += '</div>';
+                    } else {
+                        storeTags = '<em class="text-muted">No stores</em>';
+                    }
+                    
+                    html += `
+                        <tr>
+                            <td><strong>${product.product_id}</strong></td>
+                            <td>${product.brand || 'N/A'}</td>
+                            <td><strong>${product.product_name}</strong></td>
+                            <td>${product.category || 'N/A'}</td>
+                            <td>${product.unit}</td>
+                            <td>${storeTags}</td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                <i class="bi bi-eye action-icon view" 
+                                   onclick="viewProductDetails(${product.product_id})" 
+                                   title="View Details"></i>
+                                <i class="bi bi-pencil action-icon edit" 
+                                   onclick="editProduct(${product.product_id})" 
+                                   title="Edit Product"></i>
+                                <i class="bi ${product.is_active ? 'bi-toggle-on' : 'bi-toggle-off'} action-icon ${product.is_active ? 'delete' : 'edit'}" 
+                                   onclick="toggleProductStatus(${product.product_id}, '${product.product_name}', ${product.is_active})" 
+                                   title="${product.is_active ? 'Deactivate Product' : 'Activate Product'}"></i>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading products:', error);
+            }
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('filter-category').value = '';
+            document.getElementById('filter-brand').value = '';
+            document.getElementById('filter-search').value = '';
+            document.getElementById('filter-status').value = '';
+            loadProducts();
+        }
+
+        // Show add product modal
+        function showAddProductModal() {
+            document.getElementById('productModalTitle').textContent = 'Add New Product';
+            document.getElementById('productForm').reset();
+            document.getElementById('product_id').value = '';
+            
+            // Reset category field
+            document.getElementById('category').value = '';
+            document.getElementById('new_category_input').style.display = 'none';
+            document.getElementById('new_category_input').value = '';
+            
+            // Uncheck all store checkboxes
+            document.querySelectorAll('#store-checkboxes input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+            
+            productModal.show();
+        }
+
+        // Edit product
+        async function editProduct(productId) {
+            try {
+                const response = await fetch(`/api/admin/products/${productId}`);
+                const product = await response.json();
+                
+                document.getElementById('productModalTitle').textContent = 'Edit Product';
+                document.getElementById('product_id').value = product.product_id;
+                document.getElementById('product_name').value = product.product_name;
+                document.getElementById('brand').value = product.brand || '';
+                document.getElementById('unit').value = product.unit;
+                document.getElementById('description').value = product.description || '';
+                
+                // Handle category - check if it exists in dropdown
+                const categorySelect = document.getElementById('category');
+                const categoryExists = Array.from(categorySelect.options).some(option => option.value === product.category);
+                
+                if (categoryExists) {
+                    // Category exists in dropdown, select it
+                    categorySelect.value = product.category || '';
+                    document.getElementById('new_category_input').style.display = 'none';
+                } else if (product.category) {
+                    // Category doesn't exist in dropdown, use "Add New" option
+                    categorySelect.value = '__add_new__';
+                    document.getElementById('new_category_input').style.display = 'block';
+                    document.getElementById('new_category_input').value = product.category;
+                } else {
+                    categorySelect.value = '';
+                    document.getElementById('new_category_input').style.display = 'none';
+                }
+                
+                // Check store checkboxes
+                document.querySelectorAll('#store-checkboxes input[type="checkbox"]').forEach(cb => {
+                    cb.checked = false;
+                });
+                
+                if (product.store_ids && product.store_ids.length > 0) {
+                    product.store_ids.forEach(storeId => {
+                        const checkbox = document.getElementById(`store_${storeId}`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
+                
+                productModal.show();
+            } catch (error) {
+                console.error('Error loading product details:', error);
+                alert('Error loading product details');
+            }
+        }
+
+        // Save product (add or update)
+        async function saveProduct() {
+            const productId = document.getElementById('product_id').value;
+            const productName = document.getElementById('product_name').value.trim();
+            const brand = document.getElementById('brand').value.trim();
+            const categorySelect = document.getElementById('category').value;
+            const newCategoryInput = document.getElementById('new_category_input').value.trim();
+            const unit = document.getElementById('unit').value;
+            const description = document.getElementById('description').value.trim();
+            
+            // Determine the category value
+            let category = '';
+            if (categorySelect === '__add_new__') {
+                // Use the new category from input field
+                category = newCategoryInput;
+                if (!category) {
+                    alert('Please enter a new category name');
+                    return;
+                }
+            } else {
+                category = categorySelect;
+            }
+            
+            if (!productName || !brand || !category || !unit) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Get selected stores
+            const selectedStores = [];
+            document.querySelectorAll('#store-checkboxes input[type="checkbox"]:checked').forEach(cb => {
+                selectedStores.push(parseInt(cb.value));
+            });
+            
+            const productData = {
+                product_name: productName,
+                brand: brand,
+                category: category,
+                unit: unit,
+                description: description,
+                store_ids: selectedStores
+            };
+            
+            try {
+                let response;
+                if (productId) {
+                    // Update existing product
+                    response = await fetch(`/api/admin/products/${productId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(productData)
+                    });
+                } else {
+                    // Create new product
+                    response = await fetch('/api/admin/products', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(productData)
+                    });
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    productModal.hide();
+                    loadProducts();
+                    loadFilters(); // Reload filters in case new category/brand was added
+                } else {
+                    alert('Error: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error saving product:', error);
+                alert('Error saving product');
+            }
+        }
+
+        // View product details
+        async function viewProductDetails(productId) {
+            try {
+                const response = await fetch(`/api/admin/products/${productId}`);
+                const product = await response.json();
+                
+                let html = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Product ID:</strong> ${product.product_id}</p>
+                            <p><strong>Brand:</strong> ${product.brand || 'N/A'}</p>
+                            <p><strong>Product Name:</strong> ${product.product_name}</p>
+                            <p><strong>Category:</strong> ${product.category || 'N/A'}</p>
+                            <p><strong>Unit:</strong> ${product.unit}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Price:</strong> ₹${parseFloat(product.price).toFixed(2)}</p>
+                            <p><strong>Min Stock Level:</strong> ${product.min_stock_level || 'N/A'}</p>
+                            <p><strong>SKU/Barcode:</strong> ${product.sku || 'N/A'}</p>
+                            <p><strong>Status:</strong> ${product.is_active ? '<span class="badge-custom badge-active">Active</span>' : '<span class="badge-custom badge-inactive">Inactive</span>'}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <strong>Description:</strong>
+                        <p>${product.description || 'No description available'}</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Available in Stores:</strong>
+                        <div class="store-tags" style="margin-top: 0.5rem;">
+                `;
+                
+                if (product.stores && product.stores.length > 0) {
+                    product.stores.forEach(store => {
+                        html += `<span class="store-tag">${store}</span>`;
+                    });
+                } else {
+                    html += '<em class="text-muted">Not available in any stores</em>';
+                }
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('product-details-content').innerHTML = html;
+                viewProductModal.show();
+            } catch (error) {
+                console.error('Error loading product details:', error);
+                alert('Error loading product details');
+            }
+        }
+
+        // Toggle product active/inactive status
+        async function toggleProductStatus(productId, productName, currentStatus) {
+            const action = currentStatus ? 'deactivate' : 'activate';
+            if (!confirm(`Are you sure you want to ${action} "${productName}"?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/admin/products/${productId}/toggle-status`, {
+                    method: 'PUT'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    loadProducts();
+                } else {
+                    alert('Error: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error toggling product status:', error);
+                alert('Error toggling product status');
+            }
+        }
+    </script>
+</body>
+</html>

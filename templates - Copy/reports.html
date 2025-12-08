@@ -5,138 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reports - Hardware Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
-        :root {
-            --primary-color: #4F46E5;
-            --primary-light: #6366F1;
-            --primary-dark: #4338CA;
-            --success-color: #059669;
-            --success-light: #10B981;
-            --warning-color: #D97706;
-            --warning-light: #F59E0B;
-            --danger-color: #DC2626;
-            --danger-light: #EF4444;
-            --info-color: #7C3AED;
-            --dark-bg: #0F172A;
-            --dark-bg-light: #1E293B;
-            --light-bg: #F8FAFC;
-            --white: #FFFFFF;
-            --border-color: #E2E8F0;
-            --border-color-light: #F1F5F9;
-            --text-primary: #0F172A;
-            --text-secondary: #475569;
-            --text-tertiary: #94A3B8;
-            --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
-            color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
         
-                /* Navbar */
-        .navbar {
-            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
-            color: white;
-            padding: 0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .navbar-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 32px;
-            height: 72px;
-        }
-        
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: white;
-        }
-        
-        .navbar-brand i {
-            font-size: 28px;
-            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .navbar-menu {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        
-        .navbar-menu a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            padding: 10px 16px;
-            border-radius: 10px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 500;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            position: relative;
-        }
-        
-        .navbar-menu a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary-light), var(--info-color));
-            transition: width 0.3s ease;
-        }
-        
-        .navbar-menu a:hover {
-            background: rgba(255, 255, 255, 0.12);
-            color: white;
-        }
-        
-        .navbar-menu a.active {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-            color: white;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-        }
-        
-        .navbar-menu a i {
-            font-size: 16px;
-        }
+        /* Navbar */
+        .navbar { background: #2c3e50; color: white; padding: 15px 30px; }
+        .navbar-container { display: flex; justify-content: space-between; align-items: center;   }
+        .navbar-brand { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .navbar-menu { display: flex; gap: 10px; flex-wrap: wrap; }
+        .navbar-menu a { color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; display: flex; align-items: center; gap: 8px; font-size: 14px; }
+        .navbar-menu a:hover { background: #34495e; }
+        .navbar-menu a.active { background: #3498db; }
         
         /* Container */
-        .container {  margin: 10px 0; padding: 20px 200px; }
+        .container {  margin: 30px auto; padding: 0 10px; }
         .page-header { margin-bottom: 30px; }
         .page-header h1 { color: #2c3e50; font-size: 28px; margin-bottom: 10px; }
         .page-header p { color: #666; font-size: 14px; }
@@ -192,10 +76,9 @@
         .summary-card .subtitle { font-size: 12px; opacity: 0.8; margin-top: 5px; }
         
         /* Charts Grid */
-        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        .chart-container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-height: 400px; }
+        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .chart-container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .chart-container h3 { color: #2c3e50; margin-bottom: 15px; font-size: 18px; }
-        .chart-container canvas { max-height: 300px; }
         
         /* Report Sections */
         .report-section { display: none; }
@@ -211,43 +94,34 @@
         .modal.active { display: flex; align-items: center; justify-content: center; }
         .modal-content { background-color: white; padding: 0; border-radius: 12px; width: 90%; max-width: 950px; max-height: 90vh; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: slideDown 0.3s; position: relative; }
         
-        /* Day Bills Modal - Always position on left side */
-        #dayBillsModal.active { 
-            justify-content: flex-start;
-            padding: 20px;
-            padding-right: 10px;
-        }
-        #dayBillsModal .modal-content {
-            width: calc(50% - 15px);
-            max-width: none;
-            height: calc(100vh - 40px);
-            max-height: none;
-            margin: 0;
-        }
-        
-        /* Bill Details Modal - 30% width on right side with extra space, no backdrop */
+        /* Bill Details Modal - Slide from right with NO backdrop blur */
         #billModal { 
             z-index: 1100; 
-            background-color: transparent;
-            backdrop-filter: none;
-            pointer-events: none;
-        }
-        #billModal.active {
-            display: flex;
+            background-color: transparent; /* No dark backdrop */
+            backdrop-filter: none; /* No blur */
             align-items: flex-start; 
             justify-content: flex-end; 
             padding: 20px;
-            padding-left: 10px;
-            padding-right: 15%;
+            pointer-events: none; /* Allow clicking through to day bills modal */
         }
         #billModal .modal-content { 
-            width: 30%;
-            max-width: 500px;
+            width: 550px; 
+            max-width: 95vw; 
             height: calc(100vh - 40px); 
             max-height: none;
             animation: slideInRight 0.3s; 
             margin: 0;
-            pointer-events: all;
+            pointer-events: all; /* Re-enable pointer events on content */
+        }
+        
+        /* Day Bills Modal - Move to left when bill details is open */
+        #dayBillsModal.with-bill-details { 
+            justify-content: flex-start; 
+            padding-left: 20px;
+        }
+        #dayBillsModal.with-bill-details .modal-content {
+            width: calc(100vw - 620px); /* Take remaining space */
+            max-width: 800px;
         }
         
         @keyframes slideInRight {
@@ -255,13 +129,36 @@
             to { transform: translateX(0); opacity: 1; }
         }
         
-        /* Hide Bill Navigation Arrows and Counter */
+        /* Bill Navigation Arrows */
         .bill-nav { 
-            display: none !important;
+            position: absolute; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background: rgba(255, 255, 255, 0.95); 
+            width: 45px; 
+            height: 45px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
+            transition: all 0.3s; 
+            z-index: 10;
+            border: 2px solid #e0e0e0;
         }
-        .bill-counter { 
-            display: none !important;
+        .bill-nav:hover { 
+            background: #3498db; 
+            color: white; 
+            transform: translateY(-50%) scale(1.1); 
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+            border-color: #3498db;
         }
+        .bill-nav:active { transform: translateY(-50%) scale(0.95); }
+        .bill-nav.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+        .bill-nav-prev { left: 10px; }  /* Inside modal */
+        .bill-nav-next { right: 10px; }  /* Inside modal */
+        .bill-nav i { font-size: 18px; }
         
         /* Bill Counter */
         .bill-counter { 
@@ -337,359 +234,19 @@
         .badge-warning { background: #fff3cd; color: #856404; }
         .badge-info { background: #d1ecf1; color: #0c5460; }
         
-        /* Date Input Focus Effect */
-        #salesDateRange:focus,
-        #productDateRange:focus {
-            outline: none;
-            border-color: #667eea !important;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
-        }
-        
-        #salesDateRange:hover,
-        #productDateRange:hover {
-            border-color: #b8c1f0 !important;
-        }
-        
-        /* Custom Flatpickr Calendar Styling */
-        .flatpickr-calendar {
-            background: white;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
-            border-radius: 16px;
-            border: none;
-            padding: 0;
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-        }
-        
-        .flatpickr-calendar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .flatpickr-months {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px 15px;
-            margin: 0;
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .flatpickr-months::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .flatpickr-months .flatpickr-month {
-            color: white;
-            height: auto;
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .flatpickr-current-month {
-            color: white !important;
-            font-size: 18px !important;
-            font-weight: 700 !important;
-            padding: 5px 0;
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
-            position: static !important;
-            left: auto !important;
-        }
-        
-        /* Ensure month name is visible */
-        .flatpickr-current-month .cur-month {
-            font-weight: 700 !important;
-            color: white !important;
-            margin-right: 8px;
-            font-size: 18px !important;
-        }
-        
-        .flatpickr-current-month .cur-month.flatpickr-monthDropdown-months {
-            background: transparent !important;
-            border: none !important;
-            color: white !important;
-            font-weight: 700 !important;
-            font-size: 18px !important;
-            padding: 0 !important;
-            margin-right: 8px;
-        }
-        
-        /* Static month display (non-dropdown) */
-        .flatpickr-current-month span.cur-month {
-            font-weight: 700 !important;
-            color: white !important;
-            display: inline-block !important;
-        }
-        
-        .flatpickr-current-month .flatpickr-monthDropdown-months {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            padding: 8px 10px;
-            font-weight: 700;
-            font-size: 16px;
-            appearance: none;
-            cursor: pointer;
-        }
-        
-        .flatpickr-current-month .flatpickr-monthDropdown-months:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
-        
-        .flatpickr-current-month input.cur-year {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            padding: 8px 10px;
-            font-weight: 700;
-            font-size: 16px;
-        }
-        
-        .flatpickr-current-month input.cur-year:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
-        
-        .flatpickr-prev-month,
-        .flatpickr-next-month {
-            fill: white !important;
-            padding: 10px;
-            height: 40px;
-            width: 40px;
-        }
-        
-        .flatpickr-prev-month:hover,
-        .flatpickr-next-month:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-        }
-        
-        .flatpickr-prev-month svg,
-        .flatpickr-next-month svg {
-            width: 14px;
-            height: 14px;
-        }
-        
-        .flatpickr-weekdays {
-            background: linear-gradient(to bottom, #f8f9fa, #ffffff);
-            margin: 0;
-            padding: 12px 0;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
-        .flatpickr-weekday {
-            color: #666;
-            font-weight: 700;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .flatpickr-days {
-            padding: 10px;
-        }
-        
-        .flatpickr-day {
-            border-radius: 10px;
-            font-weight: 600;
-            color: #333;
-            margin: 3px;
-            height: 40px;
-            line-height: 40px;
-            border: none;
-            transition: all 0.2s ease;
-        }
-        
-        .flatpickr-day:hover {
-            background: linear-gradient(135deg, #e8eaf6 0%, #f3e5f5 100%);
-            border-color: transparent;
-            transform: scale(1.05);
-        }
-        
-        .flatpickr-day.today {
-            background: linear-gradient(135deg, #fff3cd 0%, #ffe082 100%);
-            border: 2px solid #ffc107;
-            color: #f57c00;
-            font-weight: 700;
-            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
-        }
-        
-        .flatpickr-day.today:hover {
-            background: linear-gradient(135deg, #ffe082 0%, #ffd54f 100%);
-            transform: scale(1.05);
-        }
-        
-        .flatpickr-day.selected,
-        .flatpickr-day.startRange,
-        .flatpickr-day.endRange {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-color: transparent;
-            color: white;
-            font-weight: 700;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-            position: relative;
-        }
-        
-        .flatpickr-day.selected:hover,
-        .flatpickr-day.startRange:hover,
-        .flatpickr-day.endRange:hover {
-            background: linear-gradient(135deg, #5568d3 0%, #653a8b 100%);
-            transform: scale(1.08);
-            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
-        }
-        
-        .flatpickr-day.selected::before,
-        .flatpickr-day.startRange::before,
-        .flatpickr-day.endRange::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            opacity: 0.3;
-            z-index: -1;
-        }
-        
-        .flatpickr-day.inRange {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.08) 100%);
-            border-color: transparent;
-            box-shadow: inset 0 0 0 1px rgba(102, 126, 234, 0.2);
-            border-radius: 4px;
-        }
-        
-        .flatpickr-day.disabled,
-        .flatpickr-day.disabled:hover {
-            color: #ddd;
-            background: transparent;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .flatpickr-day.prevMonthDay,
-        .flatpickr-day.nextMonthDay {
-            color: #ccc;
-            font-weight: 400;
-        }
-        
-        .flatpickr-day.prevMonthDay:hover,
-        .flatpickr-day.nextMonthDay:hover {
-            background: #f5f5f5;
-        }
-        
-        /* Multiple month display improvement */
-        .flatpickr-calendar.hasTime.multiMonth .flatpickr-months {
-            display: flex;
-        }
-        
-        .flatpickr-calendar.multiMonth .flatpickr-days {
-            border-right: 2px solid #f0f0f0;
-            padding: 10px 15px;
-        }
-        
-        .flatpickr-calendar.multiMonth .flatpickr-days:last-child {
-            border-right: none;
-        }
-        
-        .flatpickr-calendar.multiMonth .flatpickr-day {
-            height: 38px;
-            line-height: 38px;
-        }
-        
-        /* Time picker styling (if needed) */
-        .flatpickr-time {
-            border-top: 2px solid #f0f0f0;
-            margin-top: 10px;
-            padding: 15px;
-            background: #fafafa;
-        }
-        
-        .flatpickr-time input {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 8px;
-            font-weight: 600;
-        }
-        
-        .flatpickr-time input:hover {
-            border-color: #667eea;
-            background: #fafafa;
-        }
-        
-        .flatpickr-time input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        /* Animation */
-        .flatpickr-calendar.open {
-            animation: fadeInDown 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .flatpickr-calendar.inline {
-            box-shadow: none;
-        }
-        
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-15px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        
-        /* Flatpickr arrow positioning */
-        .flatpickr-calendar.arrowTop::before,
-        .flatpickr-calendar.arrowTop::after {
-            border-bottom-color: #667eea;
-        }
-        
         /* Responsive */
         @media (max-width: 768px) {
             .charts-grid { grid-template-columns: 1fr; }
             .summary-cards { grid-template-columns: 1fr; }
-            .flatpickr-calendar.multiMonth .flatpickr-days {
-                border-right: none;
-                border-bottom: 2px solid #f0f0f0;
-            }
-            .flatpickr-calendar.multiMonth .flatpickr-days:last-child {
-                border-bottom: none;
-            }
-            .flatpickr-months {
-                flex-direction: column;
-            }
         }
     </style>
 </head>
 <body>
         <!-- Navbar -->
-        <nav class="navbar">
+    <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-brand">
-                <i class="fas fa-hammer"></i>
+                <i class="fas fa-toolbox"></i>
                 <span>Hardware Store</span>
             </div>
             <div class="navbar-menu">
@@ -697,27 +254,23 @@
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="/staff_billing">
+                <a href="staff_billing">
                     <i class="fas fa-cash-register"></i>
                     <span>Billing</span>
                 </a>
-                <a href="/inventory">
+                <a href="inventory">
                     <i class="fas fa-boxes"></i>
                     <span>Inventory</span>
                 </a>
-                <a href="/customers">
+                <a href="customers">
                     <i class="fas fa-users"></i>
                     <span>Customers</span>
                 </a>
-                <a href="/reports" class="active">
+                <a href="reports" class="active">
                     <i class="fas fa-chart-bar"></i>
                     <span>Reports</span>
                 </a>
-				<!--<a href="/quotations">
-                    <i class="fas fa-undo"></i>
-                    <span>quotation</span>
-                </a>-->
-                <a href="/logout">
+                <a href="logout">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>
@@ -726,10 +279,10 @@
     </nav>
     
     <div class="container">
-        <!-- <div class="page-header"> -->
-            <!-- <h1><i class="fas fa-chart-line"></i> Reports & Analytics</h1> -->
-            <!-- <p>Comprehensive business insights and detailed analysis</p> -->
-        <!-- </div> -->
+        <div class="page-header">
+            <h1><i class="fas fa-chart-line"></i> Reports & Analytics</h1>
+            <p>Comprehensive business insights and detailed analysis</p>
+        </div>
         
         <div id="alertContainer"></div>
         
@@ -750,9 +303,9 @@
             <div class="panel">
                 <h2><i class="fas fa-calendar-day"></i> Sales Report</h2>
                 
-                <!-- <div class="alert alert-info"> -->
-                    <!-- <i class="fas fa-info-circle"></i> <strong>Tip:</strong> Click on cards or table rows to view detailed bill information -->
-                <!-- </div> -->
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> <strong>Tip:</strong> Click on cards or table rows to view detailed bill information
+                </div>
                 
                 <div class="quick-dates">
                     <button class="quick-date-btn active" onclick="setQuickDate('today')">Today</button>
@@ -763,15 +316,15 @@
                 </div>
                 
                 <div class="filters" style="margin-top: 15px;">
-                    <div style="max-width: 350px; position: relative;">
-                        <label style="font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; display: block;">Date Range:</label>
-                        <div style="position: relative;">
-                            <input type="text" id="salesDateRange" placeholder="Select date range" 
-                                   style="width: 100%; padding: 10px 38px 10px 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; transition: all 0.3s ease; background: white;">
-                            <i class="fas fa-calendar-alt" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #667eea; pointer-events: none; font-size: 16px;"></i>
-                        </div>
+                    <div>
+                        <label>From Date:</label>
+                        <input type="date" id="salesStartDate">
                     </div>
-                    <button class="btn" onclick="loadSalesReport()" style="align-self: flex-end;">
+                    <div>
+                        <label>To Date:</label>
+                        <input type="date" id="salesEndDate">
+                    </div>
+                    <button class="btn" onclick="loadSalesReport()">
                         <i class="fas fa-search"></i> Load Report
                     </button>
                 </div>
@@ -826,15 +379,15 @@
                 </div>
                 
                 <div class="filters" style="margin-top: 15px;">
-                    <div style="max-width: 350px; position: relative;">
-                        <label style="font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; display: block;">Date Range:</label>
-                        <div style="position: relative;">
-                            <input type="text" id="productDateRange" placeholder="Select date range" 
-                                   style="width: 100%; padding: 10px 38px 10px 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; transition: all 0.3s ease; background: white;">
-                            <i class="fas fa-calendar-alt" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #667eea; pointer-events: none; font-size: 16px;"></i>
-                        </div>
+                    <div>
+                        <label>From Date:</label>
+                        <input type="date" id="productStartDate">
                     </div>
-                    <button class="btn" onclick="loadProductReport()" style="align-self: flex-end;">
+                    <div>
+                        <label>To Date:</label>
+                        <input type="date" id="productEndDate">
+                    </div>
+                    <button class="btn" onclick="loadProductReport()">
                         <i class="fas fa-search"></i> Load Report
                     </button>
                 </div>
@@ -988,7 +541,7 @@
         
         // Set quick date ranges
         function setQuickDate(range) {
-            const today = getIndianDate();
+            const today = new Date();
             let startDate, endDate;
             
             // Remove active class from all buttons
@@ -1019,21 +572,14 @@
                     break;
             }
             
-            const startStr = formatDate(startDate);
-            const endStr = formatDate(endDate);
-            
-            // Set the date range
-            if (startStr === endStr) {
-                document.getElementById('salesDateRange').value = startStr;
-            } else {
-                document.getElementById('salesDateRange').value = `${startStr} to ${endStr}`;
-            }
+            document.getElementById('salesStartDate').value = formatDate(startDate);
+            document.getElementById('salesEndDate').value = formatDate(endDate);
             
             loadSalesReport();
         }
         
         function setProductQuickDate(range) {
-            const today = getIndianDate();
+            const today = new Date();
             let startDate, endDate;
             
             // Remove active class from all buttons in product section
@@ -1064,47 +610,14 @@
                     break;
             }
             
-            const startStr = formatDate(startDate);
-            const endStr = formatDate(endDate);
-            
-            // Set the date range
-            if (startStr === endStr) {
-                document.getElementById('productDateRange').value = startStr;
-            } else {
-                document.getElementById('productDateRange').value = `${startStr} to ${endStr}`;
-            }
+            document.getElementById('productStartDate').value = formatDate(startDate);
+            document.getElementById('productEndDate').value = formatDate(endDate);
             
             loadProductReport();
         }
         
-        // ===== DATE AND TIME FUNCTIONS (INDIAN TIMEZONE) =====
-        // All dates in this application follow Indian Standard Time (IST - UTC+5:30)
-        
-        // Get current date in Indian timezone
-        function getIndianDate() {
-            const now = new Date();
-            // Convert to Indian timezone (UTC+5:30)
-            const indianTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
-            return indianTime;
-        }
-        
         function formatDate(date) {
-            // Ensure we're working with Indian time
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-        
-        function formatDateForDisplay(dateStr) {
-            const date = new Date(dateStr + 'T00:00:00');
-            return date.toLocaleDateString('en-IN', { 
-                weekday: 'short', 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric',
-                timeZone: 'Asia/Kolkata'
-            });
+            return date.toISOString().split('T')[0];
         }
         
         // Alert functions
@@ -1126,20 +639,12 @@
         
         // Load Sales Report
         async function loadSalesReport() {
-            const dateRangeStr = document.getElementById('salesDateRange').value;
+            const startDate = document.getElementById('salesStartDate').value;
+            const endDate = document.getElementById('salesEndDate').value;
             
-            if (!dateRangeStr) {
-                showAlert('Please select a date range');
+            if (!startDate || !endDate) {
+                showAlert('Please select both start and end dates');
                 return;
-            }
-            
-            // Parse the date range (Flatpickr uses " to " separator)
-            let startDate, endDate;
-            if (dateRangeStr.includes(' to ')) {
-                [startDate, endDate] = dateRangeStr.split(' to ');
-            } else {
-                // Single date selected
-                startDate = endDate = dateRangeStr;
             }
             
             showLoading('salesTable');
@@ -1156,34 +661,7 @@
                 
                 if (!data || data.length === 0) {
                     document.getElementById('salesTable').innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #999;">No sales found for the selected date range</td></tr>';
-                    
-                    // Show zero values in summary cards
-                    document.getElementById('salesSummary').innerHTML = `
-                        <div class="summary-card">
-                            <h4>Total Bills</h4>
-                            <div class="value">0</div>
-                        </div>
-                        <div class="summary-card">
-                            <h4>Total Sales</h4>
-                            <div class="value">₹0.00</div>
-                        </div>
-                        <div class="summary-card">
-                            <h4>Cash Sales</h4>
-                            <div class="value">₹0.00</div>
-                        </div>
-                        <div class="summary-card">
-                            <h4>UPI Sales</h4>
-                            <div class="value">₹0.00</div>
-                        </div>
-                        <div class="summary-card">
-                            <h4>Credit Sales</h4>
-                            <div class="value">₹0.00</div>
-                        </div>
-                    `;
-                    
-                    // Update charts with zero data
-                    updateSalesTrendChart([]);
-                    updatePaymentMethodChart(0, 0, 0);
+                    document.getElementById('salesSummary').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">No data available</div>';
                     return;
                 }
                 
@@ -1240,6 +718,7 @@
                 updateSalesTrendChart(data);
                 updatePaymentMethodChart(cashSales, upiSales, creditSales);
                 
+                showAlert('Sales report loaded successfully!', 'success');
             } catch (error) {
                 console.error('Error loading sales report:', error);
                 showAlert('Error loading sales report: ' + error.message);
@@ -1258,10 +737,10 @@
             salesTrendChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: data.length > 0 ? data.map(row => new Date(row.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })) : ['No Data'],
+                    labels: data.map(row => new Date(row.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })),
                     datasets: [{
                         label: 'Total Sales',
-                        data: data.length > 0 ? data.map(row => parseFloat(row.total_sales)) : [0],
+                        data: data.map(row => parseFloat(row.total_sales)),
                         backgroundColor: 'rgba(52, 152, 219, 0.8)',
                         borderColor: 'rgba(52, 152, 219, 1)',
                         borderWidth: 1
@@ -1270,7 +749,6 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    aspectRatio: 2,
                     plugins: {
                         legend: { display: false }
                     },
@@ -1307,7 +785,6 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    aspectRatio: 1.5,
                     plugins: {
                         legend: {
                             position: 'bottom'
@@ -1319,20 +796,12 @@
         
         // Load Product Report
         async function loadProductReport() {
-            const dateRangeStr = document.getElementById('productDateRange').value;
+            const startDate = document.getElementById('productStartDate').value;
+            const endDate = document.getElementById('productEndDate').value;
             
-            if (!dateRangeStr) {
-                showAlert('Please select a date range');
+            if (!startDate || !endDate) {
+                showAlert('Please select both start and end dates');
                 return;
-            }
-            
-            // Parse the date range (Flatpickr uses " to " separator)
-            let startDate, endDate;
-            if (dateRangeStr.includes(' to ')) {
-                [startDate, endDate] = dateRangeStr.split(' to ');
-            } else {
-                // Single date selected
-                startDate = endDate = dateRangeStr;
             }
             
             showLoading('productsTable');
@@ -1348,10 +817,6 @@
                 
                 if (!data || data.length === 0) {
                     document.getElementById('productsTable').innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: #999;">No product sales found for the selected date range</td></tr>';
-                    
-                    // Update charts with empty data
-                    updateTopProductsChart([]);
-                    updateTopQuantityChart([]);
                     return;
                 }
                 
@@ -1373,6 +838,7 @@
                 updateTopProductsChart(top10Revenue);
                 updateTopQuantityChart(top10Quantity);
                 
+                showAlert('Product report loaded successfully!', 'success');
             } catch (error) {
                 console.error('Error loading product report:', error);
                 showAlert('Error loading product report: ' + error.message);
@@ -1391,10 +857,10 @@
             topProductsChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: data.length > 0 ? data.map(row => row.product_name.substring(0, 20) + (row.product_name.length > 20 ? '...' : '')) : ['No Data'],
+                    labels: data.map(row => row.product_name.substring(0, 20) + (row.product_name.length > 20 ? '...' : '')),
                     datasets: [{
                         label: 'Revenue (₹)',
-                        data: data.length > 0 ? data.map(row => parseFloat(row.total_revenue)) : [0],
+                        data: data.map(row => parseFloat(row.total_revenue)),
                         backgroundColor: 'rgba(155, 89, 182, 0.8)',
                         borderColor: 'rgba(155, 89, 182, 1)',
                         borderWidth: 1
@@ -1403,7 +869,6 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    aspectRatio: 1.5,
                     indexAxis: 'y',
                     plugins: {
                         legend: { display: false }
@@ -1426,10 +891,10 @@
             topQuantityChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: data.length > 0 ? data.map(row => row.product_name.substring(0, 20) + (row.product_name.length > 20 ? '...' : '')) : ['No Data'],
+                    labels: data.map(row => row.product_name.substring(0, 20) + (row.product_name.length > 20 ? '...' : '')),
                     datasets: [{
                         label: 'Quantity Sold',
-                        data: data.length > 0 ? data.map(row => parseFloat(row.total_qty_sold)) : [0],
+                        data: data.map(row => parseFloat(row.total_qty_sold)),
                         backgroundColor: 'rgba(52, 152, 219, 0.8)',
                         borderColor: 'rgba(52, 152, 219, 1)',
                         borderWidth: 1
@@ -1438,7 +903,6 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    aspectRatio: 1.5,
                     indexAxis: 'y',
                     plugins: {
                         legend: { display: false }
@@ -1465,9 +929,6 @@
                 
                 if (!data || data.length === 0) {
                     document.getElementById('stockTable').innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #999;">No stock data available</td></tr>';
-                    
-                    // Update charts with empty data
-                    updateStockCharts([]);
                     return;
                 }
                 
@@ -1494,6 +955,7 @@
                 // Update stock charts
                 updateStockCharts(data);
                 
+                showAlert('Stock report loaded successfully!', 'success');
             } catch (error) {
                 console.error('Error loading stock report:', error);
                 showAlert('Error loading stock report: ' + error.message);
@@ -1504,9 +966,9 @@
         // Update Stock Charts
         function updateStockCharts(data) {
             // Low stock chart (top 10 low stock items)
-            const lowStockItems = data.length > 0 
-                ? data.filter(row => parseFloat(row.current_stock) <= parseFloat(row.low_stock_threshold)).slice(0, 10)
-                : [];
+            const lowStockItems = data
+                .filter(row => parseFloat(row.current_stock) <= parseFloat(row.low_stock_threshold))
+                .slice(0, 10);
             
             const ctx1 = document.getElementById('lowStockChart');
             
@@ -1517,10 +979,10 @@
             lowStockChart = new Chart(ctx1, {
                 type: 'bar',
                 data: {
-                    labels: lowStockItems.length > 0 ? lowStockItems.map(row => row.product_name.substring(0, 15) + (row.product_name.length > 15 ? '...' : '')) : ['No Data'],
+                    labels: lowStockItems.map(row => row.product_name.substring(0, 15) + (row.product_name.length > 15 ? '...' : '')),
                     datasets: [{
                         label: 'Current Stock',
-                        data: lowStockItems.length > 0 ? lowStockItems.map(row => parseFloat(row.current_stock)) : [0],
+                        data: lowStockItems.map(row => parseFloat(row.current_stock)),
                         backgroundColor: 'rgba(231, 76, 60, 0.8)',
                         borderColor: 'rgba(231, 76, 60, 1)',
                         borderWidth: 1
@@ -1529,7 +991,6 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    aspectRatio: 1.5,
                     indexAxis: 'y',
                     plugins: {
                         legend: { display: false }
@@ -1541,8 +1002,8 @@
             });
             
             // Stock status pie chart
-            const lowStockCount = data.length > 0 ? data.filter(row => parseFloat(row.current_stock) <= parseFloat(row.low_stock_threshold)).length : 0;
-            const inStockCount = data.length > 0 ? data.length - lowStockCount : 0;
+            const lowStockCount = data.filter(row => parseFloat(row.current_stock) <= parseFloat(row.low_stock_threshold)).length;
+            const inStockCount = data.length - lowStockCount;
             
             const ctx2 = document.getElementById('stockStatusChart');
             
@@ -1567,7 +1028,6 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    aspectRatio: 1.5,
                     plugins: {
                         legend: {
                             position: 'bottom'
@@ -1717,6 +1177,13 @@
                 showAlert('Bill not found');
                 return;
             }
+            
+            // Mark day bills modal as having bill details open
+            const dayBillsModal = document.getElementById('dayBillsModal');
+            dayBillsModal.classList.add('with-bill-details');
+            
+            // Update navigation buttons
+            updateBillNavigation();
             
             // Load bill details
             showBillDetails(bill.bill_id);
@@ -1899,6 +1366,10 @@
         function closeBillModal() {
             event.stopPropagation();
             document.getElementById('billModal').classList.remove('active');
+            
+            // Remove the with-bill-details class from day bills modal
+            const dayBillsModal = document.getElementById('dayBillsModal');
+            dayBillsModal.classList.remove('with-bill-details');
         }
         
         function closeDayBillsModal() {
@@ -1911,9 +1382,10 @@
             const billModal = document.getElementById('billModal');
             const dayBillsModal = document.getElementById('dayBillsModal');
             
-            // Close bill modal if clicking its backdrop area
+            // Close bill modal if clicking its backdrop area (but not if clicking through to day bills)
             if (event.target === billModal) {
                 billModal.classList.remove('active');
+                dayBillsModal.classList.remove('with-bill-details');
             }
             
             // Close day bills modal only if bill modal is not open
@@ -1933,77 +1405,29 @@
         
         // Initialize on page load
         window.addEventListener('DOMContentLoaded', () => {
-            // Set today's date in Indian timezone
-            const today = getIndianDate();
-            const todayStr = formatDate(today);
-            
-            // Initialize Flatpickr for Sales Date Range with range mode
-            flatpickr("#salesDateRange", {
-                mode: "range",
-                dateFormat: "Y-m-d",
-                defaultDate: [todayStr, todayStr],
-                showMonths: 2,
-                // Set to use local time which will be Indian time since we're using getIndianDate()
-                locale: {
-                    firstDayOfWeek: 1 // Monday
-                },
-                monthSelectorType: "static", // Show month name instead of dropdown
-                static: false,
-                inline: false,
-                onChange: function(selectedDates, dateStr, instance) {
-                    // Auto-load report when date is selected
-                    if (dateStr) {
-                        loadSalesReport();
-                    }
-                },
-                onClose: function(selectedDates, dateStr, instance) {
-                    // Also load when calendar closes with a selection
-                    if (dateStr) {
-                        loadSalesReport();
-                    }
-                }
-            });
-            
-            // Initialize Flatpickr for Product Date Range with range mode
-            flatpickr("#productDateRange", {
-                mode: "range",
-                dateFormat: "Y-m-d",
-                defaultDate: [todayStr, todayStr],
-                showMonths: 2,
-                locale: {
-                    firstDayOfWeek: 1 // Monday
-                },
-                monthSelectorType: "static", // Show month name instead of dropdown
-                static: false,
-                inline: false,
-                onChange: function(selectedDates, dateStr, instance) {
-                    // Auto-load report when date is selected
-                    if (dateStr) {
-                        loadProductReport();
-                    }
-                },
-                onClose: function(selectedDates, dateStr, instance) {
-                    // Also load when calendar closes with a selection
-                    if (dateStr) {
-                        loadProductReport();
-                    }
-                }
-            });
-            
-            // Set default values
-            document.getElementById('salesDateRange').value = todayStr;
-            document.getElementById('productDateRange').value = todayStr;
+            // Set today's date by default
+            const today = new Date();
+            document.getElementById('salesStartDate').value = formatDate(today);
+            document.getElementById('salesEndDate').value = formatDate(today);
+            document.getElementById('productStartDate').value = formatDate(today);
+            document.getElementById('productEndDate').value = formatDate(today);
             
             // Load today's sales report automatically
             loadSalesReport();
             
-            // Add keyboard shortcuts
+            // Add keyboard navigation for bill slider
             document.addEventListener('keydown', function(e) {
                 const billModal = document.getElementById('billModal');
                 
                 // Only if bill modal is open
                 if (billModal.classList.contains('active')) {
-                    if (e.key === 'Escape') {
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        navigateBill(-1);
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        navigateBill(1);
+                    } else if (e.key === 'Escape') {
                         closeBillModal();
                     }
                 }

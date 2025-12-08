@@ -3,1510 +3,2230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - {{ app_name }}</title>
+    <title>Reports - Hardware Store Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         :root {
-            --primary-color: #4f46e5;
-            --secondary-color: #7c3aed;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
             --sidebar-width: 260px;
-            --header-height: 70px;
+            --topbar-height: 60px;
+            --primary-color: #4a5568;
+            --secondary-color: #718096;
+            --accent-color: #2d3748;
+            --success-color: #48bb78;
+            --danger-color: #e53e3e;
+            --warning-color: #ed8936;
+            --info-color: #4299e1;
+            --bg-color: #f7fafc;
+            --card-bg: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --sidebar-bg: #2d3748;
+            --sidebar-hover: #4a5568;
+            --sidebar-active: #1a202c;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow-x: hidden;
         }
-        
-        /* Sidebar Styles */
+
+        /* Sidebar */
         .sidebar {
             position: fixed;
             top: 0;
             left: 0;
             height: 100vh;
             width: var(--sidebar-width);
-            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            overflow-y: auto;
-            transition: all 0.3s ease;
+            background-color: var(--sidebar-bg);
+            padding: 0;
             z-index: 1000;
-            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
         }
-        
+
         .sidebar-header {
-            padding: 24px 20px;
-            text-align: center;
+            padding: 1.5rem 1.25rem;
+            background-color: var(--sidebar-active);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
-        .sidebar-header .logo {
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 12px;
-            font-size: 24px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .sidebar-header h4 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        
-        .sidebar-header p {
-            margin: 4px 0 0 0;
-            font-size: 12px;
-            opacity: 0.8;
-            font-weight: 500;
-        }
-        
-        .sidebar-menu {
-            padding: 20px 0;
-        }
-        
-        .menu-section-title {
-            padding: 8px 20px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.6;
-            margin-top: 20px;
-        }
-        
-        .sidebar-menu .menu-item {
-            padding: 14px 20px;
+
+        .sidebar-brand {
             color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
             text-decoration: none;
             display: flex;
             align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin: 0.25rem 0.75rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            color: #cbd5e0;
+            text-decoration: none;
+            border-radius: 8px;
             transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-            margin: 2px 0;
-            font-size: 14px;
+            font-size: 0.95rem;
             font-weight: 500;
         }
-        
-        .sidebar-menu .menu-item:hover {
-            background-color: rgba(255, 255, 255, 0.15);
-            border-left-color: white;
-            padding-left: 24px;
-        }
-        
-        .sidebar-menu .menu-item.active {
-            background-color: rgba(255, 255, 255, 0.25);
-            border-left-color: white;
-            font-weight: 600;
-        }
-        
-        .sidebar-menu .menu-item i {
-            margin-right: 14px;
-            font-size: 18px;
+
+        .nav-link i {
+            font-size: 1.25rem;
             width: 24px;
         }
-        
-        .custom-table tbody tr[onclick] {
-            transition: all 0.2s ease;
+
+        .nav-link:hover {
+            background-color: var(--sidebar-hover);
+            color: white;
         }
-        
-        .custom-table tbody tr[onclick]:hover {
-            background-color: #f8fafc !important;
-            transform: scale(1.01);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+        .nav-link.active {
+            background-color: var(--sidebar-active);
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-        
-        /* Modal z-index layering for stacked modals */
-        #billDetailModal {
-            z-index: 1060 !important;
-        }
-        
-        #billDetailModal .modal-backdrop {
-            z-index: 1055 !important;
-        }
-        
-        .modal-backdrop.show {
-            opacity: 0.5;
-        }
-        
-        /* Ensure detail modal appears above bills modal */
-        .modal.show ~ .modal-backdrop {
-            z-index: 1050;
-        }
-        
+
         /* Main Content */
         .main-content {
             margin-left: var(--sidebar-width);
             min-height: 100vh;
         }
-        
-        .top-navbar {
-            background: white;
-            height: var(--header-height);
-            padding: 0 32px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+        .topbar {
+            height: var(--topbar-height);
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 2rem;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 999;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
-        
-        .page-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .page-title i {
-            font-size: 28px;
-            color: var(--primary-color);
-        }
-        
-        .page-title h4 {
+
+        .topbar h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
             margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-            color: #1e293b;
         }
-        
+
         .user-info {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
-        
-        .user-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 16px;
-            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+
+        .content-wrapper {
+            padding: 2rem;
         }
-        
-        .user-details {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .user-details .name {
-            font-weight: 600;
-            font-size: 14px;
-            color: #1e293b;
-        }
-        
-        .user-details .role {
-            font-size: 12px;
-            color: #64748b;
-        }
-        
-        .content-area {
-            padding: 32px;
-        }
-        
-        /* Filter Section */
-        .filter-section {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 28px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-        }
-        
-        .filter-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .filter-title i {
-            color: var(--primary-color);
-        }
-        
-        .filter-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            align-items: end;
-        }
-        
-        .form-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #475569;
-            margin-bottom: 8px;
-        }
-        
-        .form-control, .form-select {
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 10px 14px;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-        
-        .btn-apply {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
-        }
-        
-        .btn-apply:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-        }
-        
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-bottom: 28px;
-        }
-        
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--card-color);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-        }
-        
-        .stat-card:hover::before {
-            opacity: 1;
-        }
-        
-        .stat-card.blue { --card-color: #4f46e5; }
-        .stat-card.green { --card-color: #10b981; }
-        .stat-card.orange { --card-color: #f59e0b; }
-        .stat-card.purple { --card-color: #7c3aed; }
-        
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-        }
-        
-        .stat-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-        }
-        
-        .stat-icon.blue {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-        }
-        
-        .stat-icon.green {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-        
-        .stat-icon.orange {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        }
-        
-        .stat-icon.purple {
-            background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
-        }
-        
-        .stat-trend {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .stat-trend.up {
-            background: #dcfce7;
-            color: #16a34a;
-        }
-        
-        .stat-trend.down {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-        
-        .stat-details {
-            margin-top: 4px;
-        }
-        
-        .stat-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #64748b;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .stat-value {
-            font-size: 32px;
-            font-weight: 800;
-            color: #1e293b;
-            line-height: 1;
-        }
-        
-        .stat-subtext {
-            font-size: 13px;
-            color: #64748b;
-            margin-top: 8px;
-        }
-        
+
         /* Report Cards */
-        .report-card {
+        .report-section {
             background: white;
             border-radius: 12px;
-            padding: 28px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-            margin-bottom: 28px;
         }
-        
+
+        .report-section.analytics {
+            background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
+            border: 2px solid var(--info-color);
+        }
+
         .report-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid #f1f5f9;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
         }
-        
+
         .report-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1e293b;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.75rem;
         }
-        
+
         .report-title i {
-            font-size: 22px;
-            color: var(--primary-color);
+            font-size: 1.5rem;
+            color: var(--info-color);
         }
-        
-        .report-badge {
-            padding: 6px 12px;
+
+        /* Date Filters */
+        .date-filters {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid var(--border-color);
             border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            background: #f1f5f9;
-            color: #475569;
+            font-size: 0.9rem;
         }
-        
+
+        /* Buttons */
+        .btn-custom {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--info-color);
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #3182ce;
+            transform: translateY(-1px);
+        }
+
+        .btn-success-custom {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success-custom:hover {
+            background-color: #38a169;
+        }
+
+        /* Summary Cards */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-card.success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .summary-card.warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+
+        .summary-card.info {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+        }
+
+        .summary-card-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
         /* Tables */
         .table-responsive {
             overflow-x: auto;
         }
-        
-        .custom-table {
+
+        .report-table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-collapse: collapse;
         }
-        
-        .custom-table thead th {
-            background: #f8fafc;
-            color: #475569;
-            font-size: 12px;
-            font-weight: 700;
+
+        .report-table thead {
+            background-color: var(--bg-color);
+        }
+
+        .report-table th {
+            padding: 0.875rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-color);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 14px 16px;
-            border-bottom: 2px solid #e2e8f0;
-            white-space: nowrap;
         }
-        
-        .custom-table tbody tr {
-            transition: all 0.2s;
-            cursor: pointer;
+
+        .report-table td {
+            padding: 0.875rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
         }
-        
-        .custom-table tbody tr:hover {
-            background: #f8fafc;
+
+        .report-table tbody tr:hover {
+            background-color: var(--bg-color);
         }
-        
-        .custom-table tbody td {
-            padding: 16px;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 14px;
-            color: #334155;
-        }
-        
-        .custom-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-        
-        /* Store card clickable style */
-        .store-row {
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .store-row:hover {
-            background: #eff6ff !important;
-            transform: translateX(4px);
-        }
-        
-        .store-row:hover td {
-            color: var(--primary-color);
-        }
-        
-        /* Badges */
-        .badge-custom {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .badge-success {
-            background: #dcfce7;
-            color: #16a34a;
-        }
-        
-        .badge-warning {
-            background: #fef3c7;
-            color: #d97706;
-        }
-        
-        .badge-danger {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-        
-        .badge-info {
-            background: #dbeafe;
-            color: #2563eb;
-        }
-        
-        .badge-purple {
-            background: #ede9fe;
-            color: #7c3aed;
-        }
-        
-        /* Progress Bar */
-        .progress-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .progress-bar-custom {
-            flex: 1;
-            height: 8px;
-            background: #f1f5f9;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            border-radius: 4px;
-            transition: width 0.6s ease;
-        }
-        
-        .progress-text {
-            font-size: 12px;
-            font-weight: 600;
-            color: #64748b;
-            min-width: 45px;
-            text-align: right;
-        }
-        
-        /* Rank Badge */
-        .rank-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 16px;
-        }
-        
-        .rank-1 { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
-        .rank-2 { background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%); }
-        .rank-3 { background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%); }
-        .rank-other {
-            background: #f1f5f9;
-            color: #64748b;
-            font-size: 14px;
-        }
-        
-        /* Empty State */
-        .no-data {
+
+        /* Loading */
+        .loading {
             text-align: center;
-            padding: 60px 20px;
-            color: #94a3b8;
+            padding: 3rem;
+            color: var(--text-secondary);
         }
-        
-        .no-data i {
-            font-size: 64px;
-            margin-bottom: 16px;
+
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
             opacity: 0.5;
         }
-        
-        .no-data p {
-            font-size: 16px;
-            font-weight: 500;
-            margin: 0;
-        }
-        
-        /* Modal Styles */
-        .modal-content {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        }
-        
-        .modal-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            border-radius: 16px 16px 0 0;
-            padding: 20px 24px;
-            border-bottom: none;
-        }
-        
-        .modal-title {
-            font-weight: 700;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .modal-header .btn-close {
-            filter: brightness(0) invert(1);
-            opacity: 0.8;
-        }
-        
-        .modal-body {
-            padding: 24px;
-        }
-        
-        .bill-header {
-            background: #f8fafc;
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .bill-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-            font-size: 13px;
-        }
-        
-        .bill-meta-item {
+
+        .chart-empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
         }
-        
-        .bill-meta-label {
+
+        .chart-empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.4;
+        }
+
+        .chart-empty-state p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-top: 1rem;
+        }
+
+        /* Custom Flatpickr Styles */
+        .flatpickr-calendar {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .flatpickr-months {
+            background: white;
+            border-radius: 12px 12px 0 0;
+            padding: 1rem 0;
+        }
+
+        .flatpickr-current-month {
+            font-size: 1.1rem;
             font-weight: 600;
-            color: #64748b;
-            margin-bottom: 4px;
+            color: var(--text-primary);
         }
-        
-        .bill-meta-value {
-            font-weight: 700;
-            color: #1e293b;
+
+        .flatpickr-day {
+            border-radius: 6px;
+            font-weight: 500;
         }
-        
-        /* Scrollbar Styles */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+
+        .flatpickr-day.selected,
+        .flatpickr-day.startRange,
+        .flatpickr-day.endRange {
+            background: #8b5cf6 !important;
+            border-color: #8b5cf6 !important;
+            color: white !important;
         }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+
+        .flatpickr-day.inRange {
+            background: #8b5cf6 !important;
+            border-color: #8b5cf6 !important;
+            color: white !important;
+            box-shadow: none;
         }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
+
+        .flatpickr-day:hover {
+            background: #e9d5ff;
+            border-color: #e9d5ff;
         }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+
+        .flatpickr-day.today {
+            border-color: #8b5cf6;
         }
-        
+
+        .flatpickr-months .flatpickr-prev-month:hover svg,
+        .flatpickr-months .flatpickr-next-month:hover svg {
+            fill: #8b5cf6;
+        }
+
+        /* Date input styling */
+        .date-input-wrapper {
+            position: relative;
+        }
+
+        .date-input-wrapper i {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .date-range-input {
+            padding-right: 40px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
             }
-            
+
             .main-content {
                 margin-left: 0;
             }
-            
-            .stats-grid {
+
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Chart Styles */
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+        }
+
+        .chart-container:last-child {
+            margin-bottom: 0;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-title i {
+            color: var(--info-color);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 250px;
+            max-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .chart-wrapper.tall {
+            min-height: 400px;
+            max-height: 500px;
+        }
+
+        .chart-wrapper canvas {
+            max-width: 100% !important;
+            max-height: 100% !important;
+            width: auto !important;
+            height: auto !important;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+
+        .charts-grid:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Tab Navigation Styles */
+        .tabs-container {
+            background: white;
+            border-radius: 12px;
+            padding: 0;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .tabs-nav {
+            display: flex;
+            background: #f7fafc;
+            border-bottom: 2px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: #718096;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .tab-button:hover {
+            background: #e2e8f0;
+            color: var(--text-primary);
+        }
+
+        .tab-button.active {
+            background: var(--info-color);
+            color: white;
+            box-shadow: 0 2px 4px rgba(66, 153, 225, 0.3);
+        }
+
+        .tab-button i {
+            font-size: 1.1rem;
+        }
+
+        .tab-content {
+            padding: 2rem;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
                 grid-template-columns: 1fr;
             }
             
-            .filter-row {
-                grid-template-columns: 1fr;
+            .tabs-nav {
+                padding: 0.5rem;
             }
+            
+            .tab-button {
+                padding: 0.625rem 1rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        /* Bill Details Modal Styles */
+        .bill-details-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px 8px 0 0;
+            margin: -1rem -1rem 1.5rem -1rem;
+        }
+
+        .bill-details-header h5 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .bill-details-header .bill-number {
+            font-size: 0.9rem;
+            opacity: 0.95;
+        }
+
+        .bill-info-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e9ecef;
+        }
+
+        .bill-info-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .bill-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .bill-info-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #6c757d;
+            letter-spacing: 0.5px;
+        }
+
+        .bill-info-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .payment-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .payment-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .payment-badge.cash {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .payment-badge.upi {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .payment-badge.card {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .payment-badge.credit {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .items-section {
+            margin: 1.5rem 0;
+        }
+
+        .items-header {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .bill-items-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .bill-items-table thead {
+            background: #f8f9fa;
+        }
+
+        .bill-items-table th {
+            padding: 0.875rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #6c757d;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .bill-items-table td {
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid #f1f3f5;
+            color: #2d3748;
+        }
+
+        .bill-items-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .bill-items-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .bill-summary {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .bill-summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.95rem;
+        }
+
+        .bill-summary-row:last-child {
+            border-bottom: none;
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+            border-top: 2px solid #dee2e6;
+        }
+
+        .bill-summary-row.total {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .bill-notes {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1.5rem;
+        }
+
+        .bill-notes-label {
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+
+        .bill-notes-text {
+            color: #856404;
+            margin: 0;
+        }
+
+        .modal-footer {
+            border-top: 2px solid #e9ecef;
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
         }
     </style>
 </head>
 <body>
     <!-- Sidebar -->
-    <div class="sidebar">
+    <aside class="sidebar">
         <div class="sidebar-header">
-            <div class="logo">
-                <i class="bi bi-building-gear"></i>
+            <a href="#" class="sidebar-brand">
+                <i class="bi bi-tools"></i>
+                <span>Hardware Admin</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-item">
+                <a href="/admin_dashboard" class="nav-link">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
             </div>
-            <h4>{{ app_name }}</h4>
-            <p>Admin Dashboard</p>
-        </div>
-        
-        <div class="sidebar-menu">
-            <div class="menu-section-title">Main</div>
-            <a href="{{ url_for('admin_dashboard') }}" class="menu-item">
-                <i class="bi bi-speedometer2"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="{{ url_for('admin_reports') }}" class="menu-item active">
-                <i class="bi bi-graph-up"></i>
-                <span>Reports & Analytics</span>
-            </a>
-            
-            <div class="menu-section-title">Management</div>
-            <a href="{{ url_for('admin_stores') }}" class="menu-item">
-                <i class="bi bi-shop"></i>
-                <span>Stores</span>
-            </a>
-            <a href="{{ url_for('admin_staff') }}" class="menu-item">
-                <i class="bi bi-people"></i>
-                <span>Staff</span>
-            </a>
-            <a href="{{ url_for('admin_products') }}" class="menu-item">
-                <i class="bi bi-box-seam"></i>
-                <span>Products</span>
-            </a>
-            <a href="{{ url_for('admin_inventory') }}" class="menu-item">
-                <i class="bi bi-boxes"></i>
-                <span>Inventory</span>
-            </a>
-            
-            <div class="menu-section-title">Account</div>
-            <a href="{{ url_for('logout') }}" class="menu-item">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Logout</span>
-            </a>
-        </div>
-    </div>
+            <div class="nav-item">
+                <a href="/admin/products" class="nav-link">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Products</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/admin_inventory" class="nav-link">
+                    <i class="bi bi-boxes"></i>
+                    <span>Inventory</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/admin" class="nav-link">
+                    <i class="bi bi-shop"></i>
+                    <span>Stores & Users</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/admin/reports" class="nav-link active">
+                    <i class="bi bi-graph-up"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
+            <div class="nav-item" style="margin-top: auto;">
+                <a href="/logout" class="nav-link logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Top Navbar -->
-        <div class="top-navbar">
-            <div class="page-title">
-                <i class="bi bi-graph-up"></i>
-                <h4>Reports & Analytics</h4>
-            </div>
+        <!-- Top Bar -->
+        <header class="topbar">
+            <h1><i class="bi bi-graph-up me-2"></i>Reports & Analytics</h1>
             <div class="user-info">
-                <div class="user-details">
-                    <div class="name">{{ session.get('username', 'Admin') }}</div>
-                    <div class="role">Administrator</div>
-                </div>
-                <div class="user-avatar">
-                    {{ session.get('username', 'A')[0].upper() }}
-                </div>
+                <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+                <span>Admin User</span>
             </div>
-        </div>
+        </header>
 
-        <!-- Content Area -->
-        <div class="content-area">
-            <!-- Filters -->
-            <div class="filter-section">
-                <div class="filter-title">
-                    <i class="bi bi-funnel"></i>
-                    Filter Reports
+        <!-- Content -->
+        <div class="content-wrapper">
+            <!-- Global Date Filter -->
+            <div class="report-section">
+                <div class="report-header">
+                    <div class="report-title">
+                        <i class="bi bi-calendar-range"></i>
+                        Date Range Selection
+                    </div>
                 </div>
-                <div class="filter-row">
-                    <div>
-                        <label class="form-label">From Date</label>
-                        <input type="date" class="form-control" id="dateFrom" value="{{ date_from }}">
+                <div style="background: #e6f7ff; border-left: 4px solid var(--info-color); padding: 1rem; margin-bottom: 1.5rem; border-radius: 6px;">
+                    <p style="margin: 0; color: var(--text-primary); font-size: 0.9rem;">
+                        <i class="bi bi-info-circle me-2" style="color: var(--info-color);"></i>
+                        <strong>Quick Start:</strong> The date picker is set to today's date by default. Select your desired date range and store, then click "Generate Reports" to view visual analytics and detailed data tables.
+                    </p>
+                </div>
+                <div class="date-filters">
+                    <div class="filter-group">
+                        <label><i class="bi bi-calendar-range me-1"></i>Date Range</label>
+                        <div class="date-input-wrapper">
+                            <input type="text" id="date-range-picker" class="form-control date-range-input" placeholder="Select date range">
+                            <i class="bi bi-calendar3"></i>
+                        </div>
+                        <input type="hidden" id="global-start-date">
+                        <input type="hidden" id="global-end-date">
                     </div>
-                    <div>
-                        <label class="form-label">To Date</label>
-                        <input type="date" class="form-control" id="dateTo" value="{{ date_to }}">
-                    </div>
-                    <div>
-                        <label class="form-label">Store</label>
-                        <select class="form-select" id="storeFilter">
+                    <div class="filter-group">
+                        <label>Store</label>
+                        <select id="global-store" class="form-select">
                             <option value="">All Stores</option>
-                            {% for store in stores %}
-                            <option value="{{ store.store_id }}" {% if selected_store_id and selected_store_id|int == store.store_id %}selected{% endif %}>
-                                {{ store.store_name }}
-                            </option>
-                            {% endfor %}
                         </select>
                     </div>
-                    <div>
-                        <label class="form-label">&nbsp;</label>
-                        <button class="btn btn-apply w-100" onclick="applyFilters()">
-                            <i class="bi bi-filter"></i> Apply Filters
+                    <div style="padding-top: 1.75rem;">
+                        <button class="btn-custom btn-primary-custom" onclick="loadAllReports()">
+                            <i class="bi bi-search"></i>
+                            Generate Reports
+                        </button>
+                        <button class="btn-custom btn-success-custom" onclick="exportAllReports()">
+                            <i class="bi bi-download"></i>
+                            Export
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Stats Overview -->
-            <div class="stats-grid">
-                <div class="stat-card blue">
-                    <div class="stat-header">
-                        <div class="stat-icon blue">
-                            <i class="bi bi-receipt"></i>
-                        </div>
-                    </div>
-                    <div class="stat-details">
-                        <div class="stat-label">Total Bills</div>
-                        <div class="stat-value">{{ sales_overview.total_bills or 0 }}</div>
-                        <div class="stat-subtext">In selected period</div>
-                    </div>
+            <!-- Tabbed Content -->
+            <div class="tabs-container">
+                <!-- Tab Navigation -->
+                <div class="tabs-nav">
+                    <button class="tab-button active" onclick="switchTab('analytics')" id="tab-analytics">
+                        <i class="bi bi-graph-up"></i>
+                        <span>Visual Analytics</span>
+                    </button>
+                    <button class="tab-button" onclick="switchTab('sales')" id="tab-sales">
+                        <i class="bi bi-cash-stack"></i>
+                        <span>Sales Report</span>
+                    </button>
+                    <button class="tab-button" onclick="switchTab('products')" id="tab-products">
+                        <i class="bi bi-box-seam"></i>
+                        <span>Product Sales</span>
+                    </button>
+                    <button class="tab-button" onclick="switchTab('stock')" id="tab-stock">
+                        <i class="bi bi-boxes"></i>
+                        <span>Stock Report</span>
+                    </button>
+                    <button class="tab-button" onclick="switchTab('payments')" id="tab-payments">
+                        <i class="bi bi-credit-card"></i>
+                        <span>Payments</span>
+                    </button>
                 </div>
 
-                <div class="stat-card green">
-                    <div class="stat-header">
-                        <div class="stat-icon green">
-                            <i class="bi bi-currency-rupee"></i>
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Visual Analytics Tab -->
+                    <div class="tab-pane active" id="pane-analytics">
+                        <!-- Summary Cards -->
+                        <div class="summary-cards" id="summary-cards" style="margin-bottom: 2rem;">
+                            <div class="summary-card">
+                                <div class="summary-card-label">Total Sales</div>
+                                <div class="summary-card-value">₹<span id="total-sales">0</span></div>
+                            </div>
+                            <div class="summary-card success">
+                                <div class="summary-card-label">Total Bills</div>
+                                <div class="summary-card-value"><span id="total-bills">0</span></div>
+                            </div>
+                            <div class="summary-card warning">
+                                <div class="summary-card-label">Products Sold</div>
+                                <div class="summary-card-value"><span id="products-sold">0</span></div>
+                            </div>
+                            <div class="summary-card info">
+                                <div class="summary-card-label">Avg Bill Value</div>
+                                <div class="summary-card-value">₹<span id="avg-bill">0</span></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="stat-details">
-                        <div class="stat-label">Total Revenue</div>
-                        <div class="stat-value">{{ currency }}{{ "%.2f"|format(sales_overview.total_sales or 0) }}</div>
-                        <div class="stat-subtext">Gross sales</div>
-                    </div>
-                </div>
 
-                <div class="stat-card orange">
-                    <div class="stat-header">
-                        <div class="stat-icon orange">
-                            <i class="bi bi-credit-card"></i>
-                        </div>
-                    </div>
-                    <div class="stat-details">
-                        <div class="stat-label">Cash Sales</div>
-                        <div class="stat-value">{{ currency }}{{ "%.2f"|format(sales_overview.cash_sales or 0) }}</div>
-                        <div class="stat-subtext">
-                            UPI: {{ currency }}{{ "%.2f"|format(sales_overview.upi_sales or 0) }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-card purple">
-                    <div class="stat-header">
-                        <div class="stat-icon purple">
-                            <i class="bi bi-piggy-bank"></i>
-                        </div>
-                    </div>
-                    <div class="stat-details">
-                        <div class="stat-label">Credit Sales</div>
-                        <div class="stat-value">{{ currency }}{{ "%.2f"|format(sales_overview.credit_sales or 0) }}</div>
-                        <div class="stat-subtext">Outstanding payments</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Store Performance -->
-            <div class="report-card">
-                <div class="report-header">
-                    <div class="report-title">
-                        <i class="bi bi-shop"></i>
-                        Store Performance
-                    </div>
-                    <div class="report-badge">
-                        {{ store_sales|length }} Stores
-                    </div>
-                </div>
-                
-                {% if store_sales %}
-                <div class="table-responsive">
-                    <table class="custom-table">
-                        <thead>
-                            <tr>
-                                <th>Store Name</th>
-                                <th>Total Bills</th>
-                                <th>Total Sales</th>
-                                <th>Avg. Bill Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for store in store_sales %}
-                            <tr class="store-row" onclick="viewStoreBills({{ store.store_id }}, '{{ store.store_name }}')">
-                                <td>
-                                    <div style="display: flex; align-items: center; gap: 10px;">
-                                        <i class="bi bi-shop" style="color: var(--primary-color); font-size: 18px;"></i>
-                                        <strong>{{ store.store_name }}</strong>
+                        <!-- Sales & Payment Charts -->
+                        <div class="charts-grid">
+                            <!-- Sales Trend Chart -->
+                            <div class="chart-container">
+                                <div class="chart-header">
+                                    <div class="chart-title">
+                                        <i class="bi bi-graph-up"></i>
+                                        Sales Trend
                                     </div>
-                                </td>
-                                <td>
-                                    <span class="badge-custom badge-info">
-                                        <i class="bi bi-receipt"></i>
-                                        {{ store.total_bills or 0 }} bills
-                                    </span>
-                                </td>
-                                <td>
-                                    <strong style="font-size: 16px; color: var(--success-color);">
-                                        {{ currency }}{{ "%.2f"|format(store.total_sales or 0) }}
-                                    </strong>
-                                </td>
-                                <td>
-                                    <span class="badge-custom badge-purple">
-                                        {{ currency }}{{ "%.2f"|format(store.avg_bill_value or 0) }}
-                                    </span>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% else %}
-                <div class="no-data">
-                    <i class="bi bi-inbox"></i>
-                    <p>No store data available for the selected period</p>
-                </div>
-                {% endif %}
-            </div>
+                                </div>
+                                <div class="chart-wrapper">
+                                    <canvas id="salesTrendChart"></canvas>
+                                </div>
+                            </div>
 
-            <!-- Top Products -->
-            <div class="report-card">
-                <div class="report-header">
-                    <div class="report-title">
-                        <i class="bi bi-trophy"></i>
-                        Top 10 Products
-                    </div>
-                    <div class="report-badge">
-                        Best Sellers
-                    </div>
-                </div>
-                
-                {% if top_products %}
-                <div class="table-responsive">
-                    <table class="custom-table">
-                        <thead>
-                            <tr>
-                                <th>Rank</th>
-                                <th>Product Name</th>
-                                <th>Category</th>
-                                <th>Quantity Sold</th>
-                                <th>Total Sales</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for product in top_products %}
-                            <tr>
-                                <td>
-                                    {% if loop.index == 1 %}
-                                        <span class="rank-badge rank-1">🥇</span>
-                                    {% elif loop.index == 2 %}
-                                        <span class="rank-badge rank-2">🥈</span>
-                                    {% elif loop.index == 3 %}
-                                        <span class="rank-badge rank-3">🥉</span>
-                                    {% else %}
-                                        <span class="rank-badge rank-other">{{ loop.index }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <strong>{{ product.name }}</strong>
-                                    {% if product.brand %}
-                                    <div style="font-size: 12px; color: #64748b; margin-top: 2px;">
-                                        {{ product.brand }}
+                            <!-- Payment Methods Chart -->
+                            <div class="chart-container">
+                                <div class="chart-header">
+                                    <div class="chart-title">
+                                        <i class="bi bi-credit-card"></i>
+                                        Payment Methods Distribution
                                     </div>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if product.category %}
-                                        <span class="badge-custom badge-success">{{ product.category }}</span>
-                                    {% else %}
-                                        <span style="color: #94a3b8;">Uncategorized</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <span class="badge-custom badge-info">
-                                        {{ "%.2f"|format(product.total_quantity) }} units
-                                    </span>
-                                </td>
-                                <td>
-                                    <strong style="font-size: 16px; color: var(--success-color);">
-                                        {{ currency }}{{ "%.2f"|format(product.total_sales) }}
-                                    </strong>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% else %}
-                <div class="no-data">
-                    <i class="bi bi-inbox"></i>
-                    <p>No product sales data available for the selected period</p>
-                </div>
-                {% endif %}
-            </div>
+                                </div>
+                                <div class="chart-wrapper">
+                                    <canvas id="paymentMethodsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
 
-            <!-- Low Stock Alert -->
-            <div class="report-card">
-                <div class="report-header">
-                    <div class="report-title">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        Low Stock Alert
-                    </div>
-                    <div class="report-badge">
-                        {% if low_stock %}
-                            {{ low_stock|length }} Items
-                        {% else %}
-                            All Good
-                        {% endif %}
-                    </div>
-                </div>
-                
-                {% if low_stock %}
-                <div class="table-responsive">
-                    <table class="custom-table">
-                        <thead>
-                            <tr>
-                                <th>Product Name</th>
-                                <th>Store</th>
-                                <th>Current Stock</th>
-                                <th>Min. Level</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in low_stock %}
-                            <tr>
-                                <td>
-                                    <strong>{{ item.name }}</strong>
-                                    {% if item.brand %}
-                                    <div style="font-size: 12px; color: #64748b; margin-top: 2px;">
-                                        {{ item.brand }}
+                        <!-- Top Products Chart -->
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <div class="chart-title">
+                                    <i class="bi bi-bar-chart-line"></i>
+                                    Top 10 Products by Revenue
+                                </div>
+                            </div>
+                            <div class="chart-wrapper tall">
+                                <canvas id="topProductsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Category & Store Charts -->
+                        <div class="charts-grid">
+                            <!-- Category Distribution -->
+                            <div class="chart-container">
+                                <div class="chart-header">
+                                    <div class="chart-title">
+                                        <i class="bi bi-pie-chart"></i>
+                                        Category Distribution
                                     </div>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <span class="badge-custom badge-info">
+                                </div>
+                                <div class="chart-wrapper">
+                                    <canvas id="categoryChart"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Store Performance -->
+                            <div class="chart-container">
+                                <div class="chart-header">
+                                    <div class="chart-title">
                                         <i class="bi bi-shop"></i>
-                                        {{ item.store_name }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge-custom badge-danger">
-                                        {{ "%.2f"|format(item.quantity) }} units
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge-custom badge-warning">
-                                        {{ "%.2f"|format(item.min_stock_level) }} units
-                                    </span>
-                                </td>
-                                <td>
-                                    {% set deficit = item.min_stock_level - item.quantity %}
-                                    {% if deficit >= item.min_stock_level * 0.5 %}
-                                        <span class="badge-custom badge-danger">
-                                            <i class="bi bi-exclamation-circle"></i> Critical
-                                        </span>
-                                    {% else %}
-                                        <span class="badge-custom badge-warning">
-                                            <i class="bi bi-exclamation-triangle"></i> Low
-                                        </span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                                        Store Performance Comparison
+                                    </div>
+                                </div>
+                                <div class="chart-wrapper">
+                                    <canvas id="storePerformanceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sales Report Tab -->
+                    <div class="tab-pane" id="pane-sales">
+                        <div id="sales-report-content">
+                            <div class="empty-state">
+                                <i class="bi bi-clipboard-data"></i>
+                                <p>Select date range and click "Generate Reports" to view sales data</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Sales Tab -->
+                    <div class="tab-pane" id="pane-products">
+                        <div id="product-report-content">
+                            <div class="empty-state">
+                                <i class="bi bi-box"></i>
+                                <p>Select date range and click "Generate Reports" to view product sales</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stock Report Tab -->
+                    <div class="tab-pane" id="pane-stock">
+                        <div id="stock-report-content">
+                            <div class="empty-state">
+                                <i class="bi bi-archive"></i>
+                                <p>Select date range and click "Generate Reports" to view stock levels</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Methods Tab -->
+                    <div class="tab-pane" id="pane-payments">
+                        <div id="payment-report-content">
+                            <div class="empty-state">
+                                <i class="bi bi-credit-card"></i>
+                                <p>Select date range and click "Generate Reports" to view payment details</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                {% else %}
-                <div class="no-data">
-                    <i class="bi bi-check-circle" style="color: var(--success-color);"></i>
-                    <p style="color: var(--success-color);">All products are adequately stocked!</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bills List Modal -->
+    <div class="modal fade" id="billsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="billsModalTitle">Bills</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                {% endif %}
+                <div class="modal-body" id="billsModalBody">
+                    <!-- Bills list will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
 
-    
-    <!-- Bill Detail Modal -->
-    <div class="modal fade" id="billDetailModal" tabindex="-1" data-bs-backdrop="static" style="z-index: 1060;">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <!-- Bill Details Modal -->
+    <div class="modal fade" id="billDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white;">
-                    <h5 class="modal-title">
-                        <i class="bi bi-receipt"></i>
-                        <span id="billDetailTitle">Bill Details</span>
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="billDetailsModalTitle">Bill Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <div id="billDetailContent">
-                        <div class="text-center py-5">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-3 text-muted">Loading bill details...</p>
-                        </div>
-                    </div>
+                <div class="modal-body" id="billDetailsModalBody">
+                    <!-- Bill details will be loaded here -->
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle"></i> Close
+                    <button type="button" class="btn btn-outline-primary" id="prevBillBtn" onclick="navigateBill('prev')" disabled>
+                        <i class="bi bi-arrow-left"></i> Previous
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-primary" id="nextBillBtn" onclick="navigateBill('next')" disabled>
+                        Next <i class="bi bi-arrow-right"></i>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-<!-- Bills Modal -->
-    <div class="modal fade" id="billsModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-receipt-cutoff"></i>
-                        <span id="modalStoreName">Store Bills</span>
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="billsContent">
-                        <div class="text-center py-5">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-3 text-muted">Loading bills...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        // Set default dates on load
-        window.onload = function() {
-            const dateFrom = document.getElementById('dateFrom');
-            const dateTo = document.getElementById('dateTo');
-            
-            if (!dateFrom.value) {
-                const thirtyDaysAgo = new Date();
-                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-                dateFrom.value = thirtyDaysAgo.toISOString().split('T')[0];
-            }
-            
-            if (!dateTo.value) {
-                dateTo.value = new Date().toISOString().split('T')[0];
-            }
-        };
+        /* ========================================
+           INITIALIZATION & DATE PICKER SETUP
+           ======================================== */
         
-        // Apply filters
-        function applyFilters() {
-            const dateFrom = document.getElementById('dateFrom').value;
-            const dateTo = document.getElementById('dateTo').value;
-            const storeId = document.getElementById('storeFilter').value;
-            
-            const params = new URLSearchParams();
-            if (dateFrom) params.append('date_from', dateFrom);
-            if (dateTo) params.append('date_to', dateTo);
-            if (storeId) params.append('store_id', storeId);
-            
-            window.location.href = '{{ url_for("admin_reports") }}?' + params.toString();
-        }
-        
-        // Animate progress bars
+        // Initialize Flatpickr Date Range Picker - Defaults to Today's Date
         document.addEventListener('DOMContentLoaded', function() {
-            const progressBars = document.querySelectorAll('.progress-fill');
-            progressBars.forEach(bar => {
-                const width = bar.style.width;
-                bar.style.width = '0%';
-                setTimeout(() => {
-                    bar.style.width = width;
-                }, 100);
+            const today = new Date();
+            
+            // Initialize flatpickr with range mode, defaulting to today
+            flatpickr("#date-range-picker", {
+                mode: "range",
+                dateFormat: "Y-m-d",
+                defaultDate: [today, today],
+                showMonths: 2,
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length === 2) {
+                        // Format dates as YYYY-MM-DD
+                        const startDate = selectedDates[0].toISOString().split('T')[0];
+                        const endDate = selectedDates[1].toISOString().split('T')[0];
+                        
+                        // Update hidden inputs
+                        document.getElementById('global-start-date').value = startDate;
+                        document.getElementById('global-end-date').value = endDate;
+                    }
+                },
+                onReady: function(selectedDates, dateStr, instance) {
+                    // Set initial values for hidden inputs
+                    if (selectedDates.length === 2) {
+                        const startDate = selectedDates[0].toISOString().split('T')[0];
+                        const endDate = selectedDates[1].toISOString().split('T')[0];
+                        
+                        document.getElementById('global-start-date').value = startDate;
+                        document.getElementById('global-end-date').value = endDate;
+                    }
+                }
             });
+            
+            loadStores();
+            initializeCharts();
         });
+
+        /* ========================================
+           CHART INITIALIZATION & CONFIGURATION
+           ======================================== */
         
-        // View store bills
-        function viewStoreBills(storeId, storeName) {
-            document.getElementById('modalStoreName').textContent = storeName + ' - Bills';
-            
-            const modal = new bootstrap.Modal(document.getElementById('billsModal'));
-            modal.show();
-            
-            const dateFrom = document.getElementById('dateFrom').value;
-            const dateTo = document.getElementById('dateTo').value;
-            
-            // Format dates for display
-            const dateFromFormatted = new Date(dateFrom).toLocaleDateString('en-IN', { 
-                year: 'numeric', month: 'short', day: 'numeric' 
-            });
-            const dateToFormatted = new Date(dateTo).toLocaleDateString('en-IN', { 
-                year: 'numeric', month: 'short', day: 'numeric' 
-            });
-            
-            // Fetch bills
-            fetch(`/api/store-bills?store_id=${storeId}&date_from=${dateFrom}&date_to=${dateTo}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.bills && data.bills.length > 0) {
-                        let html = `
-                            <div style="background: #f1f5f9; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: #475569;">
-                                <i class="bi bi-calendar-range"></i> 
-                                Showing bills from <strong>${dateFromFormatted}</strong> to <strong>${dateToFormatted}</strong>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="custom-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Bill ID</th>
-                                            <th>Date & Time</th>
-                                            <th>Customer</th>
-                                            <th>Items</th>
-                                            <th>Total Amount</th>
-                                            <th>Payment Mode</th>
-                                            <th>Staff</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                        `;
-                        
-                        data.bills.forEach(bill => {
-                            const date = new Date(bill.created_at);
-                            const formattedDate = date.toLocaleDateString('en-IN');
-                            const formattedTime = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-                            
-                            let paymentModes = [];
-                            if (bill.cash_amount > 0) paymentModes.push(`Cash: {{ currency }}${bill.cash_amount.toFixed(2)}`);
-                            if (bill.upi_amount > 0) paymentModes.push(`UPI: {{ currency }}${bill.upi_amount.toFixed(2)}`);
-                            if (bill.credit_amount > 0) paymentModes.push(`Credit: {{ currency }}${bill.credit_amount.toFixed(2)}`);
-                            
-                            html += `
-                                <tr style="cursor: pointer;" onclick="viewBillDetail(${bill.bill_id})" title="Click to view bill details">
-                                    <td>
-                                        <strong style="color: var(--primary-color);">#${bill.bill_id}</strong>
-                                    </td>
-                                    <td>
-                                        <div>${formattedDate}</div>
-                                        <small style="color: #64748b;">${formattedTime}</small>
-                                    </td>
-                                    <td>
-                                        <strong>${bill.customer_name || 'Walk-in'}</strong>
-                                        ${bill.customer_phone ? `<div style="font-size: 12px; color: #64748b;">${bill.customer_phone}</div>` : ''}
-                                    </td>
-                                    <td>
-                                        <span class="badge-custom badge-info">${bill.total_items} items</span>
-                                    </td>
-                                    <td>
-                                        <strong style="font-size: 16px; color: var(--success-color);">
-                                            {{ currency }}${bill.total_amount.toFixed(2)}
-                                        </strong>
-                                    </td>
-                                    <td>
-                                        ${paymentModes.map(mode => `<div style="font-size: 12px; margin: 2px 0;">${mode}</div>`).join('')}
-                                    </td>
-                                    <td>${bill.staff_name || 'N/A'}</td>
-                                </tr>
-                            `;
-                        });
-                        
-                        html += `
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="mt-4 p-3" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; border: 1px solid #e2e8f0;">
-                                <div class="row">
-                                    <div class="col-md-3 text-center">
-                                        <div class="stat-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Total Bills</div>
-                                        <div class="stat-value" style="font-size: 28px; font-weight: 800; color: #1e293b;">${data.summary.total_bills}</div>
-                                    </div>
-                                    <div class="col-md-3 text-center">
-                                        <div class="stat-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Total Revenue</div>
-                                        <div class="stat-value" style="font-size: 28px; font-weight: 800; color: var(--success-color);">{{ currency }}${data.summary.total_amount.toFixed(2)}</div>
-                                    </div>
-                                    <div class="col-md-3 text-center">
-                                        <div class="stat-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Avg. Bill Value</div>
-                                        <div class="stat-value" style="font-size: 28px; font-weight: 800; color: #4f46e5;">{{ currency }}${data.summary.avg_amount.toFixed(2)}</div>
-                                    </div>
-                                    <div class="col-md-3 text-center">
-                                        <div class="stat-label" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Total Items</div>
-                                        <div class="stat-value" style="font-size: 28px; font-weight: 800; color: #7c3aed;">${data.summary.total_items}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        
-                        document.getElementById('billsContent').innerHTML = html;
-                    } else {
-                        document.getElementById('billsContent').innerHTML = `
-                            <div class="no-data" style="padding: 80px 20px;">
-                                <i class="bi bi-inbox" style="font-size: 72px; color: #cbd5e1; margin-bottom: 20px;"></i>
-                                <h5 style="color: #64748b; font-weight: 600; margin-bottom: 12px;">No Bills Found</h5>
-                                <p style="color: #94a3b8; margin-bottom: 20px;">
-                                    No bills were created for <strong style="color: #64748b;">${storeName}</strong><br>
-                                    between <strong style="color: #64748b;">${dateFromFormatted}</strong> and <strong style="color: #64748b;">${dateToFormatted}</strong>
-                                </p>
-                                <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; max-width: 400px; margin: 0 auto; font-size: 14px; color: #64748b; text-align: left;">
-                                    <div style="font-weight: 600; margin-bottom: 8px;">
-                                        <i class="bi bi-lightbulb"></i> Suggestions:
-                                    </div>
-                                    <ul style="margin: 0; padding-left: 20px;">
-                                        <li>Try expanding the date range</li>
-                                        <li>Check if bills were created for this store</li>
-                                        <li>Verify the store has been active</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        `;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('billsContent').innerHTML = `
-                        <div class="no-data" style="padding: 80px 20px;">
-                            <i class="bi bi-exclamation-triangle" style="font-size: 72px; color: #f59e0b; margin-bottom: 20px;"></i>
-                            <h5 style="color: #dc2626; font-weight: 600; margin-bottom: 12px;">Error Loading Bills</h5>
-                            <p style="color: #64748b; margin-bottom: 20px;">
-                                Unable to fetch bills for this store. Please try again.
-                            </p>
-                            <button class="btn btn-apply" onclick="viewStoreBills(${storeId}, '${storeName}')">
-                                <i class="bi bi-arrow-clockwise"></i> Retry
-                            </button>
-                        </div>
-                    `;
-                });
-        }
-        
-        // View Bill Detail
-        function viewBillDetail(billId) {
-            document.getElementById('billDetailTitle').textContent = `Bill #${billId} - Details`;
-            
-            const modal = new bootstrap.Modal(document.getElementById('billDetailModal'));
-            modal.show();
-            
-            // Fetch bill details
-            fetch(`/api/admin/bill-details/${billId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        document.getElementById('billDetailContent').innerHTML = `
-                            <div class="alert alert-danger">
-                                <i class="bi bi-exclamation-triangle"></i> ${data.error}
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    const date = new Date(data.created_at);
-                    const formattedDate = date.toLocaleDateString('en-IN', { 
-                        year: 'numeric', month: 'long', day: 'numeric' 
-                    });
-                    const formattedTime = date.toLocaleTimeString('en-IN', { 
-                        hour: '2-digit', minute: '2-digit' 
-                    });
-                    
-                    // Parse payment split
-                    let paymentSplit = data.payment_split || {};
-                    if (typeof paymentSplit === 'string') {
-                        try {
-                            paymentSplit = JSON.parse(paymentSplit);
-                        } catch(e) {
-                            paymentSplit = {};
+        // Chart instances - stores references to all Chart.js instances
+        let charts = {
+            salesTrend: null,
+            paymentMethods: null,
+            topProducts: null,
+            category: null,
+            storePerformance: null
+        };
+
+        // Bill navigation state
+        let currentBillsList = [];
+        let currentBillIndex = -1;
+        let billDetailsModalInstance = null;
+
+        // Initialize all charts with default configurations
+        function initializeCharts() {
+            // Sales Trend Chart - Line chart showing daily sales progression
+            const salesTrendCtx = document.getElementById('salesTrendChart').getContext('2d');
+            charts.salesTrend = new Chart(salesTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Sales (₹)',
+                        data: [],
+                        borderColor: 'rgb(66, 153, 225)',
+                        backgroundColor: 'rgba(66, 153, 225, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return '₹' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 10,
+                            right: 10,
+                            bottom: 10,
+                            left: 10
                         }
                     }
+                }
+            });
+
+            // Payment Methods Chart
+            const paymentMethodsCtx = document.getElementById('paymentMethodsChart').getContext('2d');
+            charts.paymentMethods = new Chart(paymentMethodsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cash', 'UPI', 'Card', 'Credit'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: [
+                            'rgba(72, 187, 120, 0.8)',
+                            'rgba(66, 153, 225, 0.8)',
+                            'rgba(159, 122, 234, 0.8)',
+                            'rgba(237, 137, 54, 0.8)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1.5,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 10
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    return label + ': ₹' + value.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 10,
+                            right: 10,
+                            bottom: 10,
+                            left: 10
+                        }
+                    }
+                }
+            });
+
+            // Top Products Chart
+            const topProductsCtx = document.getElementById('topProductsChart').getContext('2d');
+            charts.topProducts = new Chart(topProductsCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [],
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: 'rgb(102, 126, 234)',
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        barThickness: 40
+                    }]
+                },
+                options: {
+                    indexAxis: 'x',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 3,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].label;
+                                },
+                                label: function(context) {
+                                    return 'Revenue: ₹' + context.parsed.y.toLocaleString('en-IN', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    });
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + (value / 1000).toFixed(0) + 'K';
+                                },
+                                font: {
+                                    size: 11
+                                }
+                            },
+                            grid: {
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Revenue (₹)',
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 0,
+                                minRotation: 0,
+                                autoSkip: false,
+                                font: {
+                                    size: 11
+                                },
+                                callback: function(value, index) {
+                                    const label = this.getLabelForValue(value);
+                                    if (label.length > 12) {
+                                        return label.substring(0, 12) + '...';
+                                    }
+                                    return label;
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 20,
+                            right: 20,
+                            bottom: 10,
+                            left: 10
+                        }
+                    }
+                }
+            });
+
+            // Category Chart
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            charts.category = new Chart(categoryCtx, {
+                type: 'pie',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            'rgba(72, 187, 120, 0.8)',
+                            'rgba(66, 153, 225, 0.8)',
+                            'rgba(159, 122, 234, 0.8)',
+                            'rgba(237, 137, 54, 0.8)',
+                            'rgba(229, 62, 62, 0.8)',
+                            'rgba(56, 178, 172, 0.8)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1.5,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 10
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 10,
+                            right: 10,
+                            bottom: 10,
+                            left: 10
+                        }
+                    }
+                }
+            });
+
+            // Store Performance Chart
+            const storePerformanceCtx = document.getElementById('storePerformanceChart').getContext('2d');
+            charts.storePerformance = new Chart(storePerformanceCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Sales (₹)',
+                        data: [],
+                        backgroundColor: 'rgba(72, 187, 120, 0.8)',
+                        borderColor: 'rgb(72, 187, 120)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1.5,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Sales: ₹' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 10,
+                            right: 10,
+                            bottom: 10,
+                            left: 10
+                        }
+                    }
+                }
+            });
+        }
+
+        /* ========================================
+           TAB NAVIGATION
+           ======================================== */
+
+        // Switch between tabs
+        function switchTab(tabName) {
+            // Remove active class from all tabs and panes
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+
+            // Add active class to selected tab and pane
+            document.getElementById('tab-' + tabName).classList.add('active');
+            document.getElementById('pane-' + tabName).classList.add('active');
+        }
+
+        /* ========================================
+           DATA LOADING FUNCTIONS
+           ======================================== */
+
+        // Load stores dropdown - Populates store filter with active stores
+        async function loadStores() {
+            try {
+                const response = await fetch('/api/admin/stores');
+                const stores = await response.json();
+                
+                const select = document.getElementById('global-store');
+                let html = '<option value="">All Stores</option>';
+                stores.forEach(store => {
+                    if (store.is_active) {
+                        html += `<option value="${store.store_id}">${store.store_name}</option>`;
+                    }
+                });
+                select.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading stores:', error);
+            }
+        }
+
+        // Load all reports
+        async function loadAllReports() {
+            const startDate = document.getElementById('global-start-date').value;
+            const endDate = document.getElementById('global-end-date').value;
+            const storeId = document.getElementById('global-store').value;
+            
+            if (!startDate || !endDate) {
+                alert('Please select start and end dates');
+                return;
+            }
+            
+            // Show loading
+            showLoading();
+            
+            // Load all reports
+            await Promise.all([
+                loadSalesReport(startDate, endDate, storeId),
+                loadProductReport(startDate, endDate, storeId),
+                loadStockReport(storeId),
+                loadPaymentReport(startDate, endDate, storeId),
+                loadStorePerformance(startDate, endDate)
+            ]);
+            
+            // Update summary
+            updateSummary();
+        }
+
+        // Load store performance for chart
+        async function loadStorePerformance(startDate, endDate) {
+            try {
+                // If a specific store is selected, don't show store comparison
+                const storeId = document.getElementById('global-store').value;
+                if (storeId) {
+                    charts.storePerformance.data.labels = ['Selected Store'];
+                    charts.storePerformance.data.datasets[0].data = [0];
+                    charts.storePerformance.update();
+                    return;
+                }
+
+                let url = `/api/admin/reports/sales?start_date=${startDate}&end_date=${endDate}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // Group by store if we have store information
+                const storeResponse = await fetch('/api/admin/stores');
+                const stores = await storeResponse.json();
+                
+                const storePerformance = {};
+                
+                // Initialize all stores
+                stores.forEach(store => {
+                    if (store.is_active) {
+                        storePerformance[store.store_name] = 0;
+                    }
+                });
+                
+                // Aggregate sales by store (if store info is available in sales data)
+                // This is a placeholder - adjust based on your actual API structure
+                for (const store of stores) {
+                    if (store.is_active) {
+                        try {
+                            let storeUrl = `/api/admin/reports/sales?start_date=${startDate}&end_date=${endDate}&store_id=${store.store_id}`;
+                            const storeResponse = await fetch(storeUrl);
+                            const storeData = await storeResponse.json();
+                            const totalSales = storeData.reduce((sum, day) => sum + parseFloat(day.total_sales || 0), 0);
+                            storePerformance[store.store_name] = totalSales;
+                        } catch (err) {
+                            console.error(`Error loading data for store ${store.store_name}:`, err);
+                        }
+                    }
+                }
+                
+                const storeLabels = Object.keys(storePerformance);
+                const storeValues = Object.values(storePerformance);
+                
+                charts.storePerformance.data.labels = storeLabels;
+                charts.storePerformance.data.datasets[0].data = storeValues;
+                charts.storePerformance.update();
+                
+            } catch (error) {
+                console.error('Error loading store performance:', error);
+            }
+        }
+
+        // Show loading state
+        function showLoading() {
+            const loadingHtml = '<div class="loading"><i class="bi bi-arrow-repeat"></i><p>Loading data...</p></div>';
+            document.getElementById('sales-report-content').innerHTML = loadingHtml;
+            document.getElementById('product-report-content').innerHTML = loadingHtml;
+            document.getElementById('stock-report-content').innerHTML = loadingHtml;
+            document.getElementById('payment-report-content').innerHTML = loadingHtml;
+        }
+
+        // Load sales report
+        async function loadSalesReport(startDate, endDate, storeId) {
+            try {
+                let url = `/api/admin/reports/sales?start_date=${startDate}&end_date=${endDate}`;
+                if (storeId) url += `&store_id=${storeId}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.length === 0) {
+                    document.getElementById('sales-report-content').innerHTML = 
+                        '<div class="empty-state"><i class="bi bi-clipboard-data"></i><p>No sales data found for selected period</p></div>';
+                    return;
+                }
+                
+                // Update Sales Trend Chart
+                const labels = [];
+                const salesData = [];
+                const paymentData = { cash: 0, upi: 0, card: 0, credit: 0 };
+                
+                data.forEach(row => {
+                    labels.push(new Date(row.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }));
+                    salesData.push(parseFloat(row.total_sales));
+                    paymentData.cash += parseFloat(row.cash_sales || 0);
+                    paymentData.upi += parseFloat(row.upi_sales || 0);
+                    paymentData.card += parseFloat(row.card_sales || 0);
+                    paymentData.credit += parseFloat(row.credit_sales || 0);
+                });
+                
+                charts.salesTrend.data.labels = labels;
+                charts.salesTrend.data.datasets[0].data = salesData;
+                charts.salesTrend.update();
+                
+                // Update Payment Methods Chart
+                charts.paymentMethods.data.datasets[0].data = [
+                    paymentData.cash,
+                    paymentData.upi,
+                    paymentData.card,
+                    paymentData.credit
+                ];
+                charts.paymentMethods.update();
+                
+                let html = `
+                    <div class="table-responsive">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Total Bills</th>
+                                    <th>Total Sales</th>
+                                    <th>Cash</th>
+                                    <th>UPI</th>
+                                    <th>Credit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                data.forEach(row => {
+                    const formattedDate = new Date(row.date).toLocaleDateString('en-GB');
+                    html += `
+                        <tr>
+                            <td>
+                                <a href="javascript:void(0)" 
+                                   onclick="showBillsByDate('${row.date}')" 
+                                   style="color: var(--info-color); text-decoration: underline; cursor: pointer; font-weight: 600;">
+                                    ${formattedDate}
+                                </a>
+                            </td>
+                            <td>${row.total_bills}</td>
+                            <td>₹${parseFloat(row.total_sales).toFixed(2)}</td>
+                            <td>₹${parseFloat(row.cash_sales || 0).toFixed(2)}</td>
+                            <td>₹${parseFloat(row.upi_sales || 0).toFixed(2)}</td>
+                            <td>₹${parseFloat(row.credit_sales || 0).toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table></div>';
+                document.getElementById('sales-report-content').innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading sales report:', error);
+                document.getElementById('sales-report-content').innerHTML = 
+                    '<div class="empty-state text-danger"><i class="bi bi-exclamation-circle"></i><p>Error loading sales report</p></div>';
+            }
+        }
+
+        // Load product report
+        async function loadProductReport(startDate, endDate, storeId) {
+            try {
+                let url = `/api/admin/reports/products?start_date=${startDate}&end_date=${endDate}`;
+                if (storeId) url += `&store_id=${storeId}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.length === 0) {
+                    document.getElementById('product-report-content').innerHTML = 
+                        '<div class="empty-state"><i class="bi bi-box"></i><p>No product sales data found</p></div>';
+                    return;
+                }
+                
+                // Update Top Products Chart (top 10)
+                const top10 = data.slice(0, 10);
+                const productLabels = top10.map(p => p.product_name);
+                const productRevenue = top10.map(p => parseFloat(p.total_revenue));
+                
+                charts.topProducts.data.labels = productLabels;
+                charts.topProducts.data.datasets[0].data = productRevenue;
+                charts.topProducts.update();
+                
+                // Update Category Chart
+                const categoryData = {};
+                data.forEach(row => {
+                    const category = row.category || 'Uncategorized';
+                    if (!categoryData[category]) {
+                        categoryData[category] = 0;
+                    }
+                    categoryData[category] += parseFloat(row.total_revenue);
+                });
+                
+                const categoryLabels = Object.keys(categoryData);
+                const categoryValues = Object.values(categoryData);
+                
+                charts.category.data.labels = categoryLabels;
+                charts.category.data.datasets[0].data = categoryValues;
+                charts.category.update();
+                
+                let html = `
+                    <div class="table-responsive">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Brand</th>
+                                    <th>Category</th>
+                                    <th>Quantity Sold</th>
+                                    <th>Total Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                data.forEach(row => {
+                    html += `
+                        <tr>
+                            <td>${row.product_name}</td>
+                            <td>${row.brand || 'N/A'}</td>
+                            <td>${row.category || 'N/A'}</td>
+                            <td>${parseFloat(row.total_quantity).toFixed(2)}</td>
+                            <td>₹${parseFloat(row.total_revenue).toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table></div>';
+                document.getElementById('product-report-content').innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading product report:', error);
+                document.getElementById('product-report-content').innerHTML = 
+                    '<div class="empty-state text-danger"><i class="bi bi-exclamation-circle"></i><p>Error loading product report</p></div>';
+            }
+        }
+
+        // Load stock report
+        async function loadStockReport(storeId) {
+            try {
+                let url = '/api/admin/reports/stock';
+                if (storeId) url += `?store_id=${storeId}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.length === 0) {
+                    document.getElementById('stock-report-content').innerHTML = 
+                        '<div class="empty-state"><i class="bi bi-archive"></i><p>No stock data found</p></div>';
+                    return;
+                }
+                
+                let html = `
+                    <div class="table-responsive">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Brand</th>
+                                    <th>Category</th>
+                                    <th>Store</th>
+                                    <th>Current Stock</th>
+                                    <th>Min Level</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                data.forEach(row => {
+                    const qty = parseFloat(row.quantity || 0);
+                    const minLevel = parseFloat(row.min_stock_level || 0);
+                    const status = qty <= minLevel ? 
+                        '<span style="color: var(--danger-color); font-weight: 600;">Low Stock</span>' : 
+                        '<span style="color: var(--success-color); font-weight: 600;">OK</span>';
                     
-                    let html = `
-                        <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div style="margin-bottom: 12px;">
-                                        <div style="font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Bill Number</div>
-                                        <div style="font-size: 18px; font-weight: 700; color: var(--primary-color);">${data.bill_number || '#' + data.bill_id}</div>
-                                    </div>
-                                    <div style="margin-bottom: 12px;">
-                                        <div style="font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Date & Time</div>
-                                        <div style="font-size: 14px; font-weight: 600;">${formattedDate} at ${formattedTime}</div>
-                                    </div>
-                                    <div style="margin-bottom: 12px;">
-                                        <div style="font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Store</div>
-                                        <div style="font-size: 14px; font-weight: 600;">${data.store_name || 'N/A'}</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div style="margin-bottom: 12px;">
-                                        <div style="font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Customer</div>
-                                        <div style="font-size: 14px; font-weight: 600;">${data.customer_name || 'Walk-in Customer'}</div>
-                                        ${data.customer_contact ? `<div style="font-size: 12px; color: #64748b;">${data.customer_contact}</div>` : ''}
-                                    </div>
-                                    <div style="margin-bottom: 12px;">
-                                        <div style="font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Staff</div>
-                                        <div style="font-size: 14px; font-weight: 600;">${data.staff_name || 'N/A'}</div>
-                                    </div>
-                                </div>
-                            </div>
+                    html += `
+                        <tr>
+                            <td>${row.product_name}</td>
+                            <td>${row.brand || 'N/A'}</td>
+                            <td>${row.category || 'N/A'}</td>
+                            <td>${row.store_name}</td>
+                            <td>${qty.toFixed(2)}</td>
+                            <td>${minLevel.toFixed(2)}</td>
+                            <td>${status}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table></div>';
+                document.getElementById('stock-report-content').innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading stock report:', error);
+                document.getElementById('stock-report-content').innerHTML = 
+                    '<div class="empty-state text-danger"><i class="bi bi-exclamation-circle"></i><p>Error loading stock report</p></div>';
+            }
+        }
+
+        // Load payment methods report
+        async function loadPaymentReport(startDate, endDate, storeId) {
+            try {
+                let url = `/api/admin/reports/sales?start_date=${startDate}&end_date=${endDate}`;
+                if (storeId) url += `&store_id=${storeId}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // Aggregate payment data
+                let totalCash = 0, totalUPI = 0, totalCredit = 0;
+                data.forEach(row => {
+                    totalCash += parseFloat(row.cash_sales || 0);
+                    totalUPI += parseFloat(row.upi_sales || 0);
+                    totalCredit += parseFloat(row.credit_sales || 0);
+                });
+                
+                const total = totalCash + totalUPI + totalCredit;
+                
+                let html = `
+                    <div class="summary-cards">
+                        <div class="summary-card success">
+                            <div class="summary-card-label">Cash Payments</div>
+                            <div class="summary-card-value">₹${totalCash.toFixed(2)}</div>
+                            <small>${total > 0 ? ((totalCash / total) * 100).toFixed(1) : 0}% of total</small>
                         </div>
-                        
-                        <h6 style="font-weight: 700; margin-bottom: 16px; color: #1e293b;">
-                            <i class="bi bi-cart3"></i> Items (${data.items.length})
-                        </h6>
-                        
-                        <div class="table-responsive" style="margin-bottom: 24px;">
-                            <table class="custom-table">
+                        <div class="summary-card info">
+                            <div class="summary-card-label">UPI Payments</div>
+                            <div class="summary-card-value">₹${totalUPI.toFixed(2)}</div>
+                            <small>${total > 0 ? ((totalUPI / total) * 100).toFixed(1) : 0}% of total</small>
+                        </div>
+                        <div class="summary-card warning">
+                            <div class="summary-card-label">Credit Sales</div>
+                            <div class="summary-card-value">₹${totalCredit.toFixed(2)}</div>
+                            <small>${total > 0 ? ((totalCredit / total) * 100).toFixed(1) : 0}% of total</small>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('payment-report-content').innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading payment report:', error);
+                document.getElementById('payment-report-content').innerHTML = 
+                    '<div class="empty-state text-danger"><i class="bi bi-exclamation-circle"></i><p>Error loading payment report</p></div>';
+            }
+        }
+
+        // Update summary cards
+        async function updateSummary() {
+            try {
+                const startDate = document.getElementById('global-start-date').value;
+                const endDate = document.getElementById('global-end-date').value;
+                const storeId = document.getElementById('global-store').value;
+                
+                let url = `/api/admin/reports/sales?start_date=${startDate}&end_date=${endDate}`;
+                if (storeId) url += `&store_id=${storeId}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                let totalSales = 0, totalBills = 0;
+                data.forEach(row => {
+                    totalSales += parseFloat(row.total_sales || 0);
+                    totalBills += parseInt(row.total_bills || 0);
+                });
+                
+                // Get product count
+                let productUrl = `/api/admin/reports/products?start_date=${startDate}&end_date=${endDate}`;
+                if (storeId) productUrl += `&store_id=${storeId}`;
+                const productResponse = await fetch(productUrl);
+                const productData = await productResponse.json();
+                const productsSold = productData.length;
+                
+                const avgBill = totalBills > 0 ? totalSales / totalBills : 0;
+                
+                document.getElementById('total-sales').textContent = totalSales.toFixed(2);
+                document.getElementById('total-bills').textContent = totalBills;
+                document.getElementById('products-sold').textContent = productsSold;
+                document.getElementById('avg-bill').textContent = avgBill.toFixed(2);
+                
+            } catch (error) {
+                console.error('Error updating summary:', error);
+            }
+        }
+
+        // Export all reports (placeholder)
+        function exportAllReports() {
+            alert('Export functionality will download all reports as Excel/PDF');
+            // TODO: Implement actual export
+        }
+
+        // Show bills for a specific date
+        async function showBillsByDate(date) {
+            try {
+                const storeId = document.getElementById('global-store').value;
+                let url = `/api/admin/reports/bills-by-date?date=${date}`;
+                if (storeId) url += `&store_id=${storeId}`;
+                
+                const response = await fetch(url);
+                const bills = await response.json();
+                
+                // Store bills for navigation
+                currentBillsList = bills;
+                
+                const modal = new bootstrap.Modal(document.getElementById('billsModal'));
+                document.getElementById('billsModalTitle').textContent = `Bills for ${new Date(date).toLocaleDateString('en-GB')}`;
+                
+                if (bills.length === 0) {
+                    document.getElementById('billsModalBody').innerHTML = 
+                        '<div class="empty-state"><i class="bi bi-receipt"></i><p>No bills found for this date</p></div>';
+                } else {
+                    let html = `
+                        <div class="table-responsive">
+                            <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Product</th>
-                                        <th class="text-end">Qty</th>
-                                        <th class="text-end">Unit Price</th>
-                                        <th class="text-end">Discount</th>
-                                        <th class="text-end">Total</th>
+                                        <th>Bill #</th>
+                                        <th>Customer</th>
+                                        <th>Contact</th>
+                                        <th>Amount</th>
+                                        <th>Time</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                     `;
                     
-                    data.items.forEach((item, index) => {
+                    bills.forEach((bill, index) => {
+                        const time = new Date(bill.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
                         html += `
                             <tr>
-                                <td>${index + 1}</td>
+                                <td><strong>${bill.bill_number}</strong></td>
+                                <td>${bill.customer_name || 'Walk-in'}</td>
+                                <td>${bill.customer_contact || '-'}</td>
+                                <td><strong>₹${parseFloat(bill.total_amount).toFixed(2)}</strong></td>
+                                <td>${time}</td>
                                 <td>
-                                    <strong>${item.product_name}</strong>
-                                    ${item.brand ? `<div style="font-size: 11px; color: #64748b;">${item.brand}</div>` : ''}
+                                    <button class="btn btn-sm btn-primary" onclick="showBillDetails(${bill.bill_id}, ${index})">
+                                        <i class="bi bi-eye"></i> View
+                                    </button>
                                 </td>
-                                <td class="text-end">${item.quantity} ${item.unit || 'pcs'}</td>
-                                <td class="text-end">{{ currency }}${item.unit_price.toFixed(2)}</td>
-                                <td class="text-end">${item.item_discount > 0 ? '{{ currency }}' + item.item_discount.toFixed(2) : '-'}</td>
-                                <td class="text-end"><strong>{{ currency }}${item.total.toFixed(2)}</strong></td>
                             </tr>
                         `;
                     });
                     
+                    html += '</tbody></table></div>';
+                    document.getElementById('billsModalBody').innerHTML = html;
+                }
+                
+                modal.show();
+                
+            } catch (error) {
+                console.error('Error loading bills:', error);
+                alert('Error loading bills for this date');
+            }
+        }
+
+        // Show bill details
+        async function showBillDetails(billId, billIndex = -1) {
+            try {
+                // Set current index for navigation
+                currentBillIndex = billIndex;
+                
+                const response = await fetch(`/api/admin/reports/bill-details/${billId}`);
+                const bill = await response.json();
+                
+                if (bill.error) {
+                    alert('Error loading bill details');
+                    return;
+                }
+                
+                // Initialize modal instance only once
+                if (!billDetailsModalInstance) {
+                    billDetailsModalInstance = new bootstrap.Modal(document.getElementById('billDetailsModal'));
+                }
+                
+                document.getElementById('billDetailsModalTitle').textContent = 'Bill Details';
+                
+                // Update navigation buttons
+                updateNavigationButtons();
+                
+                // Parse payment split
+                let paymentHtml = '';
+                if (bill.payment_split) {
+                    const payments = typeof bill.payment_split === 'string' ? JSON.parse(bill.payment_split) : bill.payment_split;
+                    if (payments.cash && payments.cash > 0) {
+                        paymentHtml += `<div class="payment-badge cash"><i class="bi bi-cash-coin"></i> Cash: ₹${parseFloat(payments.cash).toFixed(2)}</div>`;
+                    }
+                    if (payments.upi && payments.upi > 0) {
+                        paymentHtml += `<div class="payment-badge upi"><i class="bi bi-phone"></i> UPI: ₹${parseFloat(payments.upi).toFixed(2)}</div>`;
+                    }
+                    if (payments.card && payments.card > 0) {
+                        paymentHtml += `<div class="payment-badge card"><i class="bi bi-credit-card"></i> Card: ₹${parseFloat(payments.card).toFixed(2)}</div>`;
+                    }
+                    if (payments.credit && payments.credit > 0) {
+                        paymentHtml += `<div class="payment-badge credit"><i class="bi bi-wallet2"></i> Credit: ₹${parseFloat(payments.credit).toFixed(2)}</div>`;
+                    }
+                }
+                
+                const billDate = new Date(bill.created_at);
+                const formattedDate = billDate.toLocaleDateString('en-GB', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    year: 'numeric' 
+                });
+                const formattedTime = billDate.toLocaleTimeString('en-GB', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                let html = `
+                    <div class="bill-details-header">
+                        <h5><i class="bi bi-receipt"></i> ${bill.bill_number}</h5>
+                        <div class="bill-number">${formattedDate} at ${formattedTime}</div>
+                    </div>
+                    
+                    <div class="bill-info-card">
+                        <div class="bill-info-row">
+                            <div class="bill-info-item">
+                                <div class="bill-info-label"><i class="bi bi-person"></i> Customer</div>
+                                <div class="bill-info-value">${bill.customer_name || 'Walk-in Customer'}</div>
+                            </div>
+                            <div class="bill-info-item">
+                                <div class="bill-info-label"><i class="bi bi-telephone"></i> Contact</div>
+                                <div class="bill-info-value">${bill.customer_contact || 'N/A'}</div>
+                            </div>
+                            <div class="bill-info-item">
+                                <div class="bill-info-label"><i class="bi bi-person-badge"></i> Staff</div>
+                                <div class="bill-info-value">${bill.staff_name || 'N/A'}</div>
+                            </div>
+                        </div>
+                        
+                        ${paymentHtml ? `
+                        <div class="bill-info-item" style="margin-top: 1rem;">
+                            <div class="bill-info-label"><i class="bi bi-credit-card"></i> Payment Methods</div>
+                            <div class="payment-badges" style="margin-top: 0.5rem;">
+                                ${paymentHtml}
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="items-section">
+                        <div class="items-header">
+                            <i class="bi bi-box-seam"></i> Items (${bill.items.length})
+                        </div>
+                        <div class="table-responsive">
+                            <table class="bill-items-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th style="text-align: center;">Qty</th>
+                                        <th style="text-align: right;">Price</th>
+                                        <th style="text-align: right;">Discount</th>
+                                        <th style="text-align: right;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+                
+                bill.items.forEach((item, index) => {
                     html += `
+                        <tr>
+                            <td>
+                                <div style="font-weight: 500;">${item.product_name}</div>
+                                ${item.product_brand ? `<div style="font-size: 0.85rem; color: #6c757d;">${item.product_brand}</div>` : ''}
+                            </td>
+                            <td style="text-align: center;">${parseFloat(item.quantity).toFixed(2)}</td>
+                            <td style="text-align: right;">₹${parseFloat(item.unit_price).toFixed(2)}</td>
+                            <td style="text-align: right; color: ${parseFloat(item.item_discount || 0) > 0 ? '#dc3545' : '#6c757d'};">
+                                ${parseFloat(item.item_discount || 0) > 0 ? '-' : ''}₹${parseFloat(item.item_discount || 0).toFixed(2)}
+                            </td>
+                            <td style="text-align: right; font-weight: 600;">₹${parseFloat(item.total).toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
                                 </tbody>
                             </table>
                         </div>
-                        
-                        <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 2px solid #e2e8f0;">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6 style="font-weight: 700; margin-bottom: 16px; color: #1e293b;">
-                                        <i class="bi bi-credit-card"></i> Payment Details
-                                    </h6>
-                                    ${paymentSplit.cash ? `<div style="margin-bottom: 8px;"><span style="color: #64748b;">Cash:</span> <strong style="color: var(--success-color);">{{ currency }}${parseFloat(paymentSplit.cash).toFixed(2)}</strong></div>` : ''}
-                                    ${paymentSplit.upi ? `<div style="margin-bottom: 8px;"><span style="color: #64748b;">UPI:</span> <strong style="color: var(--success-color);">{{ currency }}${parseFloat(paymentSplit.upi).toFixed(2)}</strong></div>` : ''}
-                                    ${paymentSplit.credit ? `<div style="margin-bottom: 8px;"><span style="color: #64748b;">Credit:</span> <strong style="color: var(--warning-color);">{{ currency }}${parseFloat(paymentSplit.credit).toFixed(2)}</strong></div>` : ''}
-                                    ${paymentSplit.credit_note ? `<div style="margin-bottom: 8px;"><span style="color: #64748b;">Credit note used:</span> <strong style="color: var(--warning-color);">{{ currency }}${parseFloat(paymentSplit.credit_note).toFixed(2)}</strong></div>` : ''}
-                                    ${data.notes ? `<div style="margin-top: 16px; padding: 12px; background: white; border-radius: 8px; border-left: 3px solid var(--primary-color);"><strong style="font-size: 12px; color: #64748b;">Notes:</strong><div style="margin-top: 4px;">${data.notes}</div></div>` : ''}
-                                </div>
-                                <div class="col-md-6">
-                                    <div style="background: white; padding: 16px; border-radius: 8px;">
-                                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                                            <span style="color: #64748b;">Subtotal:</span>
-                                            <strong>{{ currency }}${data.subtotal.toFixed(2)}</strong>
-                                        </div>
-                                        ${data.discount_amount > 0 ? `
-                                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; color: var(--danger-color);">
-                                            <span>Discount:</span>
-                                            <strong>- {{ currency }}${data.discount_amount.toFixed(2)}</strong>
-                                        </div>` : ''}
-                                        <hr style="margin: 16px 0; border-top: 2px solid #e2e8f0;">
-                                        <div style="display: flex; justify-content: space-between; font-size: 20px;">
-                                            <strong style="color: #1e293b;">Total:</strong>
-                                            <strong style="color: var(--success-color);">{{ currency }}${data.total_amount.toFixed(2)}</strong>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    </div>
                     
-                    document.getElementById('billDetailContent').innerHTML = html;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('billDetailContent').innerHTML = `
-                        <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-triangle"></i> Error loading bill details. Please try again.
+                    <div class="bill-summary">
+                        <div class="bill-summary-row">
+                            <span>Subtotal</span>
+                            <span>₹${parseFloat(bill.subtotal).toFixed(2)}</span>
+                        </div>
+                        <div class="bill-summary-row" style="color: ${parseFloat(bill.discount_amount || 0) > 0 ? '#dc3545' : '#6c757d'};">
+                            <span>Discount</span>
+                            <span>${parseFloat(bill.discount_amount || 0) > 0 ? '-' : ''}₹${parseFloat(bill.discount_amount || 0).toFixed(2)}</span>
+                        </div>
+                        <div class="bill-summary-row total">
+                            <span>Total Amount</span>
+                            <span>₹${parseFloat(bill.total_amount).toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+                
+                if (bill.notes) {
+                    html += `
+                        <div class="bill-notes">
+                            <div class="bill-notes-label"><i class="bi bi-sticky"></i> Notes</div>
+                            <p class="bill-notes-text">${bill.notes}</p>
                         </div>
                     `;
-                });
+                }
+                
+                document.getElementById('billDetailsModalBody').innerHTML = html;
+                
+                // Only show modal if it's not already visible
+                const modalElement = document.getElementById('billDetailsModal');
+                if (!modalElement.classList.contains('show')) {
+                    billDetailsModalInstance.show();
+                }
+                
+            } catch (error) {
+                console.error('Error loading bill details:', error);
+                alert('Error loading bill details');
+            }
+        }
+
+        // Update navigation button states
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBillBtn');
+            const nextBtn = document.getElementById('nextBillBtn');
+            
+            // If no bills list or index not set, disable both
+            if (currentBillsList.length === 0 || currentBillIndex === -1) {
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+                return;
+            }
+            
+            // Enable/disable based on position in list
+            prevBtn.disabled = currentBillIndex <= 0;
+            nextBtn.disabled = currentBillIndex >= currentBillsList.length - 1;
+        }
+
+        // Navigate between bills
+        function navigateBill(direction) {
+            if (currentBillsList.length === 0 || currentBillIndex === -1) {
+                return;
+            }
+            
+            let newIndex = currentBillIndex;
+            
+            if (direction === 'prev' && currentBillIndex > 0) {
+                newIndex = currentBillIndex - 1;
+            } else if (direction === 'next' && currentBillIndex < currentBillsList.length - 1) {
+                newIndex = currentBillIndex + 1;
+            } else {
+                return; // No navigation needed
+            }
+            
+            // Get the bill ID from the list
+            const bill = currentBillsList[newIndex];
+            showBillDetails(bill.bill_id, newIndex);
         }
     </script>
 </body>

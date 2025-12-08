@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Notes - Hardware Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+        
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .navbar-brand i {
+            font-size: 28px;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .navbar-menu a {
+            color: #4a5568;
+            text-decoration: none;
+            padding: 20px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .navbar-menu a:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .navbar-menu a.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .container { 
+            max-width: 1400px; 
+            margin: 40px auto; 
+            padding: 0 20px; 
+        }
+        
+        .page-header { 
+            margin-bottom: 30px; 
+        }
+        
+        .page-header h1 { 
+            font-size: 36px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .page-header p {
+            font-size: 16px;
+            color: #6b7280;
+        }
+        
+        .grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+        }
+        
+        .panel { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+        }
+        
+        .panel h2 { 
+            color: #1f2937;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px; 
+            border-bottom: 2px solid #e5e7eb; 
+            padding-bottom: 10px; 
+        }
+        
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #374151; 
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .form-group input, 
+        .form-group select { 
+            width: 100%; 
+            padding: 12px 16px; 
+            border: 2px solid #e5e7eb; 
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .btn { 
+            padding: 12px 24px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success { 
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%); 
+        }
+        
+        .btn-success:hover { 
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px; 
+        }
+        
+        table thead {
+            background: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        table th { 
+            padding: 12px 16px; 
+            text-align: left; 
+            font-size: 13px;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        table td { 
+            padding: 12px 16px; 
+            border-bottom: 1px solid #f3f4f6;
+            color: #374151;
+        }
+        
+        table tbody tr:hover {
+            background: #f9fafb;
+        }
+        
+        .badge { 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .badge-warning { 
+            background: #fef3c7; 
+            color: #92400e; 
+        }
+        
+        .badge-success { 
+            background: #d1fae5; 
+            color: #065f46; 
+        }
+        
+        .badge-gray { 
+            background: #e5e7eb; 
+            color: #6b7280; 
+        }
+        
+        .alert { 
+            padding: 16px 20px; 
+            border-radius: 12px; 
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert-success { 
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: white;
+            display: flex;
+        }
+        
+        .alert-danger { 
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            color: white;
+            display: flex;
+        }
+        
+        .customer-info {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 1024px) { 
+            .grid { 
+                grid-template-columns: 1fr; 
+            }
+            
+            .navbar-menu a span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-store"></i>
+                <span>Hardware Store</span>
+            </div>
+            <div class="navbar-menu">
+                <a href="/staff/dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/billing">
+                    <i class="fas fa-cash-register"></i>
+                    <span>Billing</span>
+                </a>
+                <a href="/inventory">
+                    <i class="fas fa-boxes"></i>
+                    <span>Inventory</span>
+                </a>
+                <a href="/stock_update">
+                    <i class="fas fa-truck-loading"></i>
+                    <span>Stock</span>
+                </a>
+                <a href="/credit_notes" class="active">
+                    <i class="fas fa-undo"></i>
+                    <span>Returns</span>
+                </a>
+                <a href="/customers">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
+                </a>
+                <a href="/reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+				<a href="/quotations">
+                    <i class="fas fa-undo"></i>
+                    <span>quotation</span>
+                </a>
+                <a href="/logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-undo"></i> Credit Notes</h1>
+            <p>Process returns and issue credit notes</p>
+        </div>
+        
+        <div id="alertMessage" class="alert"></div>
+        
+        <div class="grid">
+            <div class="panel">
+                <h2>Process Return</h2>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> Customer Mobile *</label>
+                    <input type="text" id="customerMobile" placeholder="Enter mobile number">
+                </div>
+                <button class="btn" onclick="searchCustomer()">
+                    <i class="fas fa-search"></i> Search Customer
+                </button>
+                
+                <div id="customerInfo" style="display: none; margin-top: 20px;">
+                    <div class="customer-info">
+                        <p><strong>Customer:</strong> <span id="customerName"></span></p>
+                        <p><strong>Mobile:</strong> <span id="customerMobileDisplay"></span></p>
+                    </div>
+                    <input type="hidden" id="customerId">
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-file-invoice"></i> Select Bill *</label>
+                        <select id="billSelect" onchange="loadBillItems()">
+                            <option value="">Choose a bill</option>
+                        </select>
+                    </div>
+                    
+                    <div id="billItems" style="display: none;">
+                        <h3 style="margin: 20px 0 10px; font-size: 16px; color: #1f2937;">Items in Bill</h3>
+                        <table id="itemsTable">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Sold Qty</th>
+                                    <th>Rate</th>
+                                    <th>Return Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsBody"></tbody>
+                        </table>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: #f9fafb; border-radius: 10px; text-align: right;">
+                            <strong style="font-size: 18px; color: #667eea;">Total Credit: ₹<span id="totalCredit">0.00</span></strong>
+                        </div>
+                        
+                        <button class="btn btn-success" onclick="processCreditNote()" style="margin-top: 15px; width: 100%;">
+                            <i class="fas fa-check-circle"></i> Issue Credit Note
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <h2>Recent Credit Notes</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CN #</th>
+                            <th>Customer</th>
+                            <th>Total</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="creditNotesTable">
+                        <tr><td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
+                            <p>Loading...</p>
+                        </td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentBillItems = [];
+        let currentCustomerId = null;
+        let currentSaleId = null;
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return 'Invalid Date';
+            return date.toLocaleDateString('en-IN', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric'
+            });
+        }
+        
+        async function searchCustomer() {
+            const mobile = document.getElementById('customerMobile').value;
+            if (!mobile) {
+                showAlert('Please enter mobile number', 'danger');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/customers/search?mobile=${mobile}`);
+                const data = await response.json();
+                
+                if (data.found) {
+                    currentCustomerId = data.customer.customer_id;
+                    document.getElementById('customerId').value = data.customer.customer_id;
+                    document.getElementById('customerName').textContent = data.customer.customer_name;
+                    document.getElementById('customerMobileDisplay').textContent = mobile;
+                    document.getElementById('customerInfo').style.display = 'block';
+                    
+                    await loadCustomerBills(data.customer.customer_id);
+                } else {
+                    showAlert('Customer not found', 'danger');
+                    document.getElementById('customerInfo').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error searching customer:', error);
+                showAlert('Error searching customer', 'danger');
+            }
+        }
+        
+        async function loadCustomerBills(customerId) {
+            try {
+                const response = await fetch(`/api/customers/${customerId}/bills`);
+                const bills = await response.json();
+                
+                const select = document.getElementById('billSelect');
+                select.innerHTML = '<option value="">Choose a bill</option>' + 
+                    bills.map(b => `
+                        <option value="${b.sale_id}">
+                            Bill #${b.bill_number} - ${formatDate(b.created_at)} - ₹${parseFloat(b.total_amount).toFixed(2)}
+                        </option>
+                    `).join('');
+            } catch (error) {
+                console.error('Error loading bills:', error);
+                showAlert('Error loading bills', 'danger');
+            }
+        }
+        
+        async function loadBillItems() {
+            const saleId = document.getElementById('billSelect').value;
+            if (!saleId) {
+                document.getElementById('billItems').style.display = 'none';
+                return;
+            }
+            
+            currentSaleId = saleId;
+            
+            try {
+                const response = await fetch(`/api/sales/${saleId}/with-returns`);
+                const sale = await response.json();
+                currentBillItems = sale.items;
+                
+                const tbody = document.getElementById('itemsBody');
+                tbody.innerHTML = sale.items.map((item, idx) => {
+                    const price = parseFloat(item.price || item.rate || 0);
+                    const originalQty = parseFloat(item.quantity);
+                    const alreadyReturned = parseFloat(item.already_returned || 0);
+                    const returnableQty = parseFloat(item.returnable_quantity || 0);
+                    
+                    // Determine if item can be returned
+                    const canReturn = returnableQty > 0;
+                    const statusBadge = alreadyReturned > 0 ? 
+                        `<span style="background: #fee2e2; color: #dc2626; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">
+                            ${alreadyReturned.toFixed(2)} already returned
+                        </span>` : '';
+                    
+                    return `
+                        <tr style="${!canReturn ? 'opacity: 0.5; background: #f9fafb;' : ''}">
+                            <td>
+                                <strong>${item.product_name}</strong>${item.brand ? ' - ' + item.brand : ''}<br>
+                                ${statusBadge}
+                            </td>
+                            <td>
+                                ${originalQty.toFixed(2)} ${item.unit || ''}<br>
+                                ${alreadyReturned > 0 ? `<small style="color: #dc2626;">Returnable: ${returnableQty.toFixed(2)}</small>` : ''}
+                            </td>
+                            <td>₹${price.toFixed(2)}</td>
+                            <td>
+                                <input type="number" 
+                                       id="return_qty_${idx}" 
+                                       value="0" 
+                                       min="0" 
+                                       max="${returnableQty}" 
+                                       step="0.01" 
+                                       oninput="calculateCredit()" 
+                                       ${!canReturn ? 'disabled' : ''}
+                                       style="width: 100px; padding: 8px; border: 2px solid ${!canReturn ? '#e5e7eb' : '#e5e7eb'}; 
+                                              border-radius: 8px; background: ${!canReturn ? '#f3f4f6' : 'white'};"
+                                       title="${!canReturn ? 'This item has been fully returned' : 'Enter quantity to return'}">
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+                
+                document.getElementById('billItems').style.display = 'block';
+                calculateCredit();
+            } catch (error) {
+                console.error('Error loading bill items:', error);
+                showAlert('Error loading bill items', 'danger');
+            }
+        }
+        
+        function calculateCredit() {
+            let total = 0;
+            currentBillItems.forEach((item, idx) => {
+                const returnQty = parseFloat(document.getElementById(`return_qty_${idx}`).value) || 0;
+                const price = parseFloat(item.price || item.rate || 0);
+                total += returnQty * price;
+            });
+            document.getElementById('totalCredit').textContent = total.toFixed(2);
+        }
+        
+        async function processCreditNote() {
+            const items = [];
+            let hasError = false;
+            
+            currentBillItems.forEach((item, idx) => {
+                const returnQty = parseFloat(document.getElementById(`return_qty_${idx}`).value) || 0;
+                const returnableQty = parseFloat(item.returnable_quantity || 0);
+                
+                // Validate return quantity
+                if (returnQty > returnableQty) {
+                    showAlert(`Cannot return ${returnQty} of ${item.product_name}. Only ${returnableQty} available to return.`, 'danger');
+                    hasError = true;
+                    return;
+                }
+                
+                if (returnQty > 0) {
+                    const price = parseFloat(item.price || item.rate || 0);
+                    items.push({
+                        product_id: item.product_id,
+                        return_qty: returnQty,
+                        original_rate: price
+                    });
+                }
+            });
+            
+            if (hasError) {
+                return;
+            }
+            
+            if (items.length === 0) {
+                showAlert('Please enter return quantities', 'danger');
+                return;
+            }
+            
+            const data = {
+                customer_id: currentCustomerId,
+                sale_id: currentSaleId,
+                items: items
+            };
+            
+            try {
+                const response = await fetch('/api/credit_notes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Credit note issued successfully! CN #' + result.credit_note_id, 'success');
+                    document.getElementById('customerInfo').style.display = 'none';
+                    document.getElementById('customerMobile').value = '';
+                    currentCustomerId = null;
+                    currentSaleId = null;
+                    currentBillItems = [];
+                    loadCreditNotes();
+                } else {
+                    showAlert('Error: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error processing credit note:', error);
+                showAlert('Error processing credit note', 'danger');
+            }
+        }
+        
+        async function loadCreditNotes() {
+            try {
+                const response = await fetch('/api/credit_notes');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const creditNotes = await response.json();
+                console.log('Credit notes loaded:', creditNotes);
+                
+                const tbody = document.getElementById('creditNotesTable');
+                
+                if (creditNotes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">No credit notes found</td></tr>';
+                } else {
+                    tbody.innerHTML = creditNotes.map(cn => {
+                        const amount = parseFloat(cn.amount || cn.total_amount || 0);
+                        const remaining = parseFloat(cn.remaining_balance || 0);
+                        
+                        let badgeClass = 'badge-success';
+                        let statusText = 'Active';
+                        
+                        if (remaining <= 0) {
+                            badgeClass = 'badge-gray';
+                            statusText = 'Used';
+                        } else if (remaining > 0 && remaining < amount) {
+                            badgeClass = 'badge-warning';
+                            statusText = 'Partial';
+                        }
+                        
+                        return `
+                            <tr style="${remaining <= 0 ? 'opacity: 0.6;' : ''}">
+                                <td><strong>#${cn.credit_number || cn.credit_id}</strong></td>
+                                <td>
+                                    ${cn.customer_name || 'N/A'}<br>
+                                    <small style="color: #6b7280;">${cn.mobile || ''}</small>
+                                </td>
+                                <td><strong>₹${amount.toFixed(2)}</strong></td>
+                                <td><strong style="color: ${remaining > 0 ? '#10b981' : '#6b7280'};">₹${remaining.toFixed(2)}</strong></td>
+                                <td>
+                                    <span class="badge ${badgeClass}">
+                                        ${statusText}
+                                    </span>
+                                </td>
+                                <td>${formatDate(cn.created_at)}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            } catch (error) {
+                console.error('Error loading credit notes:', error);
+                const tbody = document.getElementById('creditNotesTable');
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #ef4444;">Error loading credit notes. Check console.</td></tr>';
+            }
+        }
+        
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            const icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
+            alertDiv.className = 'alert alert-' + type;
+            alertDiv.innerHTML = `<i class="fas fa-${icon}"></i><span>${message}</span>`;
+            alertDiv.style.display = 'flex';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        loadCreditNotes();
+    </script>
+</body>
+</html>

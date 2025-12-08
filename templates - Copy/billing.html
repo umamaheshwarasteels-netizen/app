@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing - Hardware Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark-color: #1e293b;
+            --light-gray: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
+            color: var(--text-primary);
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, var(--dark-color) 0%, #2d3748 100%);
+            color: white;
+            padding: 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            height: 70px;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .navbar-brand i {
+            font-size: 28px;
+            color: var(--primary-color);
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .navbar-menu a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .navbar-menu a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .navbar-menu a.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+        
+        /* Billing Grid */
+        .billing-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 25px;
+        }
+        
+        /* Panel */
+        .panel {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            border: 1px solid var(--border-color);
+        }
+        
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--light-gray);
+        }
+        
+        .panel-header i {
+            color: var(--primary-color);
+            font-size: 26px;
+        }
+        
+        .panel-header h2 {
+            color: var(--text-primary);
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        /* Form Elements */
+        .form-section {
+            margin-bottom: 20px;
+        }
+        
+        .form-section-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .form-section-label i {
+            color: var(--primary-color);
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-group input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+        
+        /* Filter Section */
+        .filter-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-group {
+            position: relative;
+        }
+        
+        .filter-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .filter-group input {
+            padding-left: 40px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            bottom: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* Search Results */
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 5px;
+        }
+        
+        .search-result-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--light-gray);
+            transition: background 0.2s ease;
+        }
+        
+        .search-result-item:hover {
+            background: var(--light-gray);
+        }
+        
+        /* Cart Table */
+        .cart-table-wrapper {
+            overflow-x: auto;
+            margin-top: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .cart-table thead {
+            background: var(--primary-color);
+        }
+        
+        .cart-table th {
+            padding: 15px 12px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .cart-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+        
+        .cart-table tbody tr:hover {
+            background: var(--light-gray);
+        }
+        
+        .cart-table input {
+            width: 70px;
+            padding: 6px 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 13px;
+        }
+        
+        /* Discount Input Group */
+        .discount-input-group {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .discount-input-group input {
+            width: 50px !important;
+        }
+        
+        .discount-input-group span {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-cart i {
+            font-size: 64px;
+            opacity: 0.3;
+            margin-bottom: 15px;
+        }
+        
+        /* Summary Section */
+        .summary-box {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .summary-header {
+            background: var(--light-gray);
+            padding: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 20px;
+            font-size: 15px;
+        }
+        
+        .summary-row label {
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        .summary-row .value {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+        
+        .summary-row .negative {
+            color: var(--danger-color);
+        }
+        
+        .summary-row .positive {
+            color: var(--warning-color);
+        }
+        
+        .summary-total {
+            background: var(--primary-color);
+            color: white;
+            padding: 25px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .summary-total label {
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .summary-total .value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+        
+        /* Payment Method */
+        .payment-section {
+            padding: 20px;
+            background: #fafbfc;
+            border-radius: 8px;
+        }
+        
+        .payment-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        
+        .payment-method-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 18px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .payment-method-item.active {
+            background: #e8eaf6;
+            border-color: var(--primary-color);
+        }
+        
+        .payment-method-item.credit-note-item {
+            border: 2px solid #fcd34d;
+        }
+        
+        .payment-method-item.credit-note-item.active {
+            background: #fef3c7;
+            border-color: var(--warning-color);
+        }
+        
+        .payment-method-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+        }
+        
+        .payment-method-item.credit-note-item input[type="checkbox"] {
+            accent-color: var(--warning-color);
+        }
+        
+        .payment-method-item label {
+            flex: 1;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        
+        .payment-method-item input[type="number"] {
+            width: 140px;
+            padding: 10px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 14px;
+            background: white;
+        }
+        
+        .payment-method-item input[type="number"]:disabled {
+            background: #e2e8f0;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .payment-method-item.active input[type="number"]:not(:disabled) {
+            border-color: var(--primary-color);
+        }
+        
+        .payment-method-item.credit-note-item.active input[type="number"]:not(:disabled) {
+            border-color: var(--warning-color);
+        }
+        
+        .remaining-box {
+            background: white;
+            padding: 18px 20px;
+            border-radius: 8px;
+            border: 2px solid #10b981;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .remaining-box.incomplete {
+            border-color: var(--danger-color);
+        }
+        
+        .remaining-box label {
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+        
+        .remaining-box .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #10b981;
+        }
+        
+        .remaining-box.incomplete .value {
+            color: var(--danger-color);
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            padding: 20px;
+        }
+        
+        .action-buttons .btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+        
+        /* Customer Info Card */
+        .customer-info-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+        
+        .customer-info-card h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .customer-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 14px;
+        }
+        
+        .customer-details p {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .customer-balance-info {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .customer-balance-info.positive {
+            background: rgba(16, 185, 129, 0.3);
+        }
+        
+        /* Alert */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .billing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-container {
+                flex-direction: column;
+                height: auto;
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            .filter-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .customer-details {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Payment Mode Buttons */
+        .payment-mode-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+        }
+        
+        .payment-mode-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .payment-mode-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .payment-mode-btn i {
+            font-size: 14px;
+        }
+        
+        /* Quick Payment Options */
+        .quick-payment-option {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .quick-payment-option:hover {
+            border-color: var(--primary-color);
+            background: rgba(99, 102, 241, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
+        
+        .quick-payment-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+        }
+        
+        .quick-payment-option label {
+            flex: 1;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quick-payment-option label i {
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+        
+        .quick-payment-option input[type="radio"]:checked ~ label {
+            color: var(--primary-color);
+        }
+        
+        .quick-payment-option input[type="radio"]:checked {
+            transform: scale(1.1);
+        }
+        
+        /* Highlight selected quick payment */
+        .quick-payment-option:has(input[type="radio"]:checked) {
+            border-color: var(--primary-color);
+            background: rgba(99, 102, 241, 0.1);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+        
+        .payment-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .payment-section-title i {
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+     <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-store"></i>
+                <span>Hardware Store</span>
+            </div>
+            <div class="navbar-menu">
+                <a href="/staff/dashboard" >
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/billing" class="active">
+                    <i class="fas fa-cash-register"></i>
+                    <span>Billing</span>
+                </a>
+                <a href="/inventory">
+                    <i class="fas fa-boxes"></i>
+                    <span>Inventory</span>
+                </a>
+                
+                <a href="/credit_notes">
+                    <i class="fas fa-undo"></i>
+                    <span>Returns</span>
+                </a>
+                <a href="/customers">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
+                </a>
+                <a href="/reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+				<a href="/quotations">
+                    <i class="fas fa-undo"></i>
+                    <span>quotation</span>
+                </a>
+                <a href="/logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div id="alertMessage"></div>
+        
+        <div class="billing-grid">
+            <!-- Left Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-file-invoice"></i>
+                    <h2>New Bill</h2>
+                </div>
+                
+                <!-- Customer Search -->
+                <div class="form-section">
+                    <div class="form-section-label">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>Customer Mobile</span>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="customerMobile" placeholder="Enter 10-digit mobile number" maxlength="10">
+                        <button class="btn btn-primary" onclick="searchCustomer()">
+                            <i class="fas fa-search"></i>
+                            Search Customer
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Customer Info (Hidden by default) -->
+                <div id="customerInfoCard" style="display: none;">
+                    <div class="customer-info-card">
+                        <h3>
+                            <i class="fas fa-user-circle"></i>
+                            Customer Details
+                        </h3>
+                        <div class="customer-details">
+                            <p><i class="fas fa-user"></i> <span id="displayCustomerName">-</span></p>
+                            <p><i class="fas fa-phone"></i> <span id="displayCustomerMobile">-</span></p>
+                        </div>
+                        <div class="customer-balance-info" id="customerSalesInfo" style="display: none;">
+                            <div>
+                                <strong><i class="fas fa-chart-line"></i> Total Sales:</strong>
+                                <span id="displayCustomerSales" style="color: var(--success-color); font-weight: bold;">₹0.00</span>
+                            </div>
+                        </div>
+                        <div class="customer-balance-info" id="customerBalanceInfo" style="display: none;">
+                            <div>
+                                <strong><i class="fas fa-ticket-alt"></i> Available Credit Notes:</strong>
+                                <span id="displayCustomerBalance" style="color: var(--warning-color); font-weight: bold;">₹0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <input type="hidden" id="customerId">
+                
+                <!-- Filter and Search -->
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <label>
+                            <i class="fas fa-filter"></i> Filter by Brand
+                        </label>
+                        <select id="brandFilter" onchange="filterByBrand()">
+                            <option value="">All Brands</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" style="position: relative;">
+                        <label>
+                            <i class="fas fa-search"></i> Search Product
+                        </label>
+                        <i class="fas fa-box search-icon"></i>
+                        <input type="text" id="productSearch" placeholder="Type product name..." 
+                               oninput="searchProducts()">
+                        <div id="searchResults" class="search-results"></div>
+                    </div>
+                </div>
+                
+                <!-- Cart Table -->
+                <div class="cart-table-wrapper">
+                    <table class="cart-table">
+                        <thead>
+                            <tr>
+                                <th>PRODUCT</th>
+                                <th>STOCK</th>
+                                <th>QTY</th>
+                                <th>RATE</th>
+                                <th>DISCOUNT %</th>
+                                <th>TOTAL</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cartItems">
+                            <tr>
+                                <td colspan="7">
+                                    <div class="empty-cart">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        <p>Add products to cart</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Right Panel - Summary -->
+            <div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <i class="fas fa-calculator"></i>
+                        <h2>Bill Summary</h2>
+                    </div>
+                    
+                    <div class="summary-box">
+                        <div class="summary-header">
+                            <div class="summary-row">
+                                <label>Subtotal:</label>
+                                <span class="value" id="subtotal">₹0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <label>Item Discounts:</label>
+                                <span class="value negative" id="itemDiscounts">-₹0.00</span>
+                            </div>
+                            <div class="summary-row" id="creditNoteAvailableRow" style="display: none;">
+                                <label>
+                                    <input type="checkbox" id="useCreditNoteCheckbox" onchange="toggleCreditNoteAvailable()" style="margin-right: 8px;">
+                                    Credit Note Available:
+                                </label>
+                                <span class="value" style="color: var(--warning-color);" id="availableCreditNoteTotal">₹0.00</span>
+                            </div>
+                            <!-- Credit Note Applied row removed - credit note is only used as payment method -->
+                        </div>
+                        
+                        <div class="summary-total">
+                            <label>Total Payable:</label>
+                            <span class="value" id="totalAmount">₹0.00</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Method -->
+                    <div class="payment-section">
+                        <div class="payment-section-title">
+                            <i class="fas fa-credit-card"></i>
+                            Payment Method
+                            <div style="margin-left: auto; display: flex; gap: 10px;">
+                                <button type="button" class="payment-mode-btn active" id="quickPayBtn" onclick="switchPaymentMode('quick')">
+                                    <i class="fas fa-bolt"></i> Quick Pay
+                                </button>
+                                <button type="button" class="payment-mode-btn" id="splitPayBtn" onclick="switchPaymentMode('split')">
+                                    <i class="fas fa-divide"></i> Split Payment
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Payment Mode -->
+                        <div id="quickPaymentMode" style="display: block;">
+                            <div class="quick-payment-option">
+                                <input type="radio" name="quickPayMethod" id="quickCash" value="cash" onchange="selectQuickPayment('cash')">
+                                <label for="quickCash">
+                                    <i class="fas fa-money-bill-wave"></i> Cash
+                                </label>
+                            </div>
+                            
+                            <div class="quick-payment-option">
+                                <input type="radio" name="quickPayMethod" id="quickUPI" value="upi" onchange="selectQuickPayment('upi')">
+                                <label for="quickUPI">
+                                    <i class="fas fa-mobile-alt"></i> UPI / Card
+                                </label>
+                            </div>
+                            
+                            <div class="quick-payment-option">
+                                <input type="radio" name="quickPayMethod" id="quickCredit" value="credit" onchange="selectQuickPayment('credit')">
+                                <label for="quickCredit">
+                                    <i class="fas fa-credit-card"></i> Credit (Account)
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Split Payment Mode -->
+                        <div id="splitPaymentMode" style="display: none;">
+                            <!-- Credit Note Payment -->
+                            <div class="payment-method-item credit-note-item" id="creditNotePaymentItem" style="display: none;">
+                                <input type="checkbox" id="useCreditNote" onchange="togglePaymentMethod('creditNote')">
+                                <label for="useCreditNote">
+                                    <i class="fas fa-ticket-alt"></i> Credit Note
+                                    <small style="display: block; color: var(--text-secondary); font-size: 11px; font-weight: normal;">
+                                        Available: ₹<span id="availableCreditNoteAmount">0.00</span>
+                                    </small>
+                                </label>
+                                <input type="number" id="creditNotePaymentAmount" value="0" min="0" step="0.01" 
+                                       oninput="calculateSplitPayment()" disabled>
+                            </div>
+                            
+                            <div class="payment-method-item" id="cashPaymentItem">
+                                <input type="checkbox" id="useCash" onchange="togglePaymentMethod('cash')">
+                                <label for="useCash">Cash</label>
+                                <input type="number" id="cashAmount" value="0" min="0" step="0.01" 
+                                       oninput="calculateSplitPayment()" disabled>
+                            </div>
+                            
+                            <div class="payment-method-item" id="upiPaymentItem">
+                                <input type="checkbox" id="useUPI" onchange="togglePaymentMethod('upi')">
+                                <label for="useUPI">UPI</label>
+                                <input type="number" id="upiAmount" value="0" min="0" step="0.01" 
+                                       oninput="calculateSplitPayment()" disabled>
+                            </div>
+                            
+                            <div class="payment-method-item" id="creditPaymentItem">
+                                <input type="checkbox" id="useCredit" onchange="togglePaymentMethod('credit')">
+                                <label for="useCredit">Credit (Account)</label>
+                                <input type="number" id="creditAmount" value="0" min="0" step="0.01" 
+                                       oninput="calculateSplitPayment()" disabled>
+                            </div>
+                            
+                            <div class="remaining-box" id="remainingBox">
+                                <label>Remaining:</label>
+                                <span class="value" id="remainingAmount">₹0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="btn btn-success" onclick="completeSale()">
+                            <i class="fas fa-check-circle"></i>
+                            Complete Sale
+                        </button>
+                        
+                        <button class="btn btn-danger" onclick="clearCart()">
+                            <i class="fas fa-times-circle"></i>
+                            Clear Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+        let products = [];
+        let allProducts = [];
+        let currentCustomer = null;
+        let customerCreditNotes = [];
+        let selectedCreditNoteAmount = 0;
+        let paymentMode = 'quick'; // 'quick' or 'split'
+        
+        // Switch between Quick Pay and Split Payment modes
+        function switchPaymentMode(mode) {
+            paymentMode = mode;
+            
+            if (mode === 'quick') {
+                document.getElementById('quickPaymentMode').style.display = 'block';
+                document.getElementById('splitPaymentMode').style.display = 'none';
+                document.getElementById('quickPayBtn').classList.add('active');
+                document.getElementById('splitPayBtn').classList.remove('active');
+                
+                // Clear split payment selections
+                clearSplitPayments();
+            } else {
+                document.getElementById('quickPaymentMode').style.display = 'none';
+                document.getElementById('splitPaymentMode').style.display = 'block';
+                document.getElementById('quickPayBtn').classList.remove('active');
+                document.getElementById('splitPayBtn').classList.add('active');
+                
+                // Clear quick payment selection
+                clearQuickPayment();
+            }
+        }
+        
+        // Select quick payment method and auto-fill total amount
+        function selectQuickPayment(method) {
+            const totalPayable = parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '')) || 0;
+            
+            // Clear all split payment checkboxes and amounts
+            clearSplitPayments();
+            
+            // Set the selected payment method
+            if (method === 'cash') {
+                document.getElementById('useCash').checked = true;
+                document.getElementById('cashAmount').value = totalPayable.toFixed(2);
+                document.getElementById('cashAmount').disabled = false;
+                document.getElementById('cashPaymentItem').classList.add('active');
+            } else if (method === 'upi') {
+                document.getElementById('useUPI').checked = true;
+                document.getElementById('upiAmount').value = totalPayable.toFixed(2);
+                document.getElementById('upiAmount').disabled = false;
+                document.getElementById('upiPaymentItem').classList.add('active');
+            } else if (method === 'credit') {
+                document.getElementById('useCredit').checked = true;
+                document.getElementById('creditAmount').value = totalPayable.toFixed(2);
+                document.getElementById('creditAmount').disabled = false;
+                document.getElementById('creditPaymentItem').classList.add('active');
+            } else if (method === 'creditNote') {
+                document.getElementById('useCreditNote').checked = true;
+                const availableCredit = selectedCreditNoteAmount;
+                const creditToUse = Math.min(availableCredit, totalPayable);
+                document.getElementById('creditNotePaymentAmount').value = creditToUse.toFixed(2);
+                document.getElementById('creditNotePaymentAmount').disabled = false;
+                document.getElementById('creditNotePaymentItem').classList.add('active');
+                
+                // If credit note doesn't cover full amount, add cash for remaining
+                if (creditToUse < totalPayable) {
+                    const remaining = totalPayable - creditToUse;
+                    document.getElementById('useCash').checked = true;
+                    document.getElementById('cashAmount').value = remaining.toFixed(2);
+                    document.getElementById('cashAmount').disabled = false;
+                    document.getElementById('cashPaymentItem').classList.add('active');
+                }
+            }
+            
+            calculateSplitPayment();
+        }
+        
+        // Clear all split payment selections
+        function clearSplitPayments() {
+            document.getElementById('useCash').checked = false;
+            document.getElementById('useUPI').checked = false;
+            document.getElementById('useCredit').checked = false;
+            if (document.getElementById('useCreditNote')) {
+                document.getElementById('useCreditNote').checked = false;
+            }
+            
+            document.getElementById('cashAmount').value = '0';
+            document.getElementById('upiAmount').value = '0';
+            document.getElementById('creditAmount').value = '0';
+            document.getElementById('creditNotePaymentAmount').value = '0';
+            
+            document.getElementById('cashAmount').disabled = true;
+            document.getElementById('upiAmount').disabled = true;
+            document.getElementById('creditAmount').disabled = true;
+            document.getElementById('creditNotePaymentAmount').disabled = true;
+            
+            document.getElementById('cashPaymentItem').classList.remove('active');
+            document.getElementById('upiPaymentItem').classList.remove('active');
+            document.getElementById('creditPaymentItem').classList.remove('active');
+            document.getElementById('creditNotePaymentItem').classList.remove('active');
+            
+            calculateSplitPayment();
+        }
+        
+        // Clear quick payment selection
+        function clearQuickPayment() {
+            const radioButtons = document.querySelectorAll('input[name="quickPayMethod"]');
+            radioButtons.forEach(radio => radio.checked = false);
+        }
+        
+        // Load brands on page load
+        async function loadBrands() {
+            try {
+                const response = await fetch('/api/products');
+                const data = await response.json();
+                
+                // API returns array directly, not {success: true, products: [...]}
+                allProducts = Array.isArray(data) ? data : [];
+                
+                // Map current_stock to stock for compatibility
+                allProducts = allProducts.map(p => ({
+                    ...p,
+                    stock: p.current_stock || 0
+                }));
+                
+                const brands = [...new Set(allProducts.map(p => p.brand).filter(b => b))].sort();
+                
+                const brandFilter = document.getElementById('brandFilter');
+                brandFilter.innerHTML = '<option value="">All Brands</option>' + 
+                    brands.map(brand => `<option value="${brand}">${brand}</option>`).join('');
+                    
+                console.log('Products loaded:', allProducts.length);
+            } catch (error) {
+                console.error('Error loading brands:', error);
+                showAlert('Error loading products', 'danger');
+            }
+        }
+        
+        function filterByBrand() {
+            const selectedBrand = document.getElementById('brandFilter').value;
+            
+            if (selectedBrand) {
+                products = allProducts.filter(p => p.brand === selectedBrand);
+                displayFilteredProducts();
+            } else {
+                document.getElementById('searchResults').style.display = 'none';
+            }
+        }
+        
+        function displayFilteredProducts() {
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (products.length > 0) {
+                resultsDiv.innerHTML = products.map(p => `
+                    <div class="search-result-item" onclick="addToCart(${p.product_id})">
+                        <strong>${p.product_name}</strong>
+                        <small style="display: block; color: var(--text-secondary); margin-top: 4px;">
+                            ${p.brand} - Stock: ${p.stock} ${p.unit}
+                        </small>
+                    </div>
+                `).join('');
+                resultsDiv.style.display = 'block';
+            }
+        }
+        
+        async function searchCustomer() {
+            const mobile = document.getElementById('customerMobile').value.trim();
+            if (!mobile || mobile.length < 10) {
+                showAlert('Please enter a valid 10-digit mobile number', 'danger');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/customers/search?mobile=${mobile}`);
+                const data = await response.json();
+                
+                if (data.found && data.customer) {
+                    currentCustomer = data.customer;
+                    customerCreditNotes = data.credit_notes || [];
+                    
+                    // Display customer info
+                    document.getElementById('displayCustomerName').textContent = data.customer.customer_name;
+                    document.getElementById('displayCustomerMobile').textContent = data.customer.mobile;
+                    document.getElementById('customerInfoCard').style.display = 'block';
+                    
+                    // Calculate and display total sales and credit balance
+                    const totalSales = data.customer.total_sales || 0;
+                    const totalCredit = data.customer.total_credit_balance || 0;
+                    
+                    // Show total sales if element exists
+                    const salesElement = document.getElementById('displayCustomerSales');
+                    if (salesElement) {
+                        salesElement.textContent = '₹' + totalSales.toFixed(2);
+                        document.getElementById('customerSalesInfo').style.display = 'flex';
+                    }
+                    
+                    // Show credit balance if element exists
+                    const balanceElement = document.getElementById('displayCustomerBalance');
+                    if (balanceElement) {
+                        balanceElement.textContent = '₹' + totalCredit.toFixed(2);
+                        document.getElementById('customerBalanceInfo').style.display = 'flex';
+                    }
+                    
+                    // Handle credit notes - Show checkbox in summary
+                    if (totalCredit > 0 && customerCreditNotes.length > 0) {
+                        selectedCreditNoteAmount = totalCredit;
+                        
+                        // Show Credit Note Available checkbox in summary
+                        document.getElementById('creditNoteAvailableRow').style.display = 'flex';
+                        document.getElementById('availableCreditNoteTotal').textContent = '₹' + totalCredit.toFixed(2);
+                        
+                        document.getElementById('creditNotePaymentItem').style.display = 'flex';
+                        document.getElementById('availableCreditNoteAmount').textContent = totalCredit.toFixed(2);
+                        
+                        showAlert(`Customer found! Total Sales: ₹${totalSales.toFixed(2)} | Available Credit: ₹${totalCredit.toFixed(2)}`, 'success');
+                    } else {
+                        selectedCreditNoteAmount = 0;
+                        document.getElementById('creditNoteAvailableRow').style.display = 'none';
+                        document.getElementById('creditNotePaymentItem').style.display = 'none';
+                        showAlert(`Customer found! Total Sales: ₹${totalSales.toFixed(2)}`, 'success');
+                    }
+                } else {
+                    if (confirm('Customer not found. Create new customer?')) {
+                        const name = prompt('Enter customer name:');
+                        if (name) {
+                            await createCustomer(mobile, name);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error searching customer:', error);
+                showAlert('Error searching customer', 'danger');
+            }
+        }
+        
+        // Toggle Credit Note Available checkbox
+        function toggleCreditNoteAvailable() {
+            const checkbox = document.getElementById('useCreditNoteCheckbox');
+            
+            if (checkbox.checked) {
+                // Don't show "Credit Note Applied" in summary anymore
+                // Credit note is ONLY a payment method, not a discount
+                
+                // Automatically switch to split payment mode
+                switchPaymentMode('split');
+                
+                // Auto-enable credit note in split payment
+                const totalPayable = parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '')) || 0;
+                const creditNoteToUse = Math.min(selectedCreditNoteAmount, totalPayable);
+                
+                document.getElementById('useCreditNote').checked = true;
+                document.getElementById('creditNotePaymentAmount').value = creditNoteToUse.toFixed(2);
+                document.getElementById('creditNotePaymentAmount').disabled = false;
+                document.getElementById('creditNotePaymentItem').classList.add('active');
+                
+                // Recalculate remaining amount
+                calculateSplitPayment();
+            } else {
+                // Reset credit note in split payment
+                document.getElementById('useCreditNote').checked = false;
+                document.getElementById('creditNotePaymentAmount').value = '0';
+                document.getElementById('creditNotePaymentAmount').disabled = true;
+                document.getElementById('creditNotePaymentItem').classList.remove('active');
+                
+                // Recalculate
+                calculateSplitPayment();
+            }
+        }
+        
+        async function fetchCustomerCreditNotes(customerId) {
+            try {
+                const response = await fetch(`/api/customers/${customerId}/credit-notes`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    customerCreditNotes = data.credit_notes || [];
+                    const totalAvailable = data.total_available || 0;
+                    selectedCreditNoteAmount = totalAvailable;
+                    
+                    if (totalAvailable > 0) {
+                        // Show credit note payment option
+                        document.getElementById('creditNotePaymentItem').style.display = 'flex';
+                        document.getElementById('availableCreditNoteAmount').textContent = totalAvailable.toFixed(2);
+                        
+                        showAlert(`Available Credit: ₹${totalAvailable.toFixed(2)}`, 'success');
+                    } else {
+                        document.getElementById('creditNotePaymentItem').style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching credit notes:', error);
+            }
+        }
+        
+        async function createCustomer(mobile, name) {
+            try {
+                const response = await fetch('/api/customers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mobile, customer_name: name, address: '' })
+                });
+                
+                const data = await response.json();
+                if (data.success && data.customer) {
+                    currentCustomer = data.customer;
+                    customerCreditNotes = [];
+                    selectedCreditNoteAmount = 0;
+                    
+                    document.getElementById('displayCustomerName').textContent = name;
+                    document.getElementById('displayCustomerMobile').textContent = mobile;
+                    document.getElementById('customerInfoCard').style.display = 'block';
+                    
+                    // Show sales and balance info for new customer (all zeros)
+                    const salesElement = document.getElementById('displayCustomerSales');
+                    if (salesElement) {
+                        salesElement.textContent = '₹0.00';
+                        document.getElementById('customerSalesInfo').style.display = 'flex';
+                    }
+                    
+                    const balanceElement = document.getElementById('displayCustomerBalance');
+                    if (balanceElement) {
+                        balanceElement.textContent = '₹0.00';
+                        document.getElementById('customerBalanceInfo').style.display = 'flex';
+                    }
+                    
+                    document.getElementById('creditNotePaymentItem').style.display = 'none';
+                    
+                    showAlert('Customer created successfully', 'success');
+                } else {
+                    showAlert(data.message || 'Error creating customer', 'danger');
+                }
+            } catch (error) {
+                console.error('Error creating customer:', error);
+                showAlert('Error creating customer', 'danger');
+            }
+        }
+        
+        async function searchProducts() {
+            const search = document.getElementById('productSearch').value.trim();
+            const selectedBrand = document.getElementById('brandFilter').value;
+            
+            if (search.length < 2 && !selectedBrand) {
+                document.getElementById('searchResults').style.display = 'none';
+                return;
+            }
+            
+            try {
+                if (selectedBrand) {
+                    products = allProducts.filter(p => 
+                        p.brand === selectedBrand && 
+                        (search.length < 2 || p.product_name.toLowerCase().includes(search.toLowerCase()))
+                    );
+                } else if (search.length >= 2) {
+                    const response = await fetch(`/api/products?search=${search}`);
+                    const data = await response.json();
+                    
+                    // API returns array directly
+                    products = Array.isArray(data) ? data : [];
+                    
+                    // Map current_stock to stock for compatibility
+                    products = products.map(p => ({
+                        ...p,
+                        stock: p.current_stock || 0
+                    }));
+                }
+                
+                const resultsDiv = document.getElementById('searchResults');
+                if (products.length > 0) {
+                    resultsDiv.innerHTML = products.map(p => `
+                        <div class="search-result-item" onclick="addToCart(${p.product_id})">
+                            <strong>${p.product_name}</strong>
+                            <small style="display: block; color: var(--text-secondary); margin-top: 4px;">
+                                ${p.brand || 'No Brand'} - Stock: ${p.stock} ${p.unit}
+                            </small>
+                        </div>
+                    `).join('');
+                    resultsDiv.style.display = 'block';
+                } else {
+                    resultsDiv.innerHTML = '<div class="search-result-item">No products found</div>';
+                    resultsDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error searching products:', error);
+                showAlert('Error searching products', 'danger');
+            }
+        }
+        
+        function addToCart(productId) {
+            const product = products.find(p => p.product_id === productId);
+            if (!product) return;
+            
+            // Stock validation
+            const availableStock = parseFloat(product.stock) || 0;
+            
+            if (availableStock <= 0) {
+                showAlert(`Cannot add "${product.product_name}" - Out of stock!`, 'danger');
+                return;
+            }
+            
+            const existing = cart.find(item => item.product_id === productId);
+            if (existing) {
+                // Check if we can add more
+                if (existing.quantity >= availableStock) {
+                    showAlert(`Cannot add more of "${product.product_name}" - Only ${availableStock} ${product.unit} available in stock!`, 'warning');
+                    return;
+                }
+                showAlert('Product already in cart', 'danger');
+                return;
+            }
+            
+            cart.push({
+                product_id: product.product_id,
+                product_name: product.product_name,
+                brand: product.brand,
+                unit: product.unit,
+                stock: product.stock,
+                available_stock: availableStock,
+                quantity: 1,
+                rate: 0,
+                discountPercent: 0  // Changed to percentage
+            });
+            
+            document.getElementById('productSearch').value = '';
+            document.getElementById('searchResults').style.display = 'none';
+            renderCart();
+        }
+        
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.product_id !== productId);
+            renderCart();
+        }
+        
+        function updateCartItem(productId, field, value) {
+            const item = cart.find(i => i.product_id === productId);
+            if (item) {
+                const numValue = parseFloat(value) || 0;
+                
+                if (field === 'quantity') {
+                    const maxStock = item.available_stock || item.stock || 0;
+                    if (numValue < 1) {
+                        showAlert('Quantity must be at least 1', 'warning');
+                        item[field] = 1;
+                    } else if (numValue > maxStock) {
+                        showAlert(`Cannot exceed available stock of ${maxStock}`, 'warning');
+                        item[field] = maxStock;
+                    } else {
+                        item[field] = numValue;
+                    }
+                } else if (field === 'discountPercent') {
+                    // Limit discount percentage between 0-100
+                    item[field] = Math.min(100, Math.max(0, numValue));
+                } else {
+                    item[field] = Math.max(0, numValue);
+                }
+                renderCart();
+            }
+        }
+        
+        function renderCart() {
+            const tbody = document.getElementById('cartItems');
+            if (cart.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-cart">
+                                <i class="fas fa-shopping-cart"></i>
+                                <p>Add products to cart</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = cart.map(item => {
+                    const itemSubtotal = item.quantity * item.rate;
+                    const discountAmount = (itemSubtotal * item.discountPercent) / 100;
+                    const itemTotal = itemSubtotal - discountAmount;
+                    
+                    return `
+                        <tr>
+                            <td>
+                                <strong>${item.product_name}</strong><br>
+                                <small style="color: var(--text-secondary);">${item.brand}</small>
+                            </td>
+                            <td>${item.stock} ${item.unit}</td>
+                            <td>
+                                <input type="number" value="${item.quantity}" min="0.1" step="0.1"
+                                       onchange="updateCartItem(${item.product_id}, 'quantity', this.value)">
+                            </td>
+                            <td>
+                                <input type="number" value="${item.rate}" min="0" step="0.01"
+                                       onchange="updateCartItem(${item.product_id}, 'rate', this.value)">
+                            </td>
+                            <td>
+                                <div class="discount-input-group">
+                                    <input type="number" value="${item.discountPercent}" min="0" max="100" step="0.1"
+                                           onchange="updateCartItem(${item.product_id}, 'discountPercent', this.value)">
+                                    <span>%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <strong>₹${itemTotal.toFixed(2)}</strong>
+                                ${item.discountPercent > 0 ? `<br><small style="color: var(--danger-color);">-₹${discountAmount.toFixed(2)}</small>` : ''}
+                            </td>
+                            <td>
+                                <button class="btn btn-danger" onclick="removeFromCart(${item.product_id})"
+                                        style="padding: 6px 10px; font-size: 12px;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+            calculateTotal();
+        }
+        
+        function togglePaymentMethod(method) {
+            // Handle special case for UPI (all uppercase)
+            let checkboxId, inputId, paymentItemId;
+            
+            if (method === 'upi') {
+                checkboxId = 'useUPI';  // Special case: all uppercase
+                inputId = 'upiAmount';
+                paymentItemId = 'upiPaymentItem';
+            } else if (method === 'creditNote') {
+                // Special case: credit note has 'Payment' in the ID
+                checkboxId = 'useCreditNote';
+                inputId = 'creditNotePaymentAmount';
+                paymentItemId = 'creditNotePaymentItem';
+            } else {
+                const methodName = method.charAt(0).toUpperCase() + method.slice(1);
+                checkboxId = `use${methodName}`;
+                inputId = `${method}Amount`;
+                paymentItemId = `${method}PaymentItem`;
+            }
+            
+            const checkbox = document.getElementById(checkboxId);
+            const input = document.getElementById(inputId);
+            const paymentItem = document.getElementById(paymentItemId);
+            
+            if (checkbox.checked) {
+                input.disabled = false;
+                paymentItem.classList.add('active');
+                
+                // Auto-fill with remaining amount if method is being enabled
+                const totalPayable = parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '')) || 0;
+                const currentTotal = getCurrentPaymentTotal();
+                const remaining = totalPayable - currentTotal;
+                
+                if (method === 'creditNote') {
+                    // For credit note, use min of available credit or remaining
+                    const availableCredit = selectedCreditNoteAmount;
+                    input.value = Math.min(remaining, availableCredit).toFixed(2);
+                } else if (remaining > 0) {
+                    input.value = remaining.toFixed(2);
+                }
+            } else {
+                input.disabled = true;
+                input.value = '0';
+                paymentItem.classList.remove('active');
+            }
+            
+            calculateSplitPayment();
+        }
+        
+        function getCurrentPaymentTotal() {
+            const cashAmount = document.getElementById('useCash').checked ? parseFloat(document.getElementById('cashAmount').value) || 0 : 0;
+            const upiAmount = document.getElementById('useUPI').checked ? parseFloat(document.getElementById('upiAmount').value) || 0 : 0;
+            const creditAmount = document.getElementById('useCredit').checked ? parseFloat(document.getElementById('creditAmount').value) || 0 : 0;
+            const creditNoteAmount = document.getElementById('useCreditNote')?.checked ? parseFloat(document.getElementById('creditNotePaymentAmount').value) || 0 : 0;
+            
+            return cashAmount + upiAmount + creditAmount + creditNoteAmount;
+        }
+        
+        function calculateSplitPayment() {
+            const totalPayable = parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '')) || 0;
+            
+            const cashAmount = parseFloat(document.getElementById('cashAmount').value) || 0;
+            const upiAmount = parseFloat(document.getElementById('upiAmount').value) || 0;
+            const creditAmount = parseFloat(document.getElementById('creditAmount').value) || 0;
+            const creditNoteAmount = parseFloat(document.getElementById('creditNotePaymentAmount').value) || 0;
+            
+            const totalPaid = cashAmount + upiAmount + creditAmount + creditNoteAmount;
+            const remaining = totalPayable - totalPaid;
+            
+            const remainingEl = document.getElementById('remainingAmount');
+            const remainingBox = document.getElementById('remainingBox');
+            
+            remainingEl.textContent = '₹' + remaining.toFixed(2);
+            
+            // Show warning if overpaid
+            if (remaining < -0.01) {
+                remainingBox.classList.add('incomplete');
+                remainingBox.style.borderColor = '#ef4444';
+                remainingEl.style.color = '#ef4444';
+            } else if (Math.abs(remaining) > 0.01) {
+                remainingBox.classList.add('incomplete');
+                remainingBox.style.borderColor = '#f59e0b';
+                remainingEl.style.color = '#f59e0b';
+            } else {
+                remainingBox.classList.remove('incomplete');
+                remainingBox.style.borderColor = '#10b981';
+                remainingEl.style.color = '#10b981';
+            }
+        }
+        
+        function calculateTotal() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
+            const itemDiscounts = cart.reduce((sum, item) => {
+                const itemSubtotal = item.quantity * item.rate;
+                const discountAmount = (itemSubtotal * item.discountPercent) / 100;
+                return sum + discountAmount;
+            }, 0);
+            
+            let total = subtotal - itemDiscounts;
+            
+            // Credit note is now ONLY used in payment split, not deducted from total
+            // This prevents double-counting
+            
+            document.getElementById('subtotal').textContent = '₹' + subtotal.toFixed(2);
+            document.getElementById('itemDiscounts').textContent = '-₹' + itemDiscounts.toFixed(2);
+            document.getElementById('totalAmount').textContent = '₹' + Math.max(0, total).toFixed(2);
+            
+            calculateSplitPayment();
+        }
+        
+        async function completeSale() {
+            if (cart.length === 0) {
+                showAlert('Cart is empty', 'danger');
+                return;
+            }
+            
+            if (!cart.every(item => item.rate > 0)) {
+                showAlert('Please enter rates for all items', 'danger');
+                return;
+            }
+            
+            // Final stock validation before completing sale
+            for (const item of cart) {
+                const availableStock = item.available_stock || item.stock || 0;
+                if (item.quantity > availableStock) {
+                    showAlert(`Insufficient stock for "${item.product_name}". Available: ${availableStock} ${item.unit}`, 'danger');
+                    return;
+                }
+            }
+            
+            // Validate customer details are provided
+            if (!currentCustomer) {
+                showAlert('Please select a customer before completing the sale', 'danger');
+                return;
+            }
+            
+            const useCash = document.getElementById('useCash').checked;
+            const useUPI = document.getElementById('useUPI').checked;
+            const useCredit = document.getElementById('useCredit').checked;
+            const useCreditNote = document.getElementById('useCreditNote')?.checked || false;
+            
+            if (!useCash && !useUPI && !useCredit && !useCreditNote) {
+                showAlert('Please select at least one payment method', 'danger');
+                return;
+            }
+            
+            const totalPayable = parseFloat(document.getElementById('totalAmount').textContent.replace('₹', ''));
+            const cashAmount = parseFloat(document.getElementById('cashAmount').value) || 0;
+            const upiAmount = parseFloat(document.getElementById('upiAmount').value) || 0;
+            const creditAmount = parseFloat(document.getElementById('creditAmount').value) || 0;
+            const creditNoteAmount = parseFloat(document.getElementById('creditNotePaymentAmount').value) || 0;
+            const totalPaid = cashAmount + upiAmount + creditAmount + creditNoteAmount;
+            
+            // DEBUG: Log payment values
+            console.log('Payment Debug:', {
+                totalPayable,
+                cashAmount,
+                upiAmount,
+                creditAmount,
+                creditNoteAmount,
+                totalPaid,
+                cashChecked: useCash,
+                upiChecked: useUPI,
+                creditChecked: useCredit,
+                creditNoteChecked: useCreditNote
+            });
+            
+            if (totalPaid > totalPayable + 0.01) {
+                showAlert(`Payment amount (₹${totalPaid.toFixed(2)}) exceeds total payable (₹${totalPayable.toFixed(2)}). Please adjust payment amounts.`, 'danger');
+                return;
+            }
+            
+            if (Math.abs(totalPaid - totalPayable) > 0.01) {
+                showAlert('Payment amounts do not match total payable', 'danger');
+                return;
+            }
+            
+            if ((useCredit || useCreditNote) && !currentCustomer) {
+                showAlert('Please select a customer for credit/credit note payment', 'danger');
+                return;
+            }
+            
+            // Convert cart items to include discount amount instead of percentage
+            const itemsForSale = cart.map(item => {
+                const itemSubtotal = item.quantity * item.rate;
+                const discountAmount = (itemSubtotal * item.discountPercent) / 100;
+                return {
+                    ...item,
+                    discount: discountAmount
+                };
+            });
+            
+            const saleData = {
+                customer_id: currentCustomer ? currentCustomer.customer_id : null,
+                items: itemsForSale,
+                payment_split: {
+                    cash: cashAmount,
+                    upi: upiAmount,
+                    credit: creditAmount,
+                    credit_note: creditNoteAmount
+                },
+                credit_notes_used: useCreditNote ? customerCreditNotes : []
+            };
+            
+            try {
+                const response = await fetch('/api/sales', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(saleData)
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showAlert('Sale completed successfully! Bill #' + data.bill_number, 'success');
+                    setTimeout(() => {
+                        clearCart();
+                    }, 2000);
+                } else {
+                    showAlert('Error: ' + data.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error completing sale: ' + error.message, 'danger');
+            }
+        }
+        
+        function clearCart() {
+            cart = [];
+            currentCustomer = null;
+            customerCreditNotes = [];
+            selectedCreditNoteAmount = 0;
+            
+            document.getElementById('customerMobile').value = '';
+            document.getElementById('customerInfoCard').style.display = 'none';
+            document.getElementById('creditNotePaymentItem').style.display = 'none';
+            document.getElementById('creditNoteAvailableRow').style.display = 'none';
+            document.getElementById('creditNoteRow').style.display = 'none';
+            
+            // Reset credit note checkbox
+            if (document.getElementById('useCreditNoteCheckbox')) {
+                document.getElementById('useCreditNoteCheckbox').checked = false;
+            }
+            
+            document.getElementById('useCash').checked = false;
+            document.getElementById('useUPI').checked = false;
+            document.getElementById('useCredit').checked = false;
+            if (document.getElementById('useCreditNote')) {
+                document.getElementById('useCreditNote').checked = false;
+            }
+            
+            document.getElementById('cashAmount').value = '0';
+            document.getElementById('upiAmount').value = '0';
+            document.getElementById('creditAmount').value = '0';
+            document.getElementById('creditNotePaymentAmount').value = '0';
+            
+            document.getElementById('cashAmount').disabled = true;
+            document.getElementById('upiAmount').disabled = true;
+            document.getElementById('creditAmount').disabled = true;
+            document.getElementById('creditNotePaymentAmount').disabled = true;
+            
+            document.getElementById('cashPaymentItem').classList.remove('active');
+            document.getElementById('upiPaymentItem').classList.remove('active');
+            document.getElementById('creditPaymentItem').classList.remove('active');
+            document.getElementById('creditNotePaymentItem').classList.remove('active');
+            
+            clearQuickPayment();
+            
+            renderCart();
+        }
+        
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            const icon = type === 'success' ? 'check-circle' : 
+                        type === 'warning' ? 'exclamation-triangle' : 'exclamation-triangle';
+            
+            alertDiv.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i class="fas fa-${icon}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                alertDiv.innerHTML = '';
+            }, 5000);
+        }
+        
+        // Initialize
+        window.addEventListener('DOMContentLoaded', loadBrands);
+        
+        // Fix: Enable inputs if checkboxes are pre-checked on page load
+        function checkPreCheckedPayments() {
+            ['cash', 'upi', 'credit', 'creditNote'].forEach(method => {
+                const methodName = method === 'upi' ? 'UPI' : (method === 'creditNote' ? 'CreditNote' : method.charAt(0).toUpperCase() + method.slice(1));
+                const checkbox = document.getElementById('use' + methodName);
+                const input = document.getElementById(method + (method === 'creditNote' ? 'PaymentAmount' : 'Amount'));
+                const paymentItem = document.getElementById(method + 'PaymentItem');
+                
+                if (checkbox && checkbox.checked && input) {
+                    input.disabled = false;
+                    if (paymentItem) {
+                        paymentItem.classList.add('active');
+                    }
+                }
+            });
+        }
+        
+        // Call the fix function after page loads
+        setTimeout(checkPreCheckedPayments, 100);
+    </script>
+</body>
+</html>

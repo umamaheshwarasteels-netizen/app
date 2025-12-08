@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Billing System - Hardware Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -16,120 +13,91 @@
         }
         
         :root {
-            --primary-color: #4F46E5;
-            --primary-light: #6366F1;
-            --primary-dark: #4338CA;
-            --success-color: #059669;
-            --success-light: #10B981;
-            --warning-color: #D97706;
-            --warning-light: #F59E0B;
-            --danger-color: #DC2626;
-            --danger-light: #EF4444;
-            --info-color: #7C3AED;
-            --dark-bg: #0F172A;
-            --dark-bg-light: #1E293B;
-            --light-bg: #F8FAFC;
-            --white: #FFFFFF;
-            --border-color: #E2E8F0;
-            --border-color-light: #F1F5F9;
-            --text-primary: #0F172A;
-            --text-secondary: #475569;
-            --text-tertiary: #94A3B8;
-            --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #8b5cf6;
+            --dark-color: #1e293b;
+            --light-gray: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+            background: var(--light-gray);
             color: var(--text-primary);
             line-height: 1.6;
-            min-height: 100vh;
         }
         
         /* Navbar Styles */
         .navbar {
-            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
+            background: linear-gradient(135deg, var(--dark-color) 0%, #2d3748 100%);
             color: white;
             padding: 0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--shadow-lg);
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .navbar-container {
-            max-width: 1400px;
-            margin: 0 auto;
+            
+            
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 32px;
-            height: 72px;
+            padding: 0 15px;
+            height: 70px;
         }
         
         .navbar-brand {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             font-size: 22px;
             font-weight: 700;
             letter-spacing: -0.5px;
         }
         
         .navbar-brand i {
-            font-size: 28px;
-            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 22px;
+            color: var(--primary-color);
         }
         
         .navbar-menu {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             align-items: center;
         }
         
         .navbar-menu a {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.85);
             text-decoration: none;
-            padding: 10px 16px;
-            border-radius: 10px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 10px 18px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
             font-weight: 500;
             font-size: 14px;
             display: flex;
             align-items: center;
             gap: 8px;
-            position: relative;
-        }
-        
-        .navbar-menu a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary-light), var(--info-color));
-            transition: width 0.3s ease;
         }
         
         .navbar-menu a:hover {
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
         }
         
         .navbar-menu a.active {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            background: var(--primary-color);
             color: white;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
         
         .navbar-menu a i {
@@ -196,7 +164,7 @@
         /* Main Content */
         .main-content {
             flex: 1;
-            padding: 15px;
+            padding: 10px;
             overflow-y: auto;
             background: var(--light-gray);
         }
@@ -204,16 +172,28 @@
         /* Section Container */
         .section {
             display: none;
+            animation: fadeIn 0.5s ease;
         }
         
         .section.active {
             display: block;
         }
         
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         /* Panel Styles */
         .panel {
             background: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 16px;
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-color);
@@ -229,8 +209,8 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 16px;
-            padding-bottom: 16px;
+            margin-bottom: 10px;
+            padding-bottom: 20px;
             border-bottom: 2px solid var(--light-gray);
         }
         
@@ -493,19 +473,20 @@
             background: white;
             border: 1.5px solid var(--border-color);
             border-radius: 12px;
-            padding: 16px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
+            transition: all 0.3s ease;
             cursor: pointer;
-            min-height: 120px;
-            gap: 8px;
+            min-height: 140px;
         }
         
         .product-item:hover {
             border-color: var(--primary-color);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
         }
         
         .product-item-icon {
@@ -525,16 +506,13 @@
             font-weight: 600;
             font-size: 15px;
             color: var(--text-primary);
-            margin-bottom: 2px;
-            line-height: 1.3;
+            margin-bottom: 6px;
         }
         
         .product-item-brand {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-secondary);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
+            margin-bottom: 10px;
         }
         
         .product-item-rate {
@@ -546,12 +524,13 @@
         
         .product-item-stock {
             position: static;
-            margin-top: auto;
+            
+            
         }
         
         /* Badge */
         .badge {
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: 8px;
             font-size: 12px;
             font-weight: 600;
@@ -745,7 +724,7 @@
         
         .stat-card {
             background: white;
-            padding: 28px;
+            padding: 15px;
             border-radius: 16px;
             box-shadow: var(--shadow-sm);
             display: flex;
@@ -854,10 +833,6 @@
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
             animation: fadeIn 0.3s ease;
-        }
-        
-        .modal[style*="display: block"] {
-            display: flex !important;
             align-items: center;
             justify-content: center;
         }
@@ -910,7 +885,7 @@
         }
         
         .modal-body {
-            padding: 28px;
+            padding: 15px;
         }
         
         .close {
@@ -935,356 +910,6 @@
             background: rgba(255, 255, 255, 0.1);
             transform: rotate(90deg);
         }
-        
-        
-        /* Add to Cart Modal Specific Styles */
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-close {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .modal-header h3 {
-            color: white;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .modal-product-info {
-            background: var(--light-gray);
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-
-        .modal-product-info h4 {
-            margin: 0 0 4px 0;
-            color: var(--text-primary);
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .modal-product-info p {
-            margin: 0;
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        .modal-form-group {
-            margin-bottom: 20px;
-        }
-
-        .modal-form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .modal-form-group label i {
-            color: var(--primary-color);
-            margin-right: 6px;
-        }
-
-        .modal-form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1.5px solid var(--border-color);
-            border-radius: 10px;
-            font-size: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .modal-form-group input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        .modal-footer {
-            padding: 16px 24px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            background: var(--light-gray);
-            border-radius: 0 0 16px 16px;
-        }
-
-        .modal-footer .btn {
-            min-width: 120px;
-        }
-
-        /* Customer Button Styles */
-        .btn-sm {
-            padding: 8px 16px;
-            font-size: 13px;
-            border-radius: 8px;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-sm:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .btn-sm i {
-            font-size: 12px;
-        }
-
-        /* Cart Items Container with Scroll */
-        .cart-items-container {
-            max-height: 500px;
-            overflow-y: auto;
-            padding-right: 8px;
-            margin-bottom: 15px;
-        }
-
-        .cart-items-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .cart-items-container::-webkit-scrollbar-track {
-            background: var(--light-gray);
-            border-radius: 10px;
-        }
-
-        .cart-items-container::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 10px;
-        }
-
-        .cart-items-container::-webkit-scrollbar-thumb:hover {
-            background: var(--text-secondary);
-        }
-
-        /* Cart Item Row Layout */
-        .cart-item-row {
-            display: grid;
-            grid-template-columns: 2fr 1.5fr 0.8fr 1fr 0.8fr 0.5fr;
-            gap: 12px;
-            padding: 12px;
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            margin-bottom: 8px;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .cart-item-row:hover {
-            box-shadow: var(--shadow-sm);
-            border-color: var(--primary-color);
-        }
-
-        .cart-item-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .cart-item-name {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 14px;
-            margin-bottom: 2px;
-        }
-
-        .cart-item-brand {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .cart-item-field {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .cart-item-label {
-            font-size: 11px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .cart-item-value {
-            font-size: 14px;
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .cart-item-total {
-            font-size: 15px;
-            color: var(--success-color);
-            font-weight: 700;
-        }
-
-        .cart-item-remove {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cart-item-remove button {
-            background: var(--danger-color);
-            color: white;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cart-item-remove button:hover {
-            background: #dc2626;
-            transform: scale(1.1);
-        }
-
-        .cart-empty {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-secondary);
-        }
-
-        .cart-empty i {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        /* Compact Cart Item Layout */
-        .cart-item-compact {
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .cart-item-compact:hover {
-            box-shadow: var(--shadow-md);
-            border-color: var(--primary-color);
-        }
-
-        .cart-item-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--light-gray);
-        }
-
-        .cart-item-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .cart-item-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-icon {
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-
-        .btn-edit {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-edit:hover {
-            background: var(--primary-dark);
-            transform: scale(1.05);
-        }
-
-        .btn-delete {
-            background: var(--danger-color);
-            color: white;
-        }
-
-        .btn-delete:hover {
-            background: #dc2626;
-            transform: scale(1.05);
-        }
-
-        .cart-item-details-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            font-size: 14px;
-        }
-
-        .cart-detail-item {
-            color: var(--text-secondary);
-        }
-
-        .cart-detail-item strong {
-            color: var(--text-primary);
-            margin-right: 4px;
-        }
-
-        .cart-total-highlight {
-            color: var(--success-color);
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .cart-total-highlight strong {
-            color: var(--success-color);
-        }
-
-        /* Adjust container height to show approximately 2 items */
-        .cart-items-container {
-            max-height: 280px;
-            overflow-y: auto;
-            padding-right: 8px;
-            margin-bottom: 15px;
-        }
-        
         
         /* Filters */
         .filters {
@@ -1334,7 +959,7 @@
         /* Product Grid for Quotations */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 12px;
         }
         
@@ -1342,19 +967,15 @@
             background: white;
             border: 1.5px solid var(--border-color);
             border-radius: 12px;
-            padding: 16px;
+            padding: 18px;
+            transition: all 0.3s ease;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 6px;
-            min-height: 120px;
         }
         
         .product-card:hover {
             border-color: var(--primary-color);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
         }
         
         .product-card.selected {
@@ -1481,7 +1102,7 @@
             }
             
             .products-grid {
-                grid-template-columns: repeat(5, 1fr);
+                grid-template-columns: 1fr;
             }
             
             .panel {
@@ -1660,7 +1281,7 @@
         /* Cart Items */
         .cart-item {
             background: var(--light-gray);
-            padding: 28px;
+            padding: 15px;
             border-radius: 10px;
             margin-bottom: 10px;
             border: 1px solid var(--border-color);
@@ -1698,7 +1319,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 28px;
+            padding: 15px;
             border: 2px solid var(--border-color);
             border-radius: 10px;
             margin-bottom: 12px;
@@ -1778,8 +1399,8 @@
         /* Product Grid for Quotations */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
         }
         
         .product-card {
@@ -1787,11 +1408,13 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 16px;
+            transition: all 0.3s ease;
             cursor: pointer;
         }
         
         .product-card:hover {
             border-color: var(--primary-color);
+            transform: translateY(-3px);
             box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
         }
         
@@ -1821,7 +1444,7 @@
             }
             
             .products-grid {
-                grid-template-columns: repeat(5, 1fr);
+                grid-template-columns: 1fr;
             }
         }
         
@@ -1885,7 +1508,7 @@
         
         .item-card {
             background: var(--light-gray);
-            padding: 28px;
+            padding: 15px;
             border-radius: 10px;
             margin-bottom: 10px;
             border: 1px solid var(--border-color);
@@ -1916,18 +1539,18 @@
 </head>
 <body>
     <!-- Top Navbar -->
-        <nav class="navbar">
+    <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-brand">
-                <i class="fas fa-hammer"></i>
+                <i class="fas fa-store"></i>
                 <span>Hardware Store</span>
             </div>
             <div class="navbar-menu">
-                <a href="/staff/dashboard">
+                <a href="/staff/dashboard" >
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="/staff_billing" class="active">
+                <a href="/staff_billing"class="active">
                     <i class="fas fa-cash-register"></i>
                     <span>Billing</span>
                 </a>
@@ -1935,6 +1558,14 @@
                     <i class="fas fa-boxes"></i>
                     <span>Inventory</span>
                 </a>
+                <!-- <a href="/credit_management">
+                    <i class="fas fa-truck-loading"></i>
+                    <span>Credit</span>
+                </a>
+                <a href="/credit_notes">
+                    <i class="fas fa-undo"></i>
+                    <span>Returns</span>
+                </a>-->
                 <a href="/customers">
                     <i class="fas fa-users"></i>
                     <span>Customers</span>
@@ -1997,10 +1628,10 @@
                 <div class="billing-grid">
                     <!-- Left Panel - Product Selection -->
                     <div class="panel">
-                        <!-- <div class="panel-header"> -->
-                            <!-- <i class="fas fa-box"></i> -->
-                            <!-- <h2>Product Selection</h2> -->
-                        <!-- </div> -->
+                        <div class="panel-header">
+                            <i class="fas fa-box"></i>
+                            <h2>Product Selection</h2>
+                        </div>
 
                         <!-- Filters -->
                         <div class="form-section">
@@ -2025,7 +1656,7 @@
                                 <span>Search Product</span>
                             </div>
 							
-                            <input type="text" id="productSearch" placeholder="Type product name..." oninput="filterProducts()" onfocus="this.select()">
+                            <input type="text" id="productSearch" placeholder="Type product name..." oninput="filterProducts()">
                         </div>
 
                         <!-- Product List -->
@@ -2034,42 +1665,32 @@
 
                     <!-- Right Panel - Cart & Payment -->
                     <div>
-                        <!-- Cart -->
+                        <!-- Customer Info -->
                         <div class="panel">
-                            <div class="panel-header" style="justify-content: space-between; display: flex; align-items: center;">
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    <h2>Cart</h2>
-                                </div>
-                                <button class="btn btn-sm" onclick="openAddCustomerModal()" style="background: var(--success-color); color: white; padding: 8px 16px; font-size: 13px;">
-                                    <i class="fas fa-user-plus"></i> Add Customer
-                                </button>
+                            <div class="panel-header">
+                                <i class="fas fa-user"></i>
+                                <h2>Customer</h2>
                             </div>
-                            
-                            <!-- Customer Info Display -->
-                            <div id="cartCustomerInfo" style="display: none; background: var(--light-gray); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                    <div style="flex: 1;">
-                                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
-                                            <i class="fas fa-user" style="color: var(--success-color);"></i> 
-                                            <span id="cartCustomerName"></span>
-                                        </div>
-                                        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;">
-                                            <i class="fas fa-phone"></i> <span id="cartCustomerMobile"></span>
-                                        </div>
-                                        <div id="cartCustomerSales" style="font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; display: none;">
-                                            <i class="fas fa-chart-line"></i> <span></span>
-                                        </div>
-                                        <div id="cartCustomerCredit" style="font-size: 13px; color: #166534; font-weight: 600; display: none;">
-                                            <i class="fas fa-ticket-alt"></i> <span></span>
-                                        </div>
-                                    </div>
-                                    <button class="btn btn-sm" onclick="clearCartCustomer()" style="background: var(--danger-color); color: white; padding: 6px 12px; font-size: 12px;">
-                                        <i class="fas fa-times"></i>
+                            <div class="form-group">
+                                <label>Mobile Number</label>
+                                <div class="input-group">
+                                    <input type="text" id="customerMobile" placeholder="Enter 10-digit mobile" maxlength="10">
+                                    <button class="btn btn-primary" onclick="searchCustomer()">
+                                        <i class="fas fa-search"></i> Search
                                     </button>
                                 </div>
                             </div>
-                            
+                            <div id="customerInfoCard" style="display: none;">
+                                <div id="customerDetails"></div>
+                            </div>
+                        </div>
+
+                        <!-- Cart -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <i class="fas fa-shopping-cart"></i>
+                                <h2>Cart</h2>
+                            </div>
                             <div id="cartItems"></div>
                             
                             <!-- Summary -->
@@ -2110,19 +1731,19 @@
                             <div id="quickPayOptions" style="display: none;">
                                 <div style="display: grid; grid-template-columns: repeat(5, 1fr);
             width: 100%; gap: 10px; margin-bottom: 15px;">
-                                    <button class="btn" onclick="quickPayMethod('cash')" style="padding: 28px; background: white; border: 2px solid #10b981; color: #10b981;">
+                                    <button class="btn" onclick="quickPayMethod('cash')" style="padding: 15px; background: white; border: 2px solid #10b981; color: #10b981;">
                                         <i class="fas fa-money-bill-wave" style="font-size: 24px; display: block; margin-bottom: 5px;"></i>
                                         <span style="font-size: 13px;">Cash</span>
                                     </button>
-                                    <button class="btn" onclick="quickPayMethod('upi')" style="padding: 28px; background: white; border: 2px solid #6366f1; color: #6366f1;">
+                                    <button class="btn" onclick="quickPayMethod('upi')" style="padding: 15px; background: white; border: 2px solid #6366f1; color: #6366f1;">
                                         <i class="fas fa-mobile-alt" style="font-size: 24px; display: block; margin-bottom: 5px;"></i>
                                         <span style="font-size: 13px;">UPI / Card</span>
                                     </button>
-                                    <button class="btn" onclick="quickPayMethod('credit')" style="padding: 28px; background: white; border: 2px solid #f59e0b; color: #f59e0b;">
+                                    <button class="btn" onclick="quickPayMethod('credit')" style="padding: 15px; background: white; border: 2px solid #f59e0b; color: #f59e0b;">
                                         <i class="fas fa-credit-card" style="font-size: 24px; display: block; margin-bottom: 5px;"></i>
                                         <span style="font-size: 13px;">Credit (Account)</span>
                                     </button>
-                                    <button class="btn" onclick="quickPayMethod('creditNote')" style="padding: 28px; background: white; border: 2px solid #10b981; color: #10b981;" id="quickPayCreditNoteBtn" disabled>
+                                    <button class="btn" onclick="quickPayMethod('creditNote')" style="padding: 15px; background: white; border: 2px solid #10b981; color: #10b981;" id="quickPayCreditNoteBtn" disabled>
                                         <i class="fas fa-ticket-alt" style="font-size: 24px; display: block; margin-bottom: 5px;"></i>
                                         <span style="font-size: 13px;">Credit Note</span>
                                     </button>
@@ -2160,7 +1781,7 @@
                                 </div>
                                 
                                 <!-- Remaining Amount Display -->
-                                <div id="remainingAmountBox" style="margin-top: 15px; padding: 28px; border: 2px solid var(--success-color); border-radius: 10px;">
+                                <div id="remainingAmountBox" style="margin-top: 15px; padding: 15px; border: 2px solid var(--success-color); border-radius: 10px;">
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
                                         <span style="font-weight: 600; font-size: 15px;">REMAINING:</span>
                                         <span id="remainingAmount" style="font-weight: 700; font-size: 20px; color: var(--success-color);">₹0.00</span>
@@ -2169,7 +1790,7 @@
                             </div>
                             
                             <!-- Selected Payment Summary (shown after Quick Pay selection) -->
-                            <div id="selectedPaymentSummary" style="display: none; margin-top: 15px; padding: 28px; background: var(--light-gray); border-radius: 10px;">
+                            <div id="selectedPaymentSummary" style="display: none; margin-top: 15px; padding: 15px; background: var(--light-gray); border-radius: 10px;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                                     <span style="font-weight: 600;">Payment Method:</span>
                                     <span id="selectedMethodName" style="font-weight: 700; color: var(--primary-color);"></span>
@@ -2229,12 +1850,7 @@
                 <div class="filters">
                     <div class="filter-group">
                         <label>Search Customer</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="creditSearchInput" placeholder="Search by name or mobile..." oninput="filterCredits()" style="flex: 1;" onfocus="this.select()">
-                            <button class="btn" onclick="clearCreditSearch()" style="background: #e2e8f0; color: #334155; padding: 10px 16px;">
-                                <i class="fas fa-times"></i> Clear
-                            </button>
-                        </div>
+                        <input type="text" id="creditSearchInput" placeholder="Search by name or mobile..." oninput="filterCredits()">
                     </div>
                     <div class="filter-group">
                         <label>Sort By</label>
@@ -2273,12 +1889,9 @@
                         <div class="form-group">
                             <label>Customer Mobile</label>
                             <div class="input-group">
-                                <input type="text" id="cnCustomerMobile" placeholder="Enter mobile number" maxlength="10" onfocus="this.select()">
+                                <input type="text" id="cnCustomerMobile" placeholder="Enter mobile number" maxlength="10">
                                 <button class="btn btn-primary" onclick="searchCustomerForCreditNote()">
                                     <i class="fas fa-search"></i> Search
-                                </button>
-                                <button class="btn" onclick="clearCreditNoteSearch()" style="background: #e2e8f0; color: #334155;">
-                                    <i class="fas fa-times"></i> Clear
                                 </button>
                             </div>
                         </div>
@@ -2361,42 +1974,21 @@
                             <h2>Credit Notes History</h2>
                         </div>
                         
-                        <!-- Search by Mobile or CN# -->
-                        <!-- Search by Mobile or CN# -->
-                        <div class="form-section" style="margin-bottom: 20px;">
-                            <div class="form-section-label">
-                                <i class="fas fa-search"></i>
-                                <span>Search by Customer Mobile or CN#</span>
-                            </div>
-                            <div style="display: flex; gap: 10px;">
-                                <input type="text" id="cnSearchInput" placeholder="Type mobile number or CN# to search..." style="flex: 1;" oninput="debounceCNSearch()" onfocus="this.select()">
-                                <button class="btn" onclick="clearCNSearch()" style="background: #e2e8f0; color: #334155;">
-                                    <i class="fas fa-times"></i> Clear
-                                </button>
-                            </div>
-                            <div style="font-size: 12px; color: #666; margin-top: 8px;">
-                                <i class="fas fa-info-circle"></i> Search updates as you type (min 3 characters)
-                            </div>
-                        </div>
-                        
-                        <!-- Table with scrolling -->
-                        <div style="max-height: 500px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px;">
-                            <table>
-                                <thead style="position: sticky; top: 0; background: white; z-index: 10;">
-                                    <tr>
-                                        <th>CN #</th>
-                                        <th>Type</th>
-                                        <th>Customer</th>
-                                        <th>Amount</th>
-                                        <th>Remaining</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="cnHistoryTable"></tbody>
-                            </table>
-                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>CN #</th>
+                                    <th>Type</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Remaining</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cnHistoryTable"></tbody>
+                        </table>
                     </div>
                 </div>
             </section>
@@ -2416,10 +2008,7 @@
                                 <select id="quoteBrandFilter" onchange="loadQuoteProducts()">
                                     <option value="">All Brands</option>
                                 </select>
-                                <select id="quoteCategoryFilter" onchange="loadQuoteProducts()">
-                                    <option value="">All Categories</option>
-                                </select>
-                                <input type="text" id="quoteProductSearch" placeholder="Search products..." oninput="filterQuoteProducts()" onfocus="this.select()">
+                                <input type="text" id="quoteProductSearch" placeholder="Search products..." oninput="filterQuoteProducts()">
                             </div>
                         </div>
                         
@@ -2428,48 +2017,41 @@
 
                     <!-- Quotation Details -->
                     <div>
+                        <!-- Customer Details -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <i class="fas fa-user"></i>
+                                <h2>Customer Details</h2>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Name *</label>
+                                <input type="text" id="quoteCustomerName" placeholder="Enter customer name">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Mobile *</label>
+                                <input type="text" id="quoteCustomerMobile" placeholder="10-digit mobile" maxlength="10">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Address</label>
+                                <textarea id="quoteCustomerAddress" rows="2" placeholder="Enter address"></textarea>
+                            </div>
+                        </div>
+
                         <!-- Selected Items -->
                         <div class="panel">
-                            <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <i class="fas fa-list"></i>
-                                    <h2>Selected Items</h2>
-                                </div>
-                                
-                                <!-- Add Customer Button (Small) -->
-                                <button class="btn btn-primary" id="quoteAddCustomerButton" onclick="openQuoteCustomerModal()" style="padding: 8px 16px; font-size: 13px; white-space: nowrap;">
-                                    <i class="fas fa-user-plus"></i> Add Customer
-                                </button>
+                            <div class="panel-header">
+                                <i class="fas fa-list"></i>
+                                <h2>Selected Items</h2>
                             </div>
                             
-                            <!-- Customer Info Display (Right after heading) -->
-                            <div id="quoteCustomerInfoPanel" style="display: none; margin-top: 0; margin-bottom: 16px; padding: 16px; background: #f8fafc; border-radius: 10px; border: 1.5px solid var(--border-color);">
-                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-                                    <i class="fas fa-user" style="color: var(--primary-color);"></i>
-                                    <h3 style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin: 0;">Customer Details</h3>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                    <div style="flex: 1;">
-                                        <div style="font-size: 16px; font-weight: 600; color: var(--primary-color); margin-bottom: 4px;" id="quoteCustomerDisplayName">Customer Name</div>
-                                        <div style="color: var(--text-secondary); font-size: 13px;">
-                                            <i class="fas fa-phone"></i> <span id="quoteCustomerDisplayMobile"></span>
-                                        </div>
-                                        <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;" id="quoteCustomerDisplayAddress">
-                                            <i class="fas fa-map-marker-alt"></i> <span></span>
-                                        </div>
-                                    </div>
-                                    <button class="btn btn-danger" onclick="clearQuoteCustomer()" style="padding: 6px 10px; font-size: 12px;">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <!-- Selected Items List -->
-                            <div id="quoteSelectedItems" style="max-height: 260px; overflow-y: auto; margin-bottom: 16px;"></div>
+                            <div id="quoteSelectedItems"></div>
                             
                             <div class="form-group">
                                 <label>Overall Discount (%)</label>
-                                <input type="number" id="quoteDiscountPercent" value="0" min="0" max="100" step="0.1" oninput="updateQuoteSummary()" onfocus="this.select()">
+                                <input type="number" id="quoteDiscountPercent" value="0" min="0" max="100" step="0.1" oninput="updateQuoteSummary()">
                             </div>
                             
                             <div style="margin-top: 20px;">
@@ -2487,14 +2069,12 @@
                                 </div>
                             </div>
                             
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
-                                <button class="btn btn-success" onclick="generateQuotation()">
-                                    <i class="fas fa-download"></i> Generate PDF
-                                </button>
-                                <button class="btn btn-danger" onclick="clearQuotation()">
-                                    <i class="fas fa-trash"></i> Clear
-                                </button>
-                            </div>
+                            <button class="btn btn-success" style="width: 100%; margin-top: 15px;" onclick="generateQuotation()">
+                                <i class="fas fa-download"></i> Generate PDF
+                            </button>
+                            <button class="btn btn-danger" style="width: 100%; margin-top: 10px;" onclick="clearQuotation()">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -2510,41 +2090,39 @@
                 <h2>Record Payment</h2>
                 <span class="close" onclick="closeClearModal()">&times;</span>
             </div>
-            <div class="modal-body">
-                <div id="clearCustomerInfo"></div>
-                <form id="clearCreditForm">
-                    <input type="hidden" id="clearBillId" name="bill_id">
-                    <input type="hidden" id="clearCustomerId" name="customer_id">
-                    
-                    <div class="form-group">
-                        <label>Payment Amount</label>
-                        <input type="number" id="clearPaymentAmount" name="payment_amount" step="0.01" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Payment Method</label>
-                        <select id="clearPaymentMethod" name="payment_method" required>
-                            <option value="cash">Cash</option>
-                            <option value="upi">UPI</option>
-                            <option value="bank_transfer">Bank Transfer</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Reference Number</label>
-                        <input type="text" id="clearPaymentReference" name="payment_reference" placeholder="Optional">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Notes</label>
-                        <textarea id="clearNotes" name="notes" rows="2" placeholder="Optional notes"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-success" style="width: 100%;">
-                        <i class="fas fa-check"></i> Record Payment
-                    </button>
-                </form>
-            </div>
+            <div id="clearCustomerInfo"></div>
+            <form id="clearCreditForm">
+                <input type="hidden" id="clearBillId" name="bill_id">
+                <input type="hidden" id="clearCustomerId" name="customer_id">
+                
+                <div class="form-group">
+                    <label>Payment Amount</label>
+                    <input type="number" id="clearPaymentAmount" name="payment_amount" step="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select id="clearPaymentMethod" name="payment_method" required>
+                        <option value="cash">Cash</option>
+                        <option value="upi">UPI</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Reference Number</label>
+                    <input type="text" id="clearPaymentReference" name="payment_reference" placeholder="Optional">
+                </div>
+                
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="clearNotes" name="notes" rows="2" placeholder="Optional notes"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success" style="width: 100%;">
+                    <i class="fas fa-check"></i> Record Payment
+                </button>
+            </form>
         </div>
     </div>
 
@@ -2552,30 +2130,23 @@
     <div id="viewBillsModal" class="modal">
         <div class="modal-content" style="max-width: 900px;">
             <div class="modal-header">
-                <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
-                    <h2 style="margin: 0;">Outstanding Bills</h2>
-                    <button class="btn btn-primary btn-sm" onclick="printOutstandingBills()" style="margin-left: auto;">
-                        <i class="fas fa-print"></i> Print
-                    </button>
-                </div>
+                <h2>Outstanding Bills</h2>
                 <span class="close" onclick="closeViewBillsModal()">&times;</span>
             </div>
-            <div class="modal-body">
-                <div id="billsCustomerInfo"></div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Bill #</th>
-                            <th>Date</th>
-                            <th>Total</th>
-                            <th>Original Credit</th>
-                            <th>Remaining</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="billsTable"></tbody>
-                </table>
-            </div>
+            <div id="billsCustomerInfo"></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bill #</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Original Credit</th>
+                        <th>Remaining</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="billsTable"></tbody>
+            </table>
         </div>
     </div>
 
@@ -2602,8 +2173,6 @@
         let quoteSelectedItems = [];
         let quoteDiscountPercentage = 0;
         let allQuoteProducts = [];
-        let quoteCustomerData = null;
-        let currentQuoteProduct = null;
 
         // Navigation
         document.querySelectorAll('.nav-link').forEach(link => {
@@ -2730,9 +2299,9 @@
                 return `
                     <div class="product-item" style="${inCart ? 'border-color: var(--success-color); background: rgba(16, 185, 129, 0.05);' : ''}" 
                          onclick="addToCart(${product.product_id})">
-                        <!-- <div class="product-item-icon"> -->
-                            <!-- <i class="fas fa-box"></i> -->
-                        <!-- </div> -->
+                        <div class="product-item-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
                         <div class="product-item-name">${product.product_name}</div>
                         <div class="product-item-brand">${product.brand || 'No Brand'}</div>
                         <span class="badge badge-${stockClass} product-item-stock" style="margin-top: 8px;">
@@ -2744,9 +2313,6 @@
             }).join('');
         }
 
-        // Store current product being added
-        let currentProductToAdd = null;
-
         function addToCart(productId) {
             const product = allProducts.find(p => p.product_id === productId);
             if (!product) return;
@@ -2757,131 +2323,61 @@
                 return;
             }
             
-            // Open modal with product details
-            currentProductToAdd = product;
-            const availableStock = parseFloat(product.stock || product.current_stock || 0);
-            
-            document.getElementById('modalProductName').textContent = product.product_name;
-            document.getElementById('modalProductBrand').textContent = product.brand || 'No brand';
-            document.getElementById('modalProductStock').textContent = `Available Stock: ${availableStock} ${product.unit || 'units'}`;
-            document.getElementById('modalQuantity').value = '1';
-            document.getElementById('modalQuantity').max = availableStock; // Set max attribute
-            document.getElementById('modalPrice').value = parseFloat(product.rate || 0);
-            document.getElementById('modalDiscount').value = '0';
-            
-            // Add real-time validation
-            const quantityInput = document.getElementById('modalQuantity');
-            const stockWarning = document.getElementById('stockWarning');
-            
-            quantityInput.oninput = function() {
-                const enteredQty = parseFloat(this.value) || 0;
-                if (enteredQty > availableStock) {
-                    stockWarning.style.display = 'block';
-                    this.style.borderColor = 'var(--danger-color)';
-                } else {
-                    stockWarning.style.display = 'none';
-                    this.style.borderColor = 'var(--border-color)';
-                }
-            };
-            
-            const modal = document.getElementById('addToCartModal');
-            modal.classList.add('show');
-        }
-
-        function closeAddToCartModal() {
-            const modal = document.getElementById('addToCartModal');
-            modal.classList.remove('show');
-            currentProductToAdd = null;
-        }
-
-
-        function handleModalAction() {
-            if (currentEditIndex !== null) {
-                confirmEditCartItem();
-            } else {
-                confirmAddToCart();
-            }
-        }
-        function confirmAddToCart() {
-            if (!currentProductToAdd) return;
-            
-            const quantity = parseFloat(document.getElementById('modalQuantity').value) || 0;
-            const price = parseFloat(document.getElementById('modalPrice').value) || 0;
-            const discount = parseFloat(document.getElementById('modalDiscount').value) || 0;
-            
-            if (quantity <= 0) {
-                showAlert('Please enter a valid quantity', 'danger');
-                return;
-            }
-            
-            if (price < 0) {
-                showAlert('Price cannot be negative', 'danger');
-                return;
-            }
-            
-            // Check stock availability - use stock or current_stock field
-            const availableStock = parseFloat(currentProductToAdd.stock || currentProductToAdd.current_stock || 0);
-            if (quantity > availableStock) {
-                showAlert(`Insufficient stock! Only ${availableStock} ${currentProductToAdd.unit || 'units'} available in inventory.`, 'danger');
-                return;
-            }
-            
             cart.push({
-                ...currentProductToAdd,
-                quantity: quantity,
-                rate: price,
-                discountPercent: discount
+                ...product,
+                quantity: 1,
+                rate: parseFloat(product.rate || 0),
+                discountPercent: 0
             });
             
-            closeAddToCartModal();
             renderCart();
             displayProducts(allProducts.filter(p => 
                 p.product_name.toLowerCase().includes(document.getElementById('productSearch').value.toLowerCase())
             ));
-            
         }
 
         function renderCart() {
             const container = document.getElementById('cartItems');
             
             if (cart.length === 0) {
-                container.innerHTML = `
-                    <div class="cart-empty">
-                        <i class="fas fa-shopping-cart"></i>
-                        <p>Cart is empty</p>
-                    </div>
-                `;
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 12px;">Cart is empty</p>';
                 calculateTotal();
                 return;
             }
             
-            container.innerHTML = '<div class="cart-items-container">' + cart.map((item, index) => {
-                const itemTotal = (item.quantity * item.rate * (1 - item.discountPercent / 100)).toFixed(2);
-                return `
-                    <div class="cart-item-compact">
-                        <div class="cart-item-header-row">
-                            <div class="cart-item-title">
-                                <strong>${item.product_name}</strong>
-                            </div>
-                            <div class="cart-item-actions">
-                                <button onclick="editCartItem(${index})" class="btn-icon btn-edit" title="Edit item">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button onclick="removeFromCart(${index})" class="btn-icon btn-delete" title="Delete item">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
+            container.innerHTML = cart.map((item, index) => `
+                <div class="cart-item">
+                    <div class="cart-item-header">
+                        <div>
+                            <div class="cart-item-name">${item.product_name}</div>
+                            <div style="font-size: 12px; color: #666;">${item.brand || ''}</div>
                         </div>
-                        <div class="cart-item-details-row">
-                            <span class="cart-detail-item"><strong>Brand:</strong> ${item.brand || '-'}</span>
-                            <span class="cart-detail-item"><strong>Qty:</strong> ${item.quantity}</span>
-                            <span class="cart-detail-item"><strong>Price:</strong> ₹${item.rate.toFixed(2)}</span>
-                            <span class="cart-detail-item"><strong>Disc:</strong> ${item.discountPercent}%</span>
-                            <span class="cart-detail-item cart-total-highlight"><strong>Total:</strong> ₹${itemTotal}</span>
+                        <button class="btn btn-danger btn-sm" onclick="removeFromCart(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="cart-item-details">
+                        <div>
+                            <label style="font-size: 11px; color: #666;">Qty</label>
+                            <input type="number" value="${item.quantity}" min="0.01" step="0.01" 
+                                   onchange="updateCartItem(${index}, 'quantity', this.value)">
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; color: #666;">Rate</label>
+                            <input type="number" value="${item.rate}" min="0" step="0.01" 
+                                   onchange="updateCartItem(${index}, 'rate', this.value)">
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; color: #666;">Disc %</label>
+                            <input type="number" value="${item.discountPercent}" min="0" max="100" step="0.1" 
+                                   onchange="updateCartItem(${index}, 'discountPercent', this.value)">
                         </div>
                     </div>
-                `;
-            }).join('') + '</div>';
+                    <div style="text-align: right; margin-top: 8px; font-weight: 600; color: var(--success-color);">
+                        ₹${(item.quantity * item.rate * (1 - item.discountPercent / 100)).toFixed(2)}
+                    </div>
+                </div>
+            `).join('');
             
             calculateTotal();
         }
@@ -2891,90 +2387,6 @@
             renderCart();
         }
 
-        let currentEditIndex = null;
-
-        function editCartItem(index) {
-            const item = cart[index];
-            
-            // Store edit index
-            currentEditIndex = index;
-            currentProductToAdd = item;
-            
-            const availableStock = parseFloat(item.stock || item.current_stock || 0);
-            
-            document.getElementById('modalProductName').textContent = item.product_name;
-            document.getElementById('modalProductBrand').textContent = item.brand || 'No brand';
-            document.getElementById('modalProductStock').textContent = `Available Stock: ${availableStock} ${item.unit || 'units'}`;
-            
-            document.getElementById('modalQuantity').value = item.quantity;
-            document.getElementById('modalQuantity').max = availableStock;
-            document.getElementById('modalPrice').value = item.rate;
-            document.getElementById('modalDiscount').value = item.discountPercent;
-            
-            // Add real-time validation
-            const quantityInput = document.getElementById('modalQuantity');
-            const stockWarning = document.getElementById('stockWarning');
-            
-            quantityInput.oninput = function() {
-                const enteredQty = parseFloat(this.value) || 0;
-                if (enteredQty > availableStock) {
-                    stockWarning.style.display = 'block';
-                    this.style.borderColor = 'var(--danger-color)';
-                } else {
-                    stockWarning.style.display = 'none';
-                    this.style.borderColor = 'var(--border-color)';
-                }
-            };
-            
-            // Change modal title and button
-            const modalTitle = document.querySelector('#addToCartModal .modal-header h3');
-            modalTitle.innerHTML = '<i class="fas fa-edit"></i> Edit Cart Item';
-            
-            const modalButton = document.getElementById('modalActionButton');
-            modalButton.innerHTML = '<i class="fas fa-check"></i> Update Item';
-            
-            const modal = document.getElementById('addToCartModal');
-            modal.classList.add('show');
-        }
-        function confirmEditCartItem() {
-            if (currentEditIndex === null) return confirmAddToCart();
-            
-            const quantity = parseFloat(document.getElementById('modalQuantity').value) || 0;
-            const price = parseFloat(document.getElementById('modalPrice').value) || 0;
-            const discount = parseFloat(document.getElementById('modalDiscount').value) || 0;
-            
-            if (quantity <= 0) {
-                showAlert('Please enter a valid quantity', 'danger');
-                return;
-            }
-            
-            if (price < 0) {
-                showAlert('Price cannot be negative', 'danger');
-                return;
-            }
-            
-            const availableStock = parseFloat(currentProductToAdd.stock || currentProductToAdd.current_stock || 0);
-            if (quantity > availableStock) {
-                showAlert(`Insufficient stock! Only ${availableStock} ${currentProductToAdd.unit || 'units'} available in inventory.`, 'danger');
-                return;
-            }
-            
-            // Update cart item
-            cart[currentEditIndex].quantity = quantity;
-            cart[currentEditIndex].rate = price;
-            cart[currentEditIndex].discountPercent = discount;
-            
-            // Reset modal state
-            currentEditIndex = null;
-            const modalTitle = document.querySelector('#addToCartModal .modal-header h3');
-            modalTitle.innerHTML = '<i class="fas fa-cart-plus"></i> Add to Cart';
-            
-            const modalButton = document.getElementById('modalActionButton');
-            modalButton.innerHTML = '<i class="fas fa-check"></i> Add to Cart';
-            
-            closeAddToCartModal();
-            renderCart();
-        }
         function removeFromCart(index) {
             cart.splice(index, 1);
             renderCart();
@@ -3017,7 +2429,7 @@
                     customerCreditNotes = data.credit_notes || [];
                     
                     document.getElementById('customerDetails').innerHTML = `
-                        <div style="padding: 28px; background: var(--light-gray); border-radius: 8px;">
+                        <div style="padding: 15px; background: var(--light-gray); border-radius: 8px;">
                             <div style="font-weight: 600; font-size: 16px;">${data.customer.customer_name}</div>
                             <div style="font-size: 13px; color: #666; margin-top: 5px;">
                                 Mobile: ${data.customer.mobile}
@@ -3051,7 +2463,7 @@
                     document.getElementById('creditNotePaymentItem').style.display = 'none';
                     
                     document.getElementById('customerDetails').innerHTML = `
-                        <div style="padding: 28px; background: #fff3cd; border-radius: 8px; border: 1px solid #ffc107;">
+                        <div style="padding: 15px; background: #fff3cd; border-radius: 8px; border: 1px solid #ffc107;">
                             <div style="font-weight: 600; margin-bottom: 15px; color: #856404;">
                                 <i class="fas fa-user-plus"></i> New Customer
                             </div>
@@ -3115,7 +2527,7 @@
                     
                     // Update the display
                     document.getElementById('customerDetails').innerHTML = `
-                        <div style="padding: 28px; background: var(--light-gray); border-radius: 8px;">
+                        <div style="padding: 15px; background: var(--light-gray); border-radius: 8px;">
                             <div style="font-weight: 600; font-size: 16px;">${name}</div>
                             <div style="font-size: 13px; color: #666; margin-top: 5px;">
                                 Mobile: ${mobile}
@@ -3303,9 +2715,8 @@
                 return;
             }
             
-            // Check for cartCustomer instead of currentCustomer
-            if (!cartCustomer) {
-                showAlert('Please add a customer to complete the sale', 'danger');
+            if (!currentCustomer) {
+                showAlert('Please select a customer', 'danger');
                 return;
             }
             
@@ -3340,38 +2751,8 @@
                 };
             });
             
-            // Handle new customer creation first
-            let customerId = cartCustomer.customer_id;
-            
-            if (cartCustomer.new && !customerId) {
-                // Create new customer
-                try {
-                    const newCustomerResponse = await fetch('/api/customers', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            customer_name: cartCustomer.customer_name,
-                            mobile: cartCustomer.mobile,
-                            address: cartCustomer.address || ''
-                        })
-                    });
-                    
-                    const newCustomerData = await newCustomerResponse.json();
-                    if (newCustomerData.success) {
-                        customerId = newCustomerData.customer_id;
-                        cartCustomer.customer_id = customerId;
-                    } else {
-                        showAlert('Error creating customer: ' + newCustomerData.message, 'danger');
-                        return;
-                    }
-                } catch (error) {
-                    showAlert('Error creating customer: ' + error.message, 'danger');
-                    return;
-                }
-            }
-            
             const saleData = {
-                customer_id: customerId,
+                customer_id: currentCustomer.customer_id,
                 items: itemsForSale,
                 payment_split: {
                     cash: cashAmount,
@@ -3394,16 +2775,11 @@
                     const billNumber = data.bill_number;
                     const billId = data.bill_id || data.sale_id;
                     
-                    // Clear cart immediately after successful sale
-                    try {
-                        clearCart();
-                    } catch (clearError) {
-                        console.error('Error clearing cart:', clearError);
-                        // Still show success since sale completed
-                    }
+                    showAlert(`Sale completed successfully! Bill #${billNumber} <button class="btn btn-sm btn-primary" onclick="printBill(${billId})" style="margin-left: 10px;"><i class="fas fa-print"></i> Print</button>`, 'success');
                     
-                    // Show print bill modal
-                    showPrintBillModal(billId, billNumber, parseFloat(document.getElementById('totalAmount').textContent.replace('₹', '')));
+                    setTimeout(() => {
+                        clearCart();
+                    }, 5000);
                 } else {
                     showAlert('Error: ' + data.message, 'danger');
                 }
@@ -3416,139 +2792,43 @@
         function printBill(billId) {
             window.open(`/api/bills/${billId}/print`, '_blank');
         }
-        
-        // Global variable to store bill info for modal
-        let currentBillForPrint = null;
-        
-        // Show print bill modal
-        function showPrintBillModal(billId, billNumber, amount) {
-            currentBillForPrint = billId;
-            document.getElementById('billNumber').textContent = billNumber;
-            document.getElementById('billAmount').textContent = `₹${parseFloat(amount).toFixed(2)}`;
-            
-            const modal = document.getElementById('printBillModal');
-            modal.classList.add('show');
-        }
-        
-        // Close print bill modal
-        function closePrintBillModal() {
-            const modal = document.getElementById('printBillModal');
-            modal.classList.remove('show');
-            currentBillForPrint = null;
-        }
-        
-        // Print bill from modal
-        function printBillFromModal() {
-            if (currentBillForPrint) {
-                printBill(currentBillForPrint);
-            }
-            closePrintBillModal();
-        }
-        
-        // Print Payment Receipt Function
-        function printPaymentReceipt(paymentId) {
-            window.open(`/api/credit-payments/${paymentId}/print`, '_blank');
-        }
-        
-        // Global variable to store payment info for modal
-        let currentPaymentForPrint = null;
-        
-        // Show print receipt modal
-        function showPrintReceiptModal(paymentId, paymentNumber, amount) {
-            currentPaymentForPrint = paymentId;
-            document.getElementById('receiptNumber').textContent = paymentNumber;
-            document.getElementById('paymentAmount').textContent = `₹${parseFloat(amount).toFixed(2)}`;
-            
-            const modal = document.getElementById('printReceiptModal');
-            modal.classList.add('show');
-        }
-        
-        // Close print receipt modal
-        function closePrintReceiptModal() {
-            const modal = document.getElementById('printReceiptModal');
-            modal.classList.remove('show');
-            currentPaymentForPrint = null;
-        }
-        
-        // Print receipt from modal
-        function printReceiptFromModal() {
-            if (currentPaymentForPrint) {
-                printPaymentReceipt(currentPaymentForPrint);
-            }
-            closePrintReceiptModal();
-        }
 
         function clearCart() {
             cart = [];
             currentCustomer = null;
             customerCreditNotes = [];
-            cartCustomer = null;
             
-            // Helper function to safely update element
-            const safeSetValue = (id, value) => {
-                const elem = document.getElementById(id);
-                if (elem) elem.value = value;
-            };
-            
-            const safeSetDisplay = (id, display) => {
-                const elem = document.getElementById(id);
-                if (elem) elem.style.display = display;
-            };
-            
-            const safeSetChecked = (id, checked) => {
-                const elem = document.getElementById(id);
-                if (elem) elem.checked = checked;
-            };
-            
-            const safeSetDisabled = (id, disabled) => {
-                const elem = document.getElementById(id);
-                if (elem) elem.disabled = disabled;
-            };
-            
-            const safeRemoveClass = (id, className) => {
-                const elem = document.getElementById(id);
-                if (elem) elem.classList.remove(className);
-            };
-            
-            // Hide cart customer info
-            safeSetDisplay('cartCustomerInfo', 'none');
-            safeSetDisplay('customerInfoCard', 'none');
-            safeSetDisplay('creditNotePaymentItem', 'none');
+            document.getElementById('customerMobile').value = '';
+            document.getElementById('customerInfoCard').style.display = 'none';
+            document.getElementById('creditNotePaymentItem').style.display = 'none';
             
             // Reset payment UI
-            safeSetDisplay('quickPayOptions', 'none');
-            safeSetDisplay('splitPaymentOptions', 'none');
-            safeSetDisplay('selectedPaymentSummary', 'none');
+            document.getElementById('quickPayOptions').style.display = 'none';
+            document.getElementById('splitPaymentOptions').style.display = 'none';
+            document.getElementById('selectedPaymentSummary').style.display = 'none';
             
-            // Clear input fields
-            safeSetValue('customerMobile', '');
-            safeSetValue('productSearch', '');
+            document.getElementById('useCash').checked = false;
+            document.getElementById('useUPI').checked = false;
+            document.getElementById('useCredit').checked = false;
+            if (document.getElementById('useCreditNote')) {
+                document.getElementById('useCreditNote').checked = false;
+            }
             
-            // Uncheck payment methods
-            safeSetChecked('useCash', false);
-            safeSetChecked('useUPI', false);
-            safeSetChecked('useCredit', false);
-            safeSetChecked('useCreditNote', false);
+            document.getElementById('cashAmount').value = '0';
+            document.getElementById('upiAmount').value = '0';
+            document.getElementById('creditAmount').value = '0';
+            document.getElementById('creditNotePaymentAmount').value = '0';
             
-            // Reset payment amounts
-            safeSetValue('cashAmount', '0');
-            safeSetValue('upiAmount', '0');
-            safeSetValue('creditAmount', '0');
-            safeSetValue('creditNotePaymentAmount', '0');
+            document.getElementById('cashAmount').disabled = true;
+            document.getElementById('upiAmount').disabled = true;
+            document.getElementById('creditAmount').disabled = true;
+            document.getElementById('creditNotePaymentAmount').disabled = true;
             
-            // Disable payment amount fields
-            safeSetDisabled('cashAmount', true);
-            safeSetDisabled('upiAmount', true);
-            safeSetDisabled('creditAmount', true);
-            safeSetDisabled('creditNotePaymentAmount', true);
+            document.getElementById('cashPaymentItem').classList.remove('active');
+            document.getElementById('upiPaymentItem').classList.remove('active');
+            document.getElementById('creditPaymentItem').classList.remove('active');
+            document.getElementById('creditNotePaymentItem').classList.remove('active');
             
-            // Remove active payment cards
-            safeRemoveClass('cashPaymentItem', 'active');
-            safeRemoveClass('upiPaymentItem', 'active');
-            safeRemoveClass('creditPaymentItem', 'active');
-            safeRemoveClass('creditNotePaymentItem', 'active');
-            
-            // Render empty cart and recalculate
             renderCart();
         }
 
@@ -3647,11 +2927,6 @@
             displayCredits(filteredData);
         }
 
-        function clearCreditSearch() {
-            document.getElementById('creditSearchInput').value = '';
-            filterCredits();
-        }
-
         function sortCredits() {
             const sortBy = document.getElementById('creditSortBy').value;
             const sortedData = {};
@@ -3704,7 +2979,7 @@
                 
                 return `
                     <div class="panel">
-                        <div style="background: var(--light-gray); padding: 28px; border-radius: 8px; margin-bottom: 20px;">
+                        <div style="background: var(--light-gray); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
                             <h3 style="font-size: 18px; margin-bottom: 10px;">${storeName}</h3>
                             <div style="display: flex; gap: 20px; font-size: 14px;">
                                 <div><strong>Customers:</strong> ${credits.length}</div>
@@ -3764,7 +3039,7 @@
                 selectedCustomerForCredit = data.customer;
                 
                 document.getElementById('billsCustomerInfo').innerHTML = `
-                    <div style="padding: 28px; background: var(--light-gray); border-radius: 8px; margin-bottom: 20px;">
+                    <div style="padding: 15px; background: var(--light-gray); border-radius: 8px; margin-bottom: 20px;">
                         <h3>${data.customer.customer_name}</h3>
                         <p><strong>Mobile:</strong> ${data.customer.mobile || 'N/A'}</p>
                         <p><strong>Total Outstanding:</strong> ₹${data.total_outstanding.toFixed(2)}</p>
@@ -3792,8 +3067,7 @@
                     `).join('');
                 }
                 
-                const modal = document.getElementById('viewBillsModal');
-                modal.classList.add('show');
+                document.getElementById('viewBillsModal').style.display = 'block';
                 
             } catch (error) {
                 console.error('Error loading bills:', error);
@@ -3803,15 +3077,14 @@
 
         function openClearModal(billId, customerId, remainingAmount) {
             // Close the Outstanding Bills modal first
-            const billsModal = document.getElementById('viewBillsModal');
-            billsModal.classList.remove('show');
+            document.getElementById('viewBillsModal').style.display = 'none';
             
             document.getElementById('clearBillId').value = billId;
             document.getElementById('clearCustomerId').value = customerId;
             document.getElementById('clearPaymentAmount').value = remainingAmount;
             
             const billInfo = selectedCustomerForCredit ? `
-                <div style="padding: 28px; background: var(--light-gray); border-radius: 8px; margin-bottom: 20px;">
+                <div style="padding: 15px; background: var(--light-gray); border-radius: 8px; margin-bottom: 20px;">
                     <h3>${selectedCustomerForCredit.customer_name}</h3>
                     <p><strong>Remaining Credit:</strong> ₹${remainingAmount}</p>
                 </div>
@@ -3819,47 +3092,23 @@
             
             document.getElementById('clearCustomerInfo').innerHTML = billInfo;
             
-            const modal = document.getElementById('clearCreditModal');
-            modal.classList.add('show');
+            document.getElementById('clearCreditModal').style.display = 'block';
         }
 
         function closeClearModal() {
-            const modal = document.getElementById('clearCreditModal');
-            modal.classList.remove('show');
+            document.getElementById('clearCreditModal').style.display = 'none';
             document.getElementById('clearCreditForm').reset();
             selectedBillForCredit = null;
             
             // Reopen the Outstanding Bills modal if we have a selected customer
             if (selectedCustomerForCredit) {
-                const billsModal = document.getElementById('viewBillsModal');
-                billsModal.classList.add('show');
+                document.getElementById('viewBillsModal').style.display = 'block';
             }
         }
 
         function closeViewBillsModal() {
-            const modal = document.getElementById('viewBillsModal');
-            modal.classList.remove('show');
+            document.getElementById('viewBillsModal').style.display = 'none';
             selectedCustomerForCredit = null;
-        }
-
-        function printOutstandingBills() {
-            if (!selectedCustomerForCredit) {
-                showAlert('No customer data available', 'danger');
-                return;
-            }
-
-            const customerInfo = selectedCustomerForCredit;
-            const billsTable = document.getElementById('billsTable');
-            const rows = billsTable.querySelectorAll('tr');
-            
-            if (rows.length === 0 || (rows.length === 1 && rows[0].querySelector('td[colspan]'))) {
-                showAlert('No outstanding bills to print', 'warning');
-                return;
-            }
-
-            // Use the backend PDF route instead of browser print window
-            const customerId = customerInfo.customer_id;
-            window.open(`/api/outstanding/${customerId}/print`, '_blank');
         }
 
         document.getElementById('clearCreditForm').addEventListener('submit', async (e) => {
@@ -3889,16 +3138,9 @@
                 const result = await response.json();
                 
                 if (response.ok && result.success) {
-                    const paymentId = result.payment_id;
-                    const paymentNumber = result.payment_number;
-                    
-                    // Close the payment modal first
+                    showAlert(`Payment of ₹${data.payment_amount.toFixed(2)} recorded successfully!`, 'success');
                     closeClearModal();
                     
-                    // Show the print receipt modal
-                    showPrintReceiptModal(paymentId, paymentNumber, data.payment_amount);
-                    
-                    // Refresh the data
                     if (data.customer_id) {
                         viewCustomerBills(data.customer_id);
                     }
@@ -3960,7 +3202,7 @@
                         const billsData = await billsResponse.json();
                         
                         document.getElementById('cnCustomerDetails').innerHTML = `
-                            <div style="padding: 28px; background: var(--light-gray); border-radius: 8px; margin-bottom: 15px;">
+                            <div style="padding: 15px; background: var(--light-gray); border-radius: 8px; margin-bottom: 15px;">
                                 <div style="font-weight: 600; font-size: 16px;">${data.customer.customer_name}</div>
                                 <div style="font-size: 13px; color: #666; margin-top: 5px;">Mobile: ${data.customer.mobile}</div>
                             </div>
@@ -3985,7 +3227,7 @@
                     } else if (cnType === 'advance') {
                         // Show advance payment form
                         document.getElementById('cnAdvanceCustomerDetails').innerHTML = `
-                            <div style="padding: 28px; background: var(--light-gray); border-radius: 8px; margin-bottom: 15px;">
+                            <div style="padding: 15px; background: var(--light-gray); border-radius: 8px; margin-bottom: 15px;">
                                 <div style="font-weight: 600; font-size: 16px;">${data.customer.customer_name}</div>
                                 <div style="font-size: 13px; color: #666; margin-top: 5px;">Mobile: ${data.customer.mobile}</div>
                             </div>
@@ -3999,7 +3241,7 @@
                     currentCustomerIdForCN = null;
                     
                     const customerForm = `
-                        <div style="padding: 28px; background: #fff3cd; border-radius: 8px; border: 1px solid #ffc107; margin-bottom: 15px;">
+                        <div style="padding: 15px; background: #fff3cd; border-radius: 8px; border: 1px solid #ffc107; margin-bottom: 15px;">
                             <div style="font-weight: 600; margin-bottom: 15px; color: #856404;">
                                 <i class="fas fa-user-plus"></i> New Customer
                             </div>
@@ -4035,15 +3277,6 @@
             }
         }
         
-        function clearCreditNoteSearch() {
-            document.getElementById('cnCustomerMobile').value = '';
-            document.getElementById('cnReturnSection').style.display = 'none';
-            document.getElementById('cnAdvanceSection').style.display = 'none';
-            document.getElementById('cnCustomerDetails').innerHTML = '';
-            document.getElementById('cnAdvanceCustomerDetails').innerHTML = '';
-            currentCustomerIdForCN = null;
-        }
-        
         async function createNewCustomerForCN() {
             const mobile = document.getElementById('cnCustomerMobile').value.trim();
             const name = document.getElementById('cnNewCustomerName').value.trim();
@@ -4075,7 +3308,7 @@
                     
                     // Update the display
                     document.getElementById('cnCustomerDetails').innerHTML = `
-                        <div style="padding: 28px; background: var(--light-gray); border-radius: 8px; margin-bottom: 15px;">
+                        <div style="padding: 15px; background: var(--light-gray); border-radius: 8px; margin-bottom: 15px;">
                             <div style="font-weight: 600; font-size: 16px;">${name}</div>
                             <div style="font-size: 13px; color: #666; margin-top: 5px;">Mobile: ${mobile}</div>
                             <div style="margin-top: 10px; padding: 8px; background: #dcfce7; border-radius: 6px; color: #166534; font-size: 12px;">
@@ -4116,26 +3349,17 @@
                     const price = parseFloat(item.price || item.rate || 0);
                     const originalQty = parseFloat(item.quantity);
                     const returnableQty = parseFloat(item.returnable_quantity || 0);
-                    const returnedQty = originalQty - returnableQty;
                     const canReturn = returnableQty > 0;
                     
                     return `
-                        <tr style="${!canReturn ? 'opacity: 0.5; background: #f8f9fa;' : ''}">
-                            <td>
-                                <strong>${item.product_name}</strong>
-                                ${!canReturn ? '<div style="color: #dc3545; font-size: 12px; margin-top: 4px;"><i class="fas fa-lock"></i> Fully Returned</div>' : ''}
-                            </td>
-                            <td>
-                                <div style="font-weight: 600;">${originalQty.toFixed(2)} ${item.unit || ''}</div>
-                                ${returnedQty > 0 ? `<div style="color: #dc3545; font-size: 12px; margin-top: 4px;">Returned: ${returnedQty.toFixed(2)}</div>` : ''}
-                                ${canReturn ? `<div style="color: #28a745; font-size: 12px; margin-top: 4px;">Available: ${returnableQty.toFixed(2)}</div>` : ''}
-                            </td>
+                        <tr style="${!canReturn ? 'opacity: 0.5;' : ''}">
+                            <td><strong>${item.product_name}</strong></td>
+                            <td>${originalQty.toFixed(2)} ${item.unit || ''}</td>
                             <td>₹${price.toFixed(2)}</td>
                             <td>
                                 <input type="number" id="cn_return_qty_${idx}" value="0" min="0" max="${returnableQty}" 
-                                       step="0.01" oninput="if(this.value > ${returnableQty}) this.value = ${returnableQty}; calculateCNCredit();" ${!canReturn ? 'disabled' : ''} onfocus="this.select()"
+                                       step="0.01" oninput="calculateCNCredit()" ${!canReturn ? 'disabled' : ''}
                                        style="width: 100px; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px;">
-                                ${canReturn ? `<div style="color: #6c757d; font-size: 11px; margin-top: 4px;">Max: ${returnableQty.toFixed(2)}</div>` : ''}
                             </td>
                         </tr>
                     `;
@@ -4194,20 +3418,11 @@
                 const result = await response.json();
                 if (result.success) {
                     showAlert('Credit note issued successfully! CN #' + result.credit_note_id, 'success');
-                    
-                    // Reset all form fields and state
                     document.getElementById('cnReturnSection').style.display = 'none';
-                    document.getElementById('cnBillItems').style.display = 'none';
                     document.getElementById('cnCustomerMobile').value = '';
-                    document.getElementById('cnCustomerDetails').innerHTML = '';
-                    document.getElementById('cnBillSelect').innerHTML = '<option value="">Select a bill</option>';
-                    
-                    // Clear state variables
                     currentCustomerIdForCN = null;
                     currentSaleIdForCN = null;
                     currentBillItemsForCN = [];
-                    
-                    // Reload credit notes list to show the new one
                     loadCreditNotes();
                 } else {
                     showAlert('Error: ' + result.message, 'danger');
@@ -4248,7 +3463,7 @@
             };
             
             try {
-                const response = await fetch('/api/credit-notes/advance-payment-v2', {
+                const response = await fetch('/api/credit-notes/advance-payment', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -4259,16 +3474,13 @@
                 if (result.success) {
                     showAlert(`Advance payment of ₹${amount.toFixed(2)} recorded successfully! CN #${result.credit_number}`, 'success');
                     
-                    // Reset all form fields and sections
+                    // Reset form
                     document.getElementById('cnAdvanceSection').style.display = 'none';
                     document.getElementById('cnCustomerMobile').value = '';
-                    document.getElementById('cnAdvanceCustomerDetails').innerHTML = '';
                     document.getElementById('cnAdvanceAmount').value = '';
                     document.getElementById('cnAdvancePaymentMethod').value = 'cash';
                     document.getElementById('cnAdvanceReference').value = '';
                     document.getElementById('cnAdvanceNotes').value = '';
-                    
-                    // Clear state
                     currentCustomerIdForCN = null;
                     
                     // Reload credit notes list
@@ -4282,204 +3494,66 @@
             }
         }
 
-        
-        
-        // Debounce timer for dynamic search
-        
-        // Debounce timer for dynamic search
-        let cnSearchTimeout = null;
-        let isSearching = false;
-        
-        // Debounced search function (called on every keystroke)
-        function debounceCNSearch() {
-            // Clear previous timeout
-            if (cnSearchTimeout) {
-                clearTimeout(cnSearchTimeout);
-            }
-            
-            const searchInput = document.getElementById('cnSearchInput').value.trim();
-            
-            // If empty, show all
-            if (!searchInput) {
-                loadCreditNotes();
-                return;
-            }
-            
-            // Wait 300ms after user stops typing before searching
-            cnSearchTimeout = setTimeout(() => {
-                // Only search if input is at least 3 characters
-                if (searchInput.length >= 3) {
-                    searchCreditNotes();
-                }
-            }, 300);
-        }
-        
-        // Search Credit Notes by Mobile or CN#
-        async function searchCreditNotes() {
-            const searchInput = document.getElementById('cnSearchInput').value.trim();
-            
-            if (!searchInput) {
-                loadCreditNotes();
-                return;
-            }
-            
-            // Prevent multiple simultaneous searches
-            if (isSearching) return;
-            isSearching = true;
-            
-            const tbody = document.getElementById('cnHistoryTable');
-            const currentContent = tbody.innerHTML;
-            
-            try {
-                // Check if input is CN# (contains CN or starts with #) or mobile number
-                const isCN = searchInput.toUpperCase().includes('CN') || searchInput.startsWith('#');
-                const isMobile = /^\d+$/.test(searchInput);
-                
-                let url = '/api/credit_notes';
-                
-                if (isCN) {
-                    // Search by CN# - clean the input
-                    let cnNumber = searchInput.toUpperCase().replace(/[^A-Z0-9-]/g, '');
-                    if (!cnNumber.startsWith('CN')) {
-                        cnNumber = 'CN' + cnNumber;
-                    }
-                    url += `?cn_number=${cnNumber}`;
-                } else if (isMobile) {
-                    // Search by mobile (supports partial)
-                    url += `?mobile=${searchInput}`;
-                } else {
-                    // Try as text search
-                    url += `?mobile=${searchInput}`;
-                }
-                
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error('Search failed');
-                }
-                
-                const creditNotes = await response.json();
-                
-                // Handle different response formats
-                const notes = Array.isArray(creditNotes) ? creditNotes : (creditNotes.credit_notes || []);
-                
-                if (notes.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="8" style="text-align: center; padding: 40px;">
-                                <div style="color: #999; font-size: 16px; margin-bottom: 8px;">
-                                    <i class="fas fa-search" style="font-size: 32px; margin-bottom: 12px; display: block;"></i>
-                                    No credit notes found
-                                </div>
-                                <div style="color: #666; font-size: 14px;">
-                                    No results for: "${searchInput}"
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                } else {
-                    displayCreditNotes(notes);
-                }
-                
-            } catch (error) {
-                console.error('Error searching credit notes:', error);
-                // Restore previous content on error
-                tbody.innerHTML = currentContent;
-            } finally {
-                isSearching = false;
-            }
-        }
-        
-        // Clear CN Search
-        function clearCNSearch() {
-            document.getElementById('cnSearchInput').value = '';
-            if (cnSearchTimeout) {
-                clearTimeout(cnSearchTimeout);
-            }
-            loadCreditNotes();
-        }
-        
-        // Display Credit Notes
-        function displayCreditNotes(creditNotes) {
-            const tbody = document.getElementById('cnHistoryTable');
-            
-            if (!creditNotes || creditNotes.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="8" style="text-align: center; padding: 40px;">
-                            <div style="color: #999; font-size: 16px;">
-                                <i class="fas fa-inbox" style="font-size: 32px; margin-bottom: 12px; display: block;"></i>
-                                No credit notes found
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            } else {
-                tbody.innerHTML = creditNotes.map(cn => {
-                    const amount = parseFloat(cn.amount || cn.total_amount || 0);
-                    const remaining = parseFloat(cn.remaining_balance || 0);
-                    
-                    // Determine type - check bill_number pattern or is_advance flag
-                    const isAdvance = cn.is_advance || 
-                                    (cn.bill_number && cn.bill_number.startsWith('ADV-')) ||
-                                    (cn.credit_number && cn.credit_number.includes('ADV'));
-                    
-                    const typeBadge = isAdvance ? 
-                        '<span class="badge" style="background: #8b5cf6; color: white;">Advance</span>' :
-                        '<span class="badge badge-primary">Return</span>';
-                    
-                    let badgeClass = 'badge-success';
-                    let statusText = 'Active';
-                    
-                    if (remaining <= 0) {
-                        badgeClass = 'badge-gray';
-                        statusText = 'Used';
-                    } else if (remaining > 0 && remaining < amount) {
-                        badgeClass = 'badge-warning';
-                        statusText = 'Partial';
-                    }
-                    
-                    const creditId = cn.credit_id;
-                    
-                    return `
-                        <tr>
-                            <td><strong>#${cn.credit_number || cn.credit_id}</strong></td>
-                            <td>${typeBadge}</td>
-                            <td>${cn.customer_name || 'N/A'}<br><small style="color: #666;">${cn.mobile || ''}</small></td>
-                            <td><strong>₹${amount.toFixed(2)}</strong></td>
-                            <td><strong style="color: ${remaining > 0 ? 'var(--success-color)' : '#999'};">₹${remaining.toFixed(2)}</strong></td>
-                            <td><span class="badge ${badgeClass}">${statusText}</span></td>
-                            <td>${formatDate(cn.created_at)}</td>
-                            <td>
-                                <button class="btn btn-primary btn-sm" onclick="printCreditNote(${creditId})" title="Print Credit Note">
-                                    <i class="fas fa-print"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-        }
-        
         async function loadCreditNotes() {
             try {
                 const response = await fetch('/api/credit_notes');
                 const creditNotes = await response.json();
-                const notes = Array.isArray(creditNotes) ? creditNotes : (creditNotes.credit_notes || []);
-                displayCreditNotes(notes);
+                
+                const tbody = document.getElementById('cnHistoryTable');
+                
+                if (creditNotes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #999;">No credit notes found</td></tr>';
+                } else {
+                    tbody.innerHTML = creditNotes.map(cn => {
+                        const amount = parseFloat(cn.amount || cn.total_amount || 0);
+                        const remaining = parseFloat(cn.remaining_balance || 0);
+                        
+                        // Determine type - check bill_number pattern or is_advance flag
+                        const isAdvance = cn.is_advance || 
+                                        (cn.bill_number && cn.bill_number.startsWith('ADV-')) ||
+                                        (cn.credit_number && cn.credit_number.includes('ADV'));
+                        
+                        const typeBadge = isAdvance ? 
+                            '<span class="badge" style="background: #8b5cf6; color: white;">Advance</span>' :
+                            '<span class="badge badge-primary">Return</span>';
+                        
+                        let badgeClass = 'badge-success';
+                        let statusText = 'Active';
+                        
+                        if (remaining <= 0) {
+                            badgeClass = 'badge-gray';
+                            statusText = 'Used';
+                        } else if (remaining > 0 && remaining < amount) {
+                            badgeClass = 'badge-warning';
+                            statusText = 'Partial';
+                        }
+                        
+                        const creditId = cn.credit_id;
+                        
+                        return `
+                            <tr>
+                                <td><strong>#${cn.credit_number || cn.credit_id}</strong></td>
+                                <td>${typeBadge}</td>
+                                <td>${cn.customer_name || 'N/A'}<br><small style="color: #666;">${cn.mobile || ''}</small></td>
+                                <td><strong>₹${amount.toFixed(2)}</strong></td>
+                                <td><strong style="color: ${remaining > 0 ? 'var(--success-color)' : '#999'};">₹${remaining.toFixed(2)}</strong></td>
+                                <td><span class="badge ${badgeClass}">${statusText}</span></td>
+                                <td>${formatDate(cn.created_at)}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" onclick="printCreditNote(${creditId})" title="Print Credit Note">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
             } catch (error) {
                 console.error('Error loading credit notes:', error);
-                const tbody = document.getElementById('cnHistoryTable');
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="8" style="text-align: center; padding: 40px; color: var(--danger-color);">
-                            <i class="fas fa-exclamation-triangle" style="font-size: 32px; margin-bottom: 12px; display: block;"></i>
-                            Error loading credit notes
-                        </td>
-                    </tr>
-                `;
+                showAlert('Error loading credit notes', 'danger');
             }
         }
+        
         // Print Credit Note Function
         function printCreditNote(creditId) {
             window.open(`/api/credit-notes/${creditId}/print`, '_blank');
@@ -4491,7 +3565,7 @@
         
         async function loadQuoteBrands() {
             try {
-                // Load products first to extract brands and categories
+                // Load products first to extract brands
                 const response = await fetch('/api/products');
                 const products = await response.json();
                 
@@ -4502,15 +3576,6 @@
                 brandFilter.innerHTML = '<option value="">All Brands</option>';
                 brands.forEach(brand => {
                     brandFilter.innerHTML += `<option value="${brand}">${brand}</option>`;
-                });
-                
-                // Extract unique categories
-                const categories = [...new Set(products.map(p => p.category).filter(Boolean))].sort();
-                
-                const categoryFilter = document.getElementById('quoteCategoryFilter');
-                categoryFilter.innerHTML = '<option value="">All Categories</option>';
-                categories.forEach(category => {
-                    categoryFilter.innerHTML += `<option value="${category}">${category}</option>`;
                 });
                 
                 loadQuoteProducts();
@@ -4527,13 +3592,8 @@
                 
                 // Client-side filtering
                 const brand = document.getElementById('quoteBrandFilter').value;
-                const category = document.getElementById('quoteCategoryFilter').value;
-                
                 if (brand) {
                     products = products.filter(p => p.brand === brand);
-                }
-                if (category) {
-                    products = products.filter(p => p.category === category);
                 }
                 
                 // Map backend fields to expected frontend fields
@@ -4569,17 +3629,15 @@
             
             container.innerHTML = products.map(product => {
                 const isSelected = quoteSelectedItems.find(item => item.product_id === product.product_id);
-                const stock = product.current_stock || product.stock || 0;
-                const stockClass = stock > 10 ? 'success' : stock > 0 ? 'warning' : 'danger';
                 
                 return `
                     <div class="product-card ${isSelected ? 'selected' : ''}" onclick="toggleQuoteProduct(${product.product_id})">
-                        <div style="font-weight: 600; font-size: 15px; margin-bottom: 2px; line-height: 1.3; color: var(--text-primary);">${product.product_name}</div>
-                        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.3px;">${product.brand || ''}</div>
-                        <span class="badge badge-${stockClass}" style="margin-top: auto;">
-                            ${Math.round(stock)} ${product.unit || 'pcs'}
-                        </span>
-                        ${isSelected ? '<div style="margin-top: 8px; color: var(--success-color); font-size: 12px; font-weight: 600;"><i class="fas fa-check-circle"></i> Added</div>' : ''}
+                        <div style="font-weight: 600; margin-bottom: 5px;">${product.product_name}</div>
+                        <div style="font-size: 12px; color: #666; margin-bottom: 8px;">${product.brand || ''}</div>
+                        <div style="font-size: 13px; color: var(--success-color); font-weight: 600;">
+                            ₹${parseFloat(product.rate || 0).toFixed(2)} / ${product.unit}
+                        </div>
+                        ${isSelected ? '<div style="margin-top: 8px; color: var(--success-color);"><i class="fas fa-check-circle"></i> Added</div>' : ''}
                     </div>
                 `;
             }).join('');
@@ -4592,75 +3650,20 @@
             const existingIndex = quoteSelectedItems.findIndex(item => item.product_id === productId);
             
             if (existingIndex >= 0) {
-                // If already selected, remove it
                 quoteSelectedItems.splice(existingIndex, 1);
-                displayQuoteProducts(allQuoteProducts.filter(p => 
-                    p.product_name.toLowerCase().includes(document.getElementById('quoteProductSearch').value.toLowerCase())
-                ));
-                renderQuoteSelectedItems();
             } else {
-                // Open modal to add with quantity, price, discount
-                openQuoteAddToCartModal(product);
-            }
-        }
-
-        function openQuoteAddToCartModal(product) {
-            currentQuoteProduct = product;
-            
-            // Set product details
-            document.getElementById('quoteModalProductName').textContent = product.product_name;
-            document.getElementById('quoteModalProductBrand').textContent = product.brand || 'No Brand';
-            
-            const stock = product.current_stock || product.stock || 0;
-            document.getElementById('quoteModalProductStock').textContent = `Available Stock: ${Math.round(stock)} ${product.unit || 'pcs'}`;
-            
-            // Set default values
-            document.getElementById('quoteModalQuantity').value = '1';
-            document.getElementById('quoteModalPrice').value = parseFloat(product.rate || product.price || 0).toFixed(2);
-            document.getElementById('quoteModalDiscount').value = '0';
-            
-            // Show modal
-            document.getElementById('quoteAddToCartModal').style.display = 'block';
-        }
-
-        function closeQuoteAddToCartModal() {
-            document.getElementById('quoteAddToCartModal').style.display = 'none';
-            currentQuoteProduct = null;
-        }
-
-        function addQuoteItemFromModal() {
-            if (!currentQuoteProduct) return;
-            
-            const quantity = parseFloat(document.getElementById('quoteModalQuantity').value) || 0;
-            const price = parseFloat(document.getElementById('quoteModalPrice').value) || 0;
-            const discount = parseFloat(document.getElementById('quoteModalDiscount').value) || 0;
-            
-            if (quantity <= 0) {
-                showAlert('Please enter a valid quantity', 'danger');
-                return;
+                quoteSelectedItems.push({
+                    ...product,
+                    quantity: 1,
+                    unit_price: parseFloat(product.rate || 0),
+                    discount_percentage: 0
+                });
             }
             
-            if (price < 0) {
-                showAlert('Please enter a valid price', 'danger');
-                return;
-            }
-            
-            // Add to selected items
-            quoteSelectedItems.push({
-                ...currentQuoteProduct,
-                quantity: quantity,
-                unit_price: price,
-                discount_percentage: discount
-            });
-            
-            // Update displays
             displayQuoteProducts(allQuoteProducts.filter(p => 
                 p.product_name.toLowerCase().includes(document.getElementById('quoteProductSearch').value.toLowerCase())
             ));
             renderQuoteSelectedItems();
-            
-            // Close modal
-            closeQuoteAddToCartModal();
         }
 
         function renderQuoteSelectedItems() {
@@ -4672,97 +3675,41 @@
                 return;
             }
             
-            container.innerHTML = quoteSelectedItems.map((item, index) => {
-                const itemTotal = calculateQuoteItemTotal(item);
-                return `
-                    <div style="background: white; padding: 16px; border-radius: 12px; margin-bottom: 12px; border: 1.5px solid var(--border-color);">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                            <div style="flex: 1;">
-                                <div style="font-weight: 600; font-size: 15px;">${item.product_name}</div>
-                            </div>
-                            <div style="display: flex; gap: 8px;">
-                                <button class="btn btn-primary" onclick="editQuoteItem(${index})" style="padding: 6px 10px; font-size: 12px;">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-danger" onclick="removeQuoteItem(${index})" style="padding: 6px 10px; font-size: 12px;">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
+            container.innerHTML = quoteSelectedItems.map((item, index) => `
+                <div class="item-card">
+                    <div class="item-header">
+                        <div>
+                            <div style="font-weight: 600;">${item.product_name}</div>
+                            <div style="font-size: 12px; color: #666;">${item.brand || ''}</div>
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; background: #f8fafc; padding: 10px 12px; border-radius: 8px; font-weight: 600;">
-                            <span style="color: var(--text-primary);">Brand: <span style="font-weight: 700;">${item.brand || 'N/A'}</span></span>
-                            <span style="color: var(--text-primary);">Qty: <span style="font-weight: 700;">${item.quantity}</span></span>
-                            <span style="color: var(--text-primary);">Price: <span style="font-weight: 700;">₹${parseFloat(item.unit_price).toFixed(2)}</span></span>
-                            <span style="color: var(--text-primary);">Disc: <span style="font-weight: 700;">${item.discount_percentage}%</span></span>
-                            <span style="color: var(--success-color); font-weight: 700; font-size: 14px;">Total: ₹${itemTotal.toFixed(2)}</span>
+                        <button class="btn btn-danger btn-sm" onclick="removeQuoteItem(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="item-inputs">
+                        <div>
+                            <label style="font-size: 11px; color: #666;">Quantity</label>
+                            <input type="number" value="${item.quantity}" min="0.01" step="0.01" 
+                                   onchange="updateQuoteItem(${index}, 'quantity', this.value)">
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; color: #666;">Unit Price</label>
+                            <input type="number" value="${item.unit_price}" min="0" step="0.01" 
+                                   onchange="updateQuoteItem(${index}, 'unit_price', this.value)">
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; color: #666;">Discount %</label>
+                            <input type="number" value="${item.discount_percentage}" min="0" max="100" step="0.1" 
+                                   onchange="updateQuoteItem(${index}, 'discount_percentage', this.value)">
                         </div>
                     </div>
-                `;
-            }).join('');
+                    <div style="text-align: right; margin-top: 8px; font-weight: 600; color: var(--success-color);">
+                        ₹${calculateQuoteItemTotal(item).toFixed(2)}
+                    </div>
+                </div>
+            `).join('');
             
             updateQuoteSummary();
-        }
-
-        function editQuoteItem(index) {
-            const item = quoteSelectedItems[index];
-            if (!item) return;
-            
-            // Set current product for editing
-            currentQuoteProduct = { ...item, index: index };
-            
-            // Set product details
-            document.getElementById('quoteModalProductName').textContent = item.product_name;
-            document.getElementById('quoteModalProductBrand').textContent = item.brand || 'No Brand';
-            
-            const stock = item.current_stock || item.stock || 0;
-            document.getElementById('quoteModalProductStock').textContent = `Available Stock: ${Math.round(stock)} ${item.unit || 'pcs'}`;
-            
-            // Set current values
-            document.getElementById('quoteModalQuantity').value = item.quantity;
-            document.getElementById('quoteModalPrice').value = item.unit_price;
-            document.getElementById('quoteModalDiscount').value = item.discount_percentage;
-            
-            // Change button text and action
-            const addButton = document.querySelector('#quoteAddToCartModal .btn-primary');
-            addButton.innerHTML = '<i class="fas fa-check"></i> Update Item';
-            addButton.onclick = updateQuoteItemFromModal;
-            
-            // Show modal
-            document.getElementById('quoteAddToCartModal').style.display = 'block';
-        }
-
-        function updateQuoteItemFromModal() {
-            if (!currentQuoteProduct || currentQuoteProduct.index === undefined) return;
-            
-            const quantity = parseFloat(document.getElementById('quoteModalQuantity').value) || 0;
-            const price = parseFloat(document.getElementById('quoteModalPrice').value) || 0;
-            const discount = parseFloat(document.getElementById('quoteModalDiscount').value) || 0;
-            
-            if (quantity <= 0) {
-                showAlert('Please enter a valid quantity', 'danger');
-                return;
-            }
-            
-            if (price < 0) {
-                showAlert('Please enter a valid price', 'danger');
-                return;
-            }
-            
-            // Update the item
-            quoteSelectedItems[currentQuoteProduct.index].quantity = quantity;
-            quoteSelectedItems[currentQuoteProduct.index].unit_price = price;
-            quoteSelectedItems[currentQuoteProduct.index].discount_percentage = discount;
-            
-            // Update displays
-            renderQuoteSelectedItems();
-            
-            // Reset button
-            const addButton = document.querySelector('#quoteAddToCartModal .btn-primary');
-            addButton.innerHTML = '<i class="fas fa-check"></i> Add to Quotation';
-            addButton.onclick = addQuoteItemFromModal;
-            
-            // Close modal
-            closeQuoteAddToCartModal();
         }
 
         function calculateQuoteItemTotal(item) {
@@ -4796,14 +3743,19 @@
         }
 
         async function generateQuotation() {
-            if (!quoteCustomerData) {
-                showAlert('Please add customer details', 'danger');
+            const customerName = document.getElementById('quoteCustomerName').value.trim();
+            const customerMobile = document.getElementById('quoteCustomerMobile').value.trim();
+            const customerAddress = document.getElementById('quoteCustomerAddress').value.trim();
+            
+            if (!customerName) {
+                showAlert('Please enter customer name', 'danger');
                 return;
             }
             
-            const customerName = quoteCustomerData.name;
-            const customerMobile = quoteCustomerData.mobile;
-            const customerAddress = quoteCustomerData.address || '';
+            if (!customerMobile || customerMobile.length !== 10) {
+                showAlert('Please enter a valid 10-digit mobile number', 'danger');
+                return;
+            }
             
             if (quoteSelectedItems.length === 0) {
                 showAlert('Please add at least one item', 'danger');
@@ -4860,90 +3812,12 @@
             if (confirm('Are you sure you want to clear this quotation?')) {
                 quoteSelectedItems = [];
                 quoteDiscountPercentage = 0;
-                quoteCustomerData = null;
+                document.getElementById('quoteCustomerName').value = '';
+                document.getElementById('quoteCustomerMobile').value = '';
+                document.getElementById('quoteCustomerAddress').value = '';
                 document.getElementById('quoteDiscountPercent').value = '0';
-                
-                // Hide customer info panel and show add button
-                document.getElementById('quoteCustomerInfoPanel').style.display = 'none';
-                const addButton = document.getElementById('quoteAddCustomerButton');
-                if (addButton) addButton.style.display = 'inline-block';
-                
                 renderQuoteSelectedItems();
                 displayQuoteProducts(allQuoteProducts);
-            }
-        }
-
-        // Quote Customer Modal Functions
-        function openQuoteCustomerModal() {
-            document.getElementById('quoteCustomerModal').style.display = 'block';
-            document.getElementById('quoteModalCustomerName').value = '';
-            document.getElementById('quoteModalCustomerMobile').value = '';
-            document.getElementById('quoteModalCustomerAddress').value = '';
-        }
-
-        function closeQuoteCustomerModal() {
-            document.getElementById('quoteCustomerModal').style.display = 'none';
-        }
-
-        function saveQuoteCustomer() {
-            const name = document.getElementById('quoteModalCustomerName').value.trim();
-            const mobile = document.getElementById('quoteModalCustomerMobile').value.trim();
-            const address = document.getElementById('quoteModalCustomerAddress').value.trim();
-            
-            // Validation
-            if (!name) {
-                showAlert('Please enter customer name', 'danger');
-                return;
-            }
-            
-            if (!mobile || mobile.length !== 10 || !/^\d{10}$/.test(mobile)) {
-                showAlert('Please enter a valid 10-digit mobile number', 'danger');
-                return;
-            }
-            
-            // Save customer data
-            quoteCustomerData = {
-                name: name,
-                mobile: mobile,
-                address: address
-            };
-            
-            // Display customer info
-            displayQuoteCustomerInfo();
-            
-            // Close modal
-            closeQuoteCustomerModal();
-        }
-
-        function displayQuoteCustomerInfo() {
-            if (!quoteCustomerData) return;
-            
-            // Update display elements
-            document.getElementById('quoteCustomerDisplayName').textContent = quoteCustomerData.name;
-            document.getElementById('quoteCustomerDisplayMobile').textContent = quoteCustomerData.mobile;
-            
-            const addressDiv = document.getElementById('quoteCustomerDisplayAddress');
-            if (quoteCustomerData.address) {
-                addressDiv.querySelector('span').textContent = quoteCustomerData.address;
-                addressDiv.style.display = 'block';
-            } else {
-                addressDiv.style.display = 'none';
-            }
-            
-            // Show customer info panel and hide add button
-            document.getElementById('quoteCustomerInfoPanel').style.display = 'block';
-            const addButton = document.getElementById('quoteAddCustomerButton');
-            if (addButton) addButton.style.display = 'none';
-        }
-
-        function clearQuoteCustomer() {
-            if (confirm('Remove customer details?')) {
-                quoteCustomerData = null;
-                
-                // Hide customer info panel and show add button
-                document.getElementById('quoteCustomerInfoPanel').style.display = 'none';
-                const addButton = document.getElementById('quoteAddCustomerButton');
-                if (addButton) addButton.style.display = 'inline-block';
             }
         }
 
@@ -4979,225 +3853,15 @@
         }
 
         // Close modals on outside click
-
-
-
-
-
-        // Cart Customer Management
-        let cartCustomer = null;
-        // currentCustomer and customerCreditNotes already declared globally above
-
-        function openAddCustomerModal() {
-            // Clear previous values
-            document.getElementById('modalCustomerMobile').value = '';
-            document.getElementById('modalCustomerDetails').innerHTML = '';
-            
-            const modal = document.getElementById('addCustomerModal');
-            modal.classList.add('show');
-        }
-
-        function closeAddCustomerModal() {
-            const modal = document.getElementById('addCustomerModal');
-            modal.classList.remove('show');
-        }
-
-        async function searchCustomerInModal() {
-            const mobile = document.getElementById('modalCustomerMobile').value.trim();
-            
-            if (!mobile || mobile.length !== 10) {
-                showAlert('Please enter a valid 10-digit mobile number', 'danger');
-                return;
-            }
-            
-            try {
-                const response = await fetch(`/api/customers/search?mobile=${mobile}`);
-                const data = await response.json();
-                
-                const detailsDiv = document.getElementById('modalCustomerDetails');
-                
-                if (data.found && data.customer) {
-                    // Customer found
-                    currentCustomer = data.customer;
-                    customerCreditNotes = data.credit_notes || [];
-                    const totalCreditBalance = customerCreditNotes.reduce((sum, cn) => sum + parseFloat(cn.remaining_balance || 0), 0);
-                    
-                    detailsDiv.innerHTML = `
-                        <div style="padding: 20px; background: var(--light-gray); border-radius: 12px;">
-                            <div style="font-weight: 600; font-size: 18px; margin-bottom: 12px; color: var(--text-primary);">
-                                ${data.customer.customer_name}
-                            </div>
-                            
-                            <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">
-                                Mobile: ${data.customer.mobile}
-                            </div>
-                            
-                            ${data.customer.total_sales ? `
-                                <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">
-                                    Total Sales: ₹${parseFloat(data.customer.total_sales).toFixed(2)}
-                                </div>
-                            ` : ''}
-                            
-                            ${customerCreditNotes.length > 0 ? `
-                                <div style="margin-top: 12px; padding: 12px; background: #dcfce7; border-radius: 8px;">
-                                    <div style="color: #166534; font-weight: 600;">
-                                        <i class="fas fa-ticket-alt"></i> Credit Notes Available: ₹${totalCreditBalance.toFixed(2)}
-                                    </div>
-                                </div>
-                            ` : ''}
-                            
-                            <button class="btn btn-primary" onclick="addCustomerToCart()" style="margin-top: 15px; width: 100%;">
-                                <i class="fas fa-check"></i> Add Customer
-                            </button>
-                        </div>
-                    `;
-                } else {
-                    // Customer not found - ask for name
-                    currentCustomer = null;
-                    customerCreditNotes = [];
-                    
-                    detailsDiv.innerHTML = `
-                        <div style="padding: 20px; background: #fff3cd; border-radius: 12px; border: 1px solid #ffc107;">
-                            <div style="font-weight: 600; margin-bottom: 10px; color: #856404;">
-                                <i class="fas fa-user-plus"></i> New Customer
-                            </div>
-                            <p style="color: #856404; margin: 0 0 15px 0; font-size: 14px;">
-                                No customer found with mobile: ${mobile}
-                            </p>
-                            
-                            <div style="margin-bottom: 15px;">
-                                <label style="display: block; margin-bottom: 8px; color: #856404; font-weight: 500;">
-                                    Customer Name <span style="color: #dc2626;">*</span>
-                                </label>
-                                <input type="text" id="newCustomerNameInput" placeholder="Enter customer name" 
-                                    style="width: 100%; padding: 12px 16px; border: 1.5px solid #ffc107; border-radius: 10px; font-size: 15px;">
-                            </div>
-                            
-                            <button class="btn btn-primary" onclick="addNewCustomerToCart('${mobile}')" style="width: 100%;">
-                                <i class="fas fa-check"></i> Add Customer
-                            </button>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                showAlert('Error searching customer', 'danger');
-                console.error('Error:', error);
-            }
-        }
-
-        function addNewCustomerToCart(mobile) {
-            const nameInput = document.getElementById('newCustomerNameInput');
-            const name = nameInput ? nameInput.value.trim() : '';
-            
-            if (!name) {
-                showAlert('Please enter customer name', 'danger');
-                return;
-            }
-            
-            // Store new customer with name
-            currentCustomer = { 
-                mobile: mobile, 
-                customer_name: name, 
-                new: true 
-            };
-            
-            // Add to cart
-            addCustomerToCart();
-        }
-
-        function addCustomerToCart() {
-            if (!currentCustomer) return;
-            
-            // Store customer
-            cartCustomer = currentCustomer;
-            
-            // Display in cart
-            displayCartCustomer();
-            
-            // Show credit note option if available
-            if (customerCreditNotes.length > 0) {
-                const creditNoteItem = document.getElementById('creditNotePaymentItem');
-                if (creditNoteItem) {
-                    creditNoteItem.style.display = 'flex';
-                }
-            }
-            
-            // Close modal
-            closeAddCustomerModal();
-            
-            // No success notification
-        }
-
-        function displayCartCustomer() {
-            if (!cartCustomer) return;
-            
-            const container = document.getElementById('cartCustomerInfo');
-            document.getElementById('cartCustomerName').textContent = cartCustomer.customer_name || 'Customer';
-            document.getElementById('cartCustomerMobile').textContent = cartCustomer.mobile;
-            
-            // Show total sales if available
-            const salesDiv = document.getElementById('cartCustomerSales');
-            if (cartCustomer.total_sales) {
-                salesDiv.querySelector('span').textContent = `Total Sales: ₹${parseFloat(cartCustomer.total_sales).toFixed(2)}`;
-                salesDiv.style.display = 'block';
-            } else {
-                salesDiv.style.display = 'none';
-            }
-            
-            // Show credit notes if available
-            const creditDiv = document.getElementById('cartCustomerCredit');
-            if (customerCreditNotes && customerCreditNotes.length > 0) {
-                const totalCredit = customerCreditNotes.reduce((sum, cn) => sum + parseFloat(cn.remaining_balance || 0), 0);
-                creditDiv.querySelector('span').textContent = `Credit Notes Available: ₹${totalCredit.toFixed(2)}`;
-                creditDiv.style.display = 'block';
-            } else {
-                creditDiv.style.display = 'none';
-            }
-            
-            container.style.display = 'block';
-        }
-
-        function clearCartCustomer() {
-            if (confirm('Remove customer from this cart?')) {
-                cartCustomer = null;
-                currentCustomer = null;
-                customerCreditNotes = [];
-                document.getElementById('cartCustomerInfo').style.display = 'none';
-                
-                // Hide credit note option
-                const creditNoteItem = document.getElementById('creditNotePaymentItem');
-                if (creditNoteItem) {
-                    creditNoteItem.style.display = 'none';
-                }
-                
-            }
-        }
-
         window.onclick = function(event) {
             const clearModal = document.getElementById('clearCreditModal');
             const billsModal = document.getElementById('viewBillsModal');
-            const addToCartModal = document.getElementById('addToCartModal');
-            const addCustomerModal = document.getElementById('addCustomerModal');
-            const quoteCustomerModal = document.getElementById('quoteCustomerModal');
-            const quoteAddToCartModal = document.getElementById('quoteAddToCartModal');
             
             if (event.target === clearModal) {
                 closeClearModal();
             }
             if (event.target === billsModal) {
                 closeViewBillsModal();
-            }
-            if (event.target === addToCartModal) {
-                closeAddToCartModal();
-            }
-            if (event.target === addCustomerModal) {
-                closeAddCustomerModal();
-            }
-            if (event.target === quoteCustomerModal) {
-                closeQuoteCustomerModal();
-            }
-            if (event.target === quoteAddToCartModal) {
-                closeQuoteAddToCartModal();
             }
         }
 
@@ -5206,242 +3870,5 @@
             loadBrands();
         });
     </script>
-
-    <!-- Print Bill Modal -->
-    <div id="printBillModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white;">
-                <h2 style="margin: 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-check-circle"></i>
-                    Sale Completed Successfully!
-                </h2>
-                <span class="close" onclick="closePrintBillModal()" style="color: white;">&times;</span>
-            </div>
-            <div class="modal-body" style="text-align: center; padding: 30px;">
-                <div style="margin-bottom: 25px;">
-                    <i class="fas fa-file-invoice" style="font-size: 64px; color: #2563eb; margin-bottom: 15px;"></i>
-                    <p style="font-size: 18px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">
-                        Bill Generated Successfully
-                    </p>
-                    <p id="billNumberDisplay" style="font-size: 14px; color: #6b7280; margin-bottom: 5px;">
-                        Bill #: <span id="billNumber" style="font-weight: 600; color: #2563eb;"></span>
-                    </p>
-                    <p id="billAmountDisplay" style="font-size: 14px; color: #6b7280;">
-                        Amount: <span id="billAmount" style="font-weight: 600; color: #1f2937;"></span>
-                    </p>
-                </div>
-                
-                <div style="display: flex; gap: 10px; justify-content: center;">
-                    <button onclick="printBillFromModal()" class="btn btn-success" style="padding: 12px 30px; font-size: 16px;">
-                        <i class="fas fa-print"></i> Print Bill
-                    </button>
-                    <button onclick="closePrintBillModal()" class="btn btn-secondary" style="padding: 12px 30px; font-size: 16px;">
-                        <i class="fas fa-times"></i> Close
-                    </button>
-                </div>
-                
-                <p style="font-size: 12px; color: #9ca3af; margin-top: 20px; margin-bottom: 0;">
-                    You can also print this bill later from the sales history
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Payment Receipt Print Modal -->
-    <div id="printReceiptModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white;">
-                <h2 style="margin: 0; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-check-circle"></i>
-                    Payment Recorded Successfully!
-                </h2>
-                <span class="close" onclick="closePrintReceiptModal()" style="color: white;">&times;</span>
-            </div>
-            <div class="modal-body" style="text-align: center; padding: 30px;">
-                <div style="margin-bottom: 25px;">
-                    <i class="fas fa-receipt" style="font-size: 64px; color: #16a34a; margin-bottom: 15px;"></i>
-                    <p style="font-size: 18px; font-weight: 600; color: #1f2937; margin-bottom: 10px;">
-                        Payment Receipt Generated
-                    </p>
-                    <p id="receiptNumberDisplay" style="font-size: 14px; color: #6b7280; margin-bottom: 5px;">
-                        Receipt #: <span id="receiptNumber" style="font-weight: 600; color: #16a34a;"></span>
-                    </p>
-                    <p id="paymentAmountDisplay" style="font-size: 14px; color: #6b7280;">
-                        Amount: <span id="paymentAmount" style="font-weight: 600; color: #1f2937;"></span>
-                    </p>
-                </div>
-                
-                <div style="display: flex; gap: 10px; justify-content: center;">
-                    <button onclick="printReceiptFromModal()" class="btn btn-success" style="padding: 12px 30px; font-size: 16px;">
-                        <i class="fas fa-print"></i> Print Receipt
-                    </button>
-                    <button onclick="closePrintReceiptModal()" class="btn btn-secondary" style="padding: 12px 30px; font-size: 16px;">
-                        <i class="fas fa-times"></i> Close
-                    </button>
-                </div>
-                
-                <p style="font-size: 12px; color: #9ca3af; margin-top: 20px; margin-bottom: 0;">
-                    You can also print this receipt later from the payment history
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add to Cart Modal -->
-    <div id="addToCartModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-cart-plus"></i> Add to Cart</h3>
-                <button class="modal-close" onclick="closeAddToCartModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="modal-product-info">
-                    <h4 id="modalProductName"></h4>
-                    <p id="modalProductBrand"></p>
-                    <p id="modalProductStock" style="margin-top: 8px; font-weight: 600; color: var(--success-color);"></p>
-                </div>
-                <div class="modal-form-group">
-                    <label for="modalQuantity">
-                        <i class="fas fa-cubes"></i> Quantity
-                    </label>
-                    <input type="number" id="modalQuantity" value="1" min="0.01" step="0.01" placeholder="Enter quantity" onfocus="this.select()">
-                    <small id="stockWarning" style="color: var(--danger-color); display: none; margin-top: 4px;">⚠️ Exceeds available stock!</small>
-                </div>
-                <div class="modal-form-group">
-                    <label for="modalPrice">
-                        <i class="fas fa-rupee-sign"></i> Unit Price
-                    </label>
-                    <input type="number" id="modalPrice" value="0" min="0" step="0.01" placeholder="Enter price" onfocus="this.select()">
-                </div>
-                <div class="modal-form-group">
-                    <label for="modalDiscount">
-                        <i class="fas fa-percentage"></i> Discount (%)
-                    </label>
-                    <input type="number" id="modalDiscount" value="0" min="0" max="100" step="0.1" placeholder="Enter discount percentage" onfocus="this.select()">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" onclick="closeAddToCartModal()" style="background: #e2e8f0; color: #334155;">
-                    Cancel
-                </button>
-                <button class="btn btn-primary" id="modalActionButton" onclick="handleModalAction()">
-                    <i class="fas fa-check"></i> Add to Cart
-                </button>
-            </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <!-- Add Customer Modal -->
-    <div id="addCustomerModal" class="modal">
-        <div class="modal-content" style="max-width: 600px;">
-            <div class="modal-header">
-                <h3><i class="fas fa-user-plus"></i> Add Customer</h3>
-                <button class="modal-close" onclick="closeAddCustomerModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Mobile Number Search -->
-                <div class="form-group">
-                    <label>Mobile Number</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="modalCustomerMobile" placeholder="Enter 10-digit mobile" maxlength="10" style="flex: 1; padding: 12px 16px; border: 1.5px solid var(--border-color); border-radius: 10px; font-size: 15px;" onfocus="this.select()">
-                        <button class="btn btn-primary" onclick="searchCustomerInModal()" style="padding: 12px 24px; white-space: nowrap;">
-                            <i class="fas fa-search"></i> Search
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Customer Details Display -->
-                <div id="modalCustomerDetails" style="margin-top: 20px;"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quote Add to Cart Modal -->
-    <div id="quoteAddToCartModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header">
-                <h3><i class="fas fa-cart-plus"></i> Add to Quotation</h3>
-                <button class="modal-close" onclick="closeQuoteAddToCartModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="modal-product-info">
-                    <h4 id="quoteModalProductName"></h4>
-                    <p id="quoteModalProductBrand"></p>
-                    <p id="quoteModalProductStock" style="margin-top: 8px; font-weight: 600; color: var(--success-color);"></p>
-                </div>
-                <div class="modal-form-group">
-                    <label for="quoteModalQuantity">
-                        <i class="fas fa-cubes"></i> Quantity
-                    </label>
-                    <input type="number" id="quoteModalQuantity" value="1" min="0.01" step="0.01" placeholder="Enter quantity" onfocus="this.select()">
-                </div>
-                <div class="modal-form-group">
-                    <label for="quoteModalPrice">
-                        <i class="fas fa-rupee-sign"></i> Unit Price
-                    </label>
-                    <input type="number" id="quoteModalPrice" value="0" min="0" step="0.01" placeholder="Enter price" onfocus="this.select()">
-                </div>
-                <div class="modal-form-group">
-                    <label for="quoteModalDiscount">
-                        <i class="fas fa-percentage"></i> Discount (%)
-                    </label>
-                    <input type="number" id="quoteModalDiscount" value="0" min="0" max="100" step="0.1" placeholder="Enter discount percentage" onfocus="this.select()">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" onclick="closeQuoteAddToCartModal()" style="background: #e2e8f0; color: #334155;">
-                    Cancel
-                </button>
-                <button class="btn btn-primary" onclick="addQuoteItemFromModal()">
-                    <i class="fas fa-check"></i> Add to Quotation
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quote Customer Modal -->
-    <div id="quoteCustomerModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header">
-                <h3><i class="fas fa-user-plus"></i> Add Customer Details</h3>
-                <button class="modal-close" onclick="closeQuoteCustomerModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Name <span style="color: var(--danger-color);">*</span></label>
-                    <input type="text" id="quoteModalCustomerName" placeholder="Enter customer name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Mobile Number <span style="color: var(--danger-color);">*</span></label>
-                    <input type="text" id="quoteModalCustomerMobile" placeholder="Enter 10-digit mobile" maxlength="10" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Address</label>
-                    <textarea id="quoteModalCustomerAddress" rows="3" placeholder="Enter address (optional)"></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" onclick="closeQuoteCustomerModal()" style="background: #e2e8f0; color: #334155;">
-                    Cancel
-                </button>
-                <button class="btn btn-primary" onclick="saveQuoteCustomer()">
-                    <i class="fas fa-check"></i> Add Customer
-                </button>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
