@@ -49,7 +49,7 @@ def cleanup_old_pdfs():
 DB_CONFIG = {
     'host': 'localhost',
     'user': 'flaskuser',
-    'password': 'Flask@123',
+    'password': 'flask@123',
     'database': 'hardware_inventory'
 }
 
@@ -1700,6 +1700,10 @@ def print_outstanding_bills(customer_id):
                 f"Rs {float(bill['remaining']):.2f}"
             ])
 
+        # Check if there are any outstanding bills (more than just header row)
+        if len(items) <= 1:
+            return jsonify({'success': False, 'message': 'No outstanding bills found for this customer'}), 404
+
         # Prepare summary
         summary = [['Total Outstanding:', f"Rs {total_outstanding:.2f}"]]
         
@@ -1709,11 +1713,10 @@ def print_outstanding_bills(customer_id):
             'store_address': customer['store_address'],
             'store_contact': customer['store_contact'],
             'store_email': customer['store_email'],
-            'meta_info': [[
-                'Customer:', customer['customer_name'], '', 
-                'Report Date:', datetime.now().strftime('%d-%b-%Y'),
-                '', 'Mobile:', customer.get('mobile', 'N/A')
-            ]],
+            'meta_info': [
+                ['Customer:', customer['customer_name'], '', 'Mobile:', customer.get('mobile', 'N/A')],
+                ['Report Date:', datetime.now().strftime('%d-%b-%Y'), '', '', '']
+            ],
             'items': items,
             'summary': summary,
             'footer_text': 'Please clear outstanding balances promptly.'
@@ -3930,7 +3933,7 @@ def generate_unified_pdf(data, pdf_type="INVOICE"):
     elements.append(Spacer(1, 0.15*inch))
     
     # ===== META INFORMATION TABLE =====
-    if 'meta_info' in data:
+    if 'meta_info' in data and data['meta_info']:
         meta_data = data['meta_info']
         info_table = Table(meta_data, colWidths=[1.5*inch, 1.8*inch, 0.3*inch, 1.5*inch, 1.8*inch])
         info_table.setStyle(TableStyle([
@@ -3984,7 +3987,7 @@ def generate_unified_pdf(data, pdf_type="INVOICE"):
         elements.append(Spacer(1, 0.15*inch))
     
     # ===== SUMMARY SECTION =====
-    if 'summary' in data:
+    if 'summary' in data and data['summary']:
         summary_data = data['summary']
         summary_table = Table(summary_data, colWidths=[4.5*inch, 2.4*inch])
         summary_table.setStyle(TableStyle([
@@ -4004,7 +4007,7 @@ def generate_unified_pdf(data, pdf_type="INVOICE"):
         elements.append(Spacer(1, 0.2*inch))
     
     # ===== PAYMENT DETAILS (FOR INVOICES) =====
-    if 'payment_details' in data:
+    if 'payment_details' in data and data['payment_details']:
         elements.append(Paragraph("Payment Details", heading_style))
         payment_table = Table(data['payment_details'], colWidths=[3*inch, 2*inch])
         payment_table.setStyle(TableStyle([

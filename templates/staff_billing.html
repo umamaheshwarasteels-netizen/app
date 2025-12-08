@@ -2487,9 +2487,12 @@
                                 </div>
                             </div>
                             
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px;">
                                 <button class="btn btn-success" onclick="generateQuotation()">
-                                    <i class="fas fa-download"></i> Generate PDF
+                                    <i class="fas fa-download"></i> Download PDF
+                                </button>
+                                <button class="btn" onclick="sendQuotationViaWhatsApp()" style="background: #25D366; color: white;">
+                                    <i class="fab fa-whatsapp"></i> WhatsApp
                                 </button>
                                 <button class="btn btn-danger" onclick="clearQuotation()">
                                     <i class="fas fa-trash"></i> Clear
@@ -4853,6 +4856,111 @@
                 }
             } catch (error) {
                 showAlert('Error generating quotation: ' + error.message, 'danger');
+            }
+        }
+
+        // Send Quotation via WhatsApp
+        async function sendQuotationViaWhatsApp() {
+            if (!quoteCustomerData) {
+                showAlert('Please add customer details', 'danger');
+                return;
+            }
+            
+            const customerName = quoteCustomerData.name;
+            const customerMobile = quoteCustomerData.mobile;
+            const customerAddress = quoteCustomerData.address || '';
+            
+            if (quoteSelectedItems.length === 0) {
+                showAlert('Please add at least one item', 'danger');
+                return;
+            }
+            
+            const itemsWithoutPrice = quoteSelectedItems.filter(item => !item.unit_price || item.unit_price === 0);
+            if (itemsWithoutPrice.length > 0) {
+                showAlert('Please enter prices for all items', 'danger');
+                return;
+            }
+            
+            const quotationData = {
+                customer_name: customerName,
+                customer_mobile: customerMobile,
+                customer_address: customerAddress,
+                items: quoteSelectedItems,
+                discount_percentage: quoteDiscountPercentage
+            };
+            
+            try {
+                showAlert('Generating quotation for WhatsApp...', 'info');
+                
+                const response = await fetch('/api/quotations/generate-for-whatsapp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(quotationData)
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to generate quotation');
+                }
+                
+                const result = await response.json();
+                
+                // Get the full URL for the PDF download
+                const baseUrl = window.location.origin;
+                const pdfUrl = `${baseUrl}${result.download_url}`;
+                
+                // Format phone number for WhatsApp (add country code if not present)
+                let whatsappNumber = customerMobile;
+                if (!whatsappNumber.startsWith('+')) {
+                    whatsappNumber = '91' + whatsappNumber; // Default to India country code
+                }
+                
+                // Create WhatsApp message
+                const storeName = result.store_name || 'Our Store';
+                const grandTotal = result.grand_total ? `Rs ${result.grand_total.toFixed(2)}` : '';
+                const quotationNumber = result.quotation_number || '';
+                
+                const message = `Dear ${customerName},
+
+Thank you for your interest!
+
+📄 *Quotation: ${quotationNumber}*
+💰 *Total Amount: ${grandTotal}*
+
+Please find your quotation at the link below:
+${pdfUrl}
+
+This quotation is valid for 30 days.
+
+For any queries, please feel free to contact us.
+
+Best Regards,
+${storeName}`;
+                
+                // Encode message for URL
+                const encodedMessage = encodeURIComponent(message);
+                
+                // Open WhatsApp with the message
+                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+                
+                // Also download the PDF for reference
+                const downloadLink = document.createElement('a');
+                downloadLink.href = pdfUrl;
+                downloadLink.download = result.filename;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                
+                // Open WhatsApp
+                window.open(whatsappUrl, '_blank');
+                
+                showAlert('Quotation generated! WhatsApp opening...', 'success');
+                
+                if (confirm('WhatsApp opened with quotation! Do you want to create another quotation?')) {
+                    clearQuotation();
+                }
+            } catch (error) {
+                showAlert('Error sending via WhatsApp: ' + error.message, 'danger');
             }
         }
 
