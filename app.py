@@ -2787,25 +2787,12 @@ def api_get_customer_credit_notess(customer_id):
         return jsonify({'success': False, 'error': str(e)}), 500
         
 #====================================CUSTOMERS API'S======================================================
-
-@app.route('/api/customers', methods=['POST'])
-@staff_required
-def api_get_customers():
-    """Get all customers with their total sales and credit balance"""
-    try:
-        connection = get_db_connection()
-        if not connection:
-            return jsonify({'error': 'Database connection failed'}), 500
-        
-        cursor = connection.cursor(dictionary=True)
-        
 @app.route('/api/customers', methods=['GET', 'POST'])
 @staff_required
 def api_customers():
     try:
-
         # ----------------------------------------------------
-        # 1️⃣  HANDLE CUSTOMER CREATION (POST)
+        # 1️⃣ POST → CREATE NEW CUSTOMER
         # ----------------------------------------------------
         if request.method == 'POST':
             data = request.get_json()
@@ -2830,6 +2817,7 @@ def api_customers():
 
             connection.commit()
             customer_id = cursor.lastrowid
+
             cursor.close()
             connection.close()
 
@@ -2841,7 +2829,7 @@ def api_customers():
 
 
         # ----------------------------------------------------
-        # 2️⃣  HANDLE GET (RETURN CUSTOMERS LIST)
+        # 2️⃣ GET → RETURN ALL CUSTOMERS WITH BALANCES
         # ----------------------------------------------------
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
@@ -2852,13 +2840,16 @@ def api_customers():
                 c.customer_name,
                 c.mobile,
                 c.address,
+
                 COALESCE(SUM(b.total_amount), 0) AS total_sales,
+
                 COALESCE((
                     SELECT SUM(cn.remaining_balance)
                     FROM credit_notes cn
                     WHERE cn.customer_id = c.customer_id
                       AND cn.status = 'active'
                 ), 0) AS credit_balance,
+
                 COALESCE((
                     SELECT SUM(
                         COALESCE(CAST(JSON_UNQUOTE(JSON_EXTRACT(b2.payment_split, '$.cash')) AS DECIMAL(10,2)), 0) +
@@ -2868,6 +2859,7 @@ def api_customers():
                     FROM bills b2 
                     WHERE b2.customer_id = c.customer_id
                 ), 0) AS total_paid,
+
                 COALESCE(SUM(b.total_amount), 0) -
                 COALESCE((
                     SELECT SUM(
@@ -2878,6 +2870,7 @@ def api_customers():
                     FROM bills b2 
                     WHERE b2.customer_id = c.customer_id
                 ), 0) AS amount_due
+
             FROM customers c
             LEFT JOIN bills b ON c.customer_id = b.customer_id
             GROUP BY c.customer_id, c.customer_name, c.mobile, c.address
@@ -2886,11 +2879,12 @@ def api_customers():
 
         customers = cursor.fetchall()
 
+        # Convert decimals to float for JSON
         for c in customers:
             c['total_sales'] = float(c['total_sales'])
             c['credit_balance'] = float(c['credit_balance'])
-            c['total_paid'] = float(c.get('total_paid', 0))
-            c['amount_due'] = float(c.get('amount_due', 0))
+            c['total_paid'] = float(c['total_paid'])
+            c['amount_due'] = float(c['amount_due'])
 
         cursor.close()
         connection.close()
@@ -2898,7 +2892,7 @@ def api_customers():
         return jsonify(customers), 200
 
     except Exception as e:
-        print("Error in /api/customers:", str(e))
+        print("Error in /api/customers:", e)
         return jsonify({"success": False, "message": str(e)}), 500
 
             
