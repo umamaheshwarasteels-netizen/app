@@ -48,8 +48,8 @@ def cleanup_old_pdfs():
 # MySQL Configuration - Hardcoded
 DB_CONFIG = {
     'host': 'localhost',
-    'user': 'root',
-    'password': 'Advithreddy@12',
+    'user': 'flaskuser',
+    'password': 'Flask@123',
     'database': 'hardware_inventory'
 }
 
