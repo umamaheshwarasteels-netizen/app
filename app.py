@@ -4234,18 +4234,69 @@ def generate_unified_pdf(data, pdf_type="INVOICE"):
 @staff_required
 def inventory():
     """Unified inventory management page for staff"""
+    store_id = session.get('store_id')
+    store_name = 'Store'
+    
+    if store_id:
+        connection = get_db_connection()
+        if connection:
+            try:
+                cursor = connection.cursor(dictionary=True)
+                cursor.execute("SELECT store_name FROM stores WHERE store_id = %s", (store_id,))
+                store = cursor.fetchone()
+                if store:
+                    store_name = store['store_name']
+                cursor.close()
+                connection.close()
+            except:
+                pass
+    
     return render_template('tinventory.html', store_name=store_name)
     
 @app.route('/staff_billing')
 @staff_required
 def staff_billing():
     """Unified inventory management page for staff"""
+    store_id = session.get('store_id')
+    store_name = 'Store'
+    
+    if store_id:
+        connection = get_db_connection()
+        if connection:
+            try:
+                cursor = connection.cursor(dictionary=True)
+                cursor.execute("SELECT store_name FROM stores WHERE store_id = %s", (store_id,))
+                store = cursor.fetchone()
+                if store:
+                    store_name = store['store_name']
+                cursor.close()
+                connection.close()
+            except:
+                pass
+    
     return render_template('staff_billing.html', store_name=store_name)
 
 @app.route('/customers')
 @staff_required
 def customers():
     """Customers page for staff"""
+    store_id = session.get('store_id')
+    store_name = 'Store'
+    
+    if store_id:
+        connection = get_db_connection()
+        if connection:
+            try:
+                cursor = connection.cursor(dictionary=True)
+                cursor.execute("SELECT store_name FROM stores WHERE store_id = %s", (store_id,))
+                store = cursor.fetchone()
+                if store:
+                    store_name = store['store_name']
+                cursor.close()
+                connection.close()
+            except:
+                pass
+    
     return render_template('customers.html', store_name=store_name)
     
 @app.route('/reports')
