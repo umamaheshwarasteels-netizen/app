@@ -3623,13 +3623,57 @@ def api_export_sales_report():
         print(f"Error in api_export_sales_report: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/store/info', methods=['GET'])
+@staff_required
+def api_store_info():
+    """
+    Get current store information for the logged-in user
+    Returns: Store details including name, address, contact, email
+    """
+    try:
+        store_id = session.get('store_id')
+        
+        if not store_id:
+            return jsonify({'error': 'No store associated with user'}), 400
+        
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        try:
+            cursor = connection.cursor(dictionary=True)
+            
+            cursor.execute("""
+                SELECT store_name, address, contact, email 
+                FROM stores WHERE store_id = %s
+            """, (store_id,))
+            
+            store = cursor.fetchone()
+            
+            cursor.close()
+            connection.close()
+            
+            if not store:
+                return jsonify({'error': 'Store not found'}), 404
+            
+            return jsonify(store)
+            
+        except Exception as e:
+            if connection:
+                connection.close()
+            raise e
+            
+    except Exception as e:
+        print(f"Error in api_store_info: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/reports/bills', methods=['GET'])
 @staff_required
 def api_reports_bills():
     """
     Get all bills for a date range (for detailed PDF export)
     Query params: start_date, end_date (YYYY-MM-DD format)
-    Returns: List of bills with basic information
+    Returns: List of bills with basic information including store_name
     """
     try:
         start_date = request.args.get('start_date')
@@ -3647,7 +3691,7 @@ def api_reports_bills():
         try:
             cursor = connection.cursor(dictionary=True)
             
-            # Query to get all bills for the specified date range
+            # Query to get all bills for the specified date range with store name
             query = """
                 SELECT 
                     b.bill_id,
@@ -3657,9 +3701,11 @@ def api_reports_bills():
                     b.total_amount,
                     b.payment_split,
                     b.created_at,
-                    u.full_name as staff_name
+                    u.full_name as staff_name,
+                    s.store_name
                 FROM bills b
                 LEFT JOIN users u ON b.staff_id = u.user_id
+                LEFT JOIN stores s ON b.store_id = s.store_id
                 WHERE b.store_id = %s 
                     AND DATE(b.created_at) BETWEEN %s AND %s
                 ORDER BY b.created_at DESC
