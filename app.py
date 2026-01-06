@@ -705,7 +705,8 @@ def staff_dashboard():
                          low_stock=low_stock,
                          credit_notes_count=credit_notes_count,
                          credit_notes_total=credit_notes_total,
-                         recent_bills=recent_bills)
+                         recent_bills=recent_bills,
+                          store_name=store_name)
 
 @app.route('/api/dashboard/stats')
 @staff_required
@@ -4233,19 +4234,19 @@ def generate_unified_pdf(data, pdf_type="INVOICE"):
 @staff_required
 def inventory():
     """Unified inventory management page for staff"""
-    return render_template('tinventory.html')
+    return render_template('tinventory.html', store_name=store_name)
     
 @app.route('/staff_billing')
 @staff_required
 def staff_billing():
     """Unified inventory management page for staff"""
-    return render_template('staff_billing.html')
+    return render_template('staff_billing.html', store_name=store_name)
 
 @app.route('/customers')
 @staff_required
 def customers():
     """Customers page for staff"""
-    return render_template('customers.html')
+    return render_template('customers.html', store_name=store_name)
     
 @app.route('/reports')
 @staff_required
