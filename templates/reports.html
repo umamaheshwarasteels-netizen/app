@@ -1385,45 +1385,27 @@
                 // Show loading indicator
                 showAlert('Generating detailed PDF... This may take a moment.', 'info');
                 
-                // Fetch all bills for the date range
+                // Fetch all bills with complete details in a single API call
                 const response = await fetch(`/api/reports/bills?start_date=${startDate}&end_date=${endDate}`);
                 
                 if (!response.ok) {
                     throw new Error('Failed to fetch bills');
                 }
                 
-                const bills = await response.json();
+                const billDetails = await response.json();
                 
-                if (!bills || bills.length === 0) {
+                if (!billDetails || billDetails.length === 0) {
                     showAlert('No bills found for the selected date range');
                     return;
                 }
                 
-                // Get store name from the first bill (all bills are from same store)
-                const storeName = bills[0].store_name || 'Store';
-                
-                // Also try to fetch additional store info
-                let storeInfo = { store_name: storeName, address: '', contact: '', email: '' };
-                try {
-                    const storeResponse = await fetch('/api/store/info');
-                    if (storeResponse.ok) {
-                        const storeData = await storeResponse.json();
-                        if (storeData) {
-                            storeInfo = storeData;
-                            // Use store name from bills if store info doesn't have it
-                            if (!storeInfo.store_name) storeInfo.store_name = storeName;
-                        }
-                    }
-                } catch (e) {
-                    console.log('Could not fetch store info, using bill data');
-                    storeInfo.store_name = storeName;
-                }
-                
-                // Fetch details for each bill
-                const billDetailsPromises = bills.map(bill => 
-                    fetch(`/api/reports/bill-details/${bill.bill_id}`).then(res => res.json())
-                );
-                const billDetails = await Promise.all(billDetailsPromises);
+                // Get store info from the first bill
+                const storeInfo = {
+                    store_name: billDetails[0].store_name || 'Store',
+                    address: billDetails[0].store_address || '',
+                    contact: billDetails[0].store_contact || '',
+                    email: billDetails[0].store_email || ''
+                };
                 
                 // Generate PDF using jsPDF
                 const { jsPDF } = window.jspdf;
