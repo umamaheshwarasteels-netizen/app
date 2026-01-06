@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
         :root {
             --primary-color: #4F46E5;
@@ -778,9 +780,28 @@
                     <button class="btn" onclick="loadSalesReport()" style="align-self: flex-end;">
                         <i class="fas fa-search"></i> Load Report
                     </button>
-                    <button class="btn" onclick="exportSalesReport()" style="align-self: flex-end; background: linear-gradient(135deg, #059669 0%, #10B981 100%);">
-                        <i class="fas fa-file-pdf"></i> Export PDF
-                    </button>
+                    <div style="position: relative; display: inline-block; align-self: flex-end;">
+                        <button class="btn btn-export" id="exportDropdownBtn" onclick="toggleExportDropdown()" style="background: linear-gradient(135deg, #059669 0%, #10B981 100%);">
+                            <i class="fas fa-file-pdf"></i> Export PDF <i class="fas fa-caret-down"></i>
+                        </button>
+                        <div id="exportDropdown" style="display: none; position: absolute; top: 100%; left: 0; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); min-width: 220px; z-index: 100; margin-top: 5px;">
+                            <button onclick="exportSalesReport()" style="width: 100%; padding: 12px 16px; border: none; background: none; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; transition: background 0.2s;" onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background='none'">
+                                <i class="fas fa-file-alt" style="color: #3498db;"></i>
+                                <div>
+                                    <div style="font-weight: 600; color: #2c3e50;">Summary Report</div>
+                                    <div style="font-size: 11px; color: #7f8c8d;">Daily totals only</div>
+                                </div>
+                            </button>
+                            <hr style="margin: 0; border: none; border-top: 1px solid #eee;">
+                            <button onclick="exportDetailedPDF()" style="width: 100%; padding: 12px 16px; border: none; background: none; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; transition: background 0.2s;" onmouseover="this.style.background='#f0fff4'" onmouseout="this.style.background='none'">
+                                <i class="fas fa-file-invoice" style="color: #27ae60;"></i>
+                                <div>
+                                    <div style="font-weight: 600; color: #2c3e50;">Detailed Report</div>
+                                    <div style="font-size: 11px; color: #7f8c8d;">All bills with items</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 
                 <div id="salesSummary" class="summary-cards">
@@ -1322,6 +1343,319 @@
                     exportBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Export PDF';
                     exportBtn.disabled = false;
                 }
+            }
+        }
+        
+        // Toggle export dropdown
+        function toggleExportDropdown() {
+            const dropdown = document.getElementById('exportDropdown');
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('exportDropdown');
+            const btn = document.getElementById('exportDropdownBtn');
+            if (dropdown && btn && !btn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+        
+        // Export Detailed PDF with all bills
+        async function exportDetailedPDF() {
+            const dropdown = document.getElementById('exportDropdown');
+            dropdown.style.display = 'none';
+            
+            const dateRangeStr = document.getElementById('salesDateRange').value;
+            
+            if (!dateRangeStr) {
+                showAlert('Please select a date range first');
+                return;
+            }
+            
+            // Parse the date range
+            let startDate, endDate;
+            if (dateRangeStr.includes(' to ')) {
+                [startDate, endDate] = dateRangeStr.split(' to ');
+            } else {
+                startDate = endDate = dateRangeStr;
+            }
+            
+            try {
+                // Show loading indicator
+                showAlert('Generating detailed PDF... This may take a moment.', 'info');
+                
+                // Fetch all bills for the date range
+                const response = await fetch(`/api/reports/bills?start_date=${startDate}&end_date=${endDate}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch bills');
+                }
+                
+                const bills = await response.json();
+                
+                if (!bills || bills.length === 0) {
+                    showAlert('No bills found for the selected date range');
+                    return;
+                }
+                
+                // Fetch details for each bill
+                const billDetailsPromises = bills.map(bill => 
+                    fetch(`/api/reports/bill-details/${bill.bill_id}`).then(res => res.json())
+                );
+                const billDetails = await Promise.all(billDetailsPromises);
+                
+                // Generate PDF using jsPDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                const margin = 15;
+                let yPos = margin;
+                
+                // Helper function to check page break
+                const checkPageBreak = (requiredSpace) => {
+                    if (yPos + requiredSpace > pageHeight - margin) {
+                        doc.addPage();
+                        yPos = margin;
+                        return true;
+                    }
+                    return false;
+                };
+                
+                // Title Page
+                doc.setFillColor(79, 70, 229);
+                doc.rect(0, 0, pageWidth, 50, 'F');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(24);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Hardware Store', pageWidth / 2, 25, { align: 'center' });
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Detailed Sales Report', pageWidth / 2, 35, { align: 'center' });
+                
+                doc.setTextColor(0, 0, 0);
+                yPos = 65;
+                
+                // Report Info
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Report Period:', margin, yPos);
+                doc.setFont('helvetica', 'normal');
+                const periodText = startDate === endDate ? startDate : `${startDate} to ${endDate}`;
+                doc.text(periodText, margin + 35, yPos);
+                yPos += 7;
+                
+                doc.setFont('helvetica', 'bold');
+                doc.text('Generated:', margin, yPos);
+                doc.setFont('helvetica', 'normal');
+                doc.text(new Date().toLocaleString('en-IN'), margin + 35, yPos);
+                yPos += 7;
+                
+                doc.setFont('helvetica', 'bold');
+                doc.text('Total Bills:', margin, yPos);
+                doc.setFont('helvetica', 'normal');
+                doc.text(billDetails.length.toString(), margin + 35, yPos);
+                yPos += 15;
+                
+                // Summary Section
+                const totalAmount = billDetails.reduce((sum, bill) => sum + parseFloat(bill.total_amount || 0), 0);
+                let cashTotal = 0, upiTotal = 0, creditTotal = 0;
+                
+                billDetails.forEach(bill => {
+                    const paymentSplit = JSON.parse(bill.payment_split || '{}');
+                    cashTotal += parseFloat(paymentSplit.cash || 0);
+                    upiTotal += parseFloat(paymentSplit.upi || 0);
+                    creditTotal += parseFloat(paymentSplit.credit || 0);
+                });
+                
+                // Summary Box
+                doc.setFillColor(240, 249, 255);
+                doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 30, 3, 3, 'F');
+                doc.setDrawColor(59, 130, 246);
+                doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 30, 3, 3, 'S');
+                
+                doc.setFontSize(10);
+                const summaryY = yPos + 10;
+                const colWidth = (pageWidth - 2 * margin) / 4;
+                
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(59, 130, 246);
+                doc.text('TOTAL SALES', margin + colWidth * 0.5, summaryY, { align: 'center' });
+                doc.text('CASH', margin + colWidth * 1.5, summaryY, { align: 'center' });
+                doc.text('UPI', margin + colWidth * 2.5, summaryY, { align: 'center' });
+                doc.text('CREDIT', margin + colWidth * 3.5, summaryY, { align: 'center' });
+                
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(12);
+                doc.text(`₹${totalAmount.toFixed(2)}`, margin + colWidth * 0.5, summaryY + 12, { align: 'center' });
+                doc.text(`₹${cashTotal.toFixed(2)}`, margin + colWidth * 1.5, summaryY + 12, { align: 'center' });
+                doc.text(`₹${upiTotal.toFixed(2)}`, margin + colWidth * 2.5, summaryY + 12, { align: 'center' });
+                doc.text(`₹${creditTotal.toFixed(2)}`, margin + colWidth * 3.5, summaryY + 12, { align: 'center' });
+                
+                yPos += 45;
+                
+                // Bills List Header
+                doc.setFillColor(79, 70, 229);
+                doc.rect(margin, yPos, pageWidth - 2 * margin, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text('DETAILED BILLS', pageWidth / 2, yPos + 5.5, { align: 'center' });
+                doc.setTextColor(0, 0, 0);
+                yPos += 15;
+                
+                // Process each bill
+                for (let i = 0; i < billDetails.length; i++) {
+                    const bill = billDetails[i];
+                    const paymentSplit = JSON.parse(bill.payment_split || '{}');
+                    
+                    // Estimate space needed for this bill
+                    const itemCount = (bill.items || []).length;
+                    const estimatedHeight = 50 + (itemCount * 7) + (bill.notes ? 15 : 0);
+                    
+                    checkPageBreak(estimatedHeight);
+                    
+                    // Bill Header
+                    doc.setFillColor(248, 250, 252);
+                    doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 18, 2, 2, 'F');
+                    doc.setDrawColor(226, 232, 240);
+                    doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 18, 2, 2, 'S');
+                    
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(79, 70, 229);
+                    doc.text(`#${bill.bill_number}`, margin + 3, yPos + 6);
+                    
+                    doc.setTextColor(0, 0, 0);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(9);
+                    const dateTime = new Date(bill.created_at).toLocaleString('en-IN', {
+                        day: '2-digit', month: 'short', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                    doc.text(dateTime, margin + 40, yPos + 6);
+                    
+                    // Customer info
+                    doc.setFontSize(9);
+                    doc.text(`Customer: ${bill.customer_name || 'Walk-in'}`, margin + 3, yPos + 13);
+                    if (bill.customer_contact) {
+                        doc.text(`Contact: ${bill.customer_contact}`, margin + 70, yPos + 13);
+                    }
+                    
+                    // Total on the right
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11);
+                    doc.setTextColor(39, 174, 96);
+                    doc.text(`₹${parseFloat(bill.total_amount).toFixed(2)}`, pageWidth - margin - 3, yPos + 10, { align: 'right' });
+                    doc.setTextColor(0, 0, 0);
+                    
+                    yPos += 22;
+                    
+                    // Payment methods
+                    doc.setFontSize(8);
+                    doc.setFont('helvetica', 'normal');
+                    let paymentText = 'Payment: ';
+                    if (paymentSplit.cash > 0) paymentText += `Cash ₹${parseFloat(paymentSplit.cash).toFixed(2)} `;
+                    if (paymentSplit.upi > 0) paymentText += `UPI ₹${parseFloat(paymentSplit.upi).toFixed(2)} `;
+                    if (paymentSplit.credit > 0) paymentText += `Credit ₹${parseFloat(paymentSplit.credit).toFixed(2)} `;
+                    if (paymentSplit.credit_note > 0) paymentText += `Credit Note ₹${parseFloat(paymentSplit.credit_note).toFixed(2)} `;
+                    doc.setTextColor(100, 100, 100);
+                    doc.text(paymentText, margin + 3, yPos);
+                    doc.setTextColor(0, 0, 0);
+                    yPos += 5;
+                    
+                    // Items Table
+                    if (bill.items && bill.items.length > 0) {
+                        const tableData = bill.items.map(item => [
+                            item.product_name,
+                            parseFloat(item.quantity).toFixed(1),
+                            `₹${parseFloat(item.unit_price).toFixed(2)}`,
+                            parseFloat(item.item_discount || 0) > 0 ? `-₹${parseFloat(item.item_discount).toFixed(2)}` : '-',
+                            `₹${parseFloat(item.total).toFixed(2)}`
+                        ]);
+                        
+                        doc.autoTable({
+                            startY: yPos,
+                            head: [['Product', 'Qty', 'Price', 'Disc', 'Total']],
+                            body: tableData,
+                            theme: 'grid',
+                            headStyles: {
+                                fillColor: [241, 245, 249],
+                                textColor: [71, 85, 105],
+                                fontStyle: 'bold',
+                                fontSize: 8
+                            },
+                            bodyStyles: {
+                                fontSize: 8
+                            },
+                            columnStyles: {
+                                0: { cellWidth: 70 },
+                                1: { cellWidth: 15, halign: 'center' },
+                                2: { cellWidth: 25, halign: 'right' },
+                                3: { cellWidth: 25, halign: 'right' },
+                                4: { cellWidth: 25, halign: 'right' }
+                            },
+                            margin: { left: margin, right: margin },
+                            tableWidth: pageWidth - 2 * margin
+                        });
+                        
+                        yPos = doc.lastAutoTable.finalY + 3;
+                    }
+                    
+                    // Discount if any
+                    if (parseFloat(bill.discount_amount) > 0) {
+                        doc.setFontSize(8);
+                        doc.setTextColor(133, 100, 4);
+                        doc.text(`Bill Discount: -₹${parseFloat(bill.discount_amount).toFixed(2)}`, pageWidth - margin - 3, yPos, { align: 'right' });
+                        yPos += 5;
+                    }
+                    
+                    // Notes if any
+                    if (bill.notes) {
+                        doc.setFillColor(255, 249, 230);
+                        doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 10, 1, 1, 'F');
+                        doc.setFontSize(7);
+                        doc.setTextColor(133, 100, 4);
+                        doc.text(`Note: ${bill.notes}`, margin + 3, yPos + 6);
+                        yPos += 12;
+                    }
+                    
+                    doc.setTextColor(0, 0, 0);
+                    yPos += 8;
+                    
+                    // Add separator line between bills
+                    if (i < billDetails.length - 1) {
+                        doc.setDrawColor(226, 232, 240);
+                        doc.setLineDashPattern([2, 2], 0);
+                        doc.line(margin, yPos - 3, pageWidth - margin, yPos - 3);
+                        doc.setLineDashPattern([], 0);
+                    }
+                }
+                
+                // Footer on each page
+                const totalPages = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= totalPages; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(8);
+                    doc.setTextColor(150, 150, 150);
+                    doc.text(`Page ${i} of ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                    doc.text('Hardware Store - Sales Report', margin, pageHeight - 10);
+                    doc.text(new Date().toLocaleDateString('en-IN'), pageWidth - margin, pageHeight - 10, { align: 'right' });
+                }
+                
+                // Save the PDF
+                const fileName = startDate === endDate 
+                    ? `Detailed_Sales_Report_${startDate}.pdf`
+                    : `Detailed_Sales_Report_${startDate}_to_${endDate}.pdf`;
+                doc.save(fileName);
+                
+                showAlert('Detailed report exported successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error exporting detailed report:', error);
+                showAlert('Error exporting detailed report: ' + error.message);
             }
         }
         
