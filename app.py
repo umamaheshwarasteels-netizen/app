@@ -868,14 +868,13 @@ def api_create_sale():
             total_amount = subtotal - item_discounts - credit_note_amount
             
             # Generate bill number (use MAX to avoid duplicates after deletions)
-            like_pattern = f"BILL-{store_id}-%"
-            cursor.execute("""
-                SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(bill_number, '-', -1) AS UNSIGNED)), 0) as max_num 
-                FROM bills 
-                WHERE store_id = %s AND bill_number LIKE %s
-            """, (store_id, like_pattern))
+            cursor.execute(
+                "SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(bill_number, '-', -1) AS UNSIGNED)), 0) as max_num "
+                "FROM bills WHERE store_id = %s AND bill_number LIKE CONCAT('BILL-', %s, '-%%')",
+                (store_id, store_id)
+            )
             max_num = cursor.fetchone()['max_num']
-            bill_number = f"BILL-{store_id}-{max_num + 1:06d}"
+            bill_number = "BILL-" + str(store_id) + "-" + str(max_num + 1).zfill(6)
             
             # Get customer details if provided
             customer_name = None
