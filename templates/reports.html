@@ -1385,14 +1385,6 @@
                 // Show loading indicator
                 showAlert('Generating detailed PDF... This may take a moment.', 'info');
                 
-                // First fetch store info
-                const storeResponse = await fetch('/api/store/info');
-                let storeInfo = { store_name: 'Hardware Store', address: '', contact: '', email: '' };
-                if (storeResponse.ok) {
-                    const storeData = await storeResponse.json();
-                    if (storeData) storeInfo = storeData;
-                }
-                
                 // Fetch all bills for the date range
                 const response = await fetch(`/api/reports/bills?start_date=${startDate}&end_date=${endDate}`);
                 
@@ -1405,6 +1397,26 @@
                 if (!bills || bills.length === 0) {
                     showAlert('No bills found for the selected date range');
                     return;
+                }
+                
+                // Get store name from the first bill (all bills are from same store)
+                const storeName = bills[0].store_name || 'Store';
+                
+                // Also try to fetch additional store info
+                let storeInfo = { store_name: storeName, address: '', contact: '', email: '' };
+                try {
+                    const storeResponse = await fetch('/api/store/info');
+                    if (storeResponse.ok) {
+                        const storeData = await storeResponse.json();
+                        if (storeData) {
+                            storeInfo = storeData;
+                            // Use store name from bills if store info doesn't have it
+                            if (!storeInfo.store_name) storeInfo.store_name = storeName;
+                        }
+                    }
+                } catch (e) {
+                    console.log('Could not fetch store info, using bill data');
+                    storeInfo.store_name = storeName;
                 }
                 
                 // Fetch details for each bill
@@ -1450,7 +1462,7 @@
                 doc.setFontSize(22);
                 doc.setFont('helvetica', 'bold');
                 doc.setTextColor(30, 41, 59);
-                doc.text(storeInfo.store_name || 'Hardware Store', pageWidth / 2, yPos + 5, { align: 'center' });
+                doc.text(storeInfo.store_name, pageWidth / 2, yPos + 5, { align: 'center' });
                 yPos += 12;
                 
                 // Store Address & Contact
@@ -1674,7 +1686,7 @@
                     doc.setTextColor(130, 130, 130);
                     doc.text(`Generated on: ${generatedDate}`, margin, pageHeight - 12);
                     doc.text(`Page ${i} of ${totalPages}`, pageWidth / 2, pageHeight - 12, { align: 'center' });
-                    doc.text(storeInfo.store_name || 'Hardware Store', pageWidth - margin, pageHeight - 12, { align: 'right' });
+                    doc.text(storeInfo.store_name, pageWidth - margin, pageHeight - 12, { align: 'right' });
                 }
                 
                 // Save the PDF
