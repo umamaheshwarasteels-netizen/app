@@ -4251,7 +4251,24 @@ def customers():
 @staff_required
 def reports():
     """Reports page for staff"""
-    return render_template('reports.html')
+    store_id = session.get('store_id')
+    store_name = 'Store'
+    
+    if store_id:
+        connection = get_db_connection()
+        if connection:
+            try:
+                cursor = connection.cursor(dictionary=True)
+                cursor.execute("SELECT store_name FROM stores WHERE store_id = %s", (store_id,))
+                store = cursor.fetchone()
+                if store:
+                    store_name = store['store_name']
+                cursor.close()
+                connection.close()
+            except:
+                pass
+    
+    return render_template('reports.html', store_name=store_name)
 
 # ============================================
 # ADMIN DASHBOARD ROUTES
