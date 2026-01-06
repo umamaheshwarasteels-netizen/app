@@ -1494,7 +1494,15 @@
             display: none !important;
         }
     
-        }
+    .navbar-store-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;          /* reduced from 14px */
+    font-size: 16px;    /* reduced from 22px */
+    font-weight: 600;   /* lighter than 700 */
+    letter-spacing: -0.2px;
+    color: white;
+}
         
         .stat-card:hover {
             transform: translateY(-3px);
@@ -1801,7 +1809,7 @@
             box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
         }
         
-            }
+            
             
             .sidebar {
                 width: 100%;
@@ -1823,7 +1831,6 @@
             .products-grid {
                 grid-template-columns: repeat(5, 1fr);
             }
-        }
         
         /* Hide elements */
         .hidden {
@@ -1951,6 +1958,9 @@
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>
+                <div class=".navbar-store-name">
+                <span>{{ store_name }}</span>
+            </div>
             </div>
         </div>
     </nav>
