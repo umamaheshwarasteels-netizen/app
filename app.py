@@ -3623,6 +3623,76 @@ def api_export_sales_report():
         print(f"Error in api_export_sales_report: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/reports/bills', methods=['GET'])
+@staff_required
+def api_reports_bills():
+    """
+    Get all bills for a date range (for detailed PDF export)
+    Query params: start_date, end_date (YYYY-MM-DD format)
+    Returns: List of bills with basic information
+    """
+    try:
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+        
+        if not start_date or not end_date:
+            return jsonify({'error': 'start_date and end_date parameters are required'}), 400
+        
+        store_id = session.get('store_id')
+        
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        try:
+            cursor = connection.cursor(dictionary=True)
+            
+            # Query to get all bills for the specified date range
+            query = """
+                SELECT 
+                    b.bill_id,
+                    b.bill_number,
+                    b.customer_name,
+                    b.customer_contact,
+                    b.total_amount,
+                    b.payment_split,
+                    b.created_at,
+                    u.full_name as staff_name
+                FROM bills b
+                LEFT JOIN users u ON b.staff_id = u.user_id
+                WHERE b.store_id = %s 
+                    AND DATE(b.created_at) BETWEEN %s AND %s
+                ORDER BY b.created_at DESC
+            """
+            
+            cursor.execute(query, (store_id, start_date, end_date))
+            results = cursor.fetchall()
+            
+            cursor.close()
+            connection.close()
+            
+            # Convert datetime and Decimal objects for JSON serialization
+            for row in results:
+                if 'created_at' in row and row['created_at']:
+                    row['created_at'] = row['created_at'].isoformat()
+                for key in row:
+                    if isinstance(row[key], Decimal):
+                        row[key] = float(row[key])
+            
+            return jsonify(results)
+            
+        except Exception as e:
+            if connection:
+                connection.close()
+            print(f"Error in bills query: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return jsonify({'error': str(e)}), 500
+            
+    except Exception as e:
+        print(f"Error in api_reports_bills: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/reports/bills-by-date', methods=['GET'])
 @staff_required
 def api_reports_bills_by_date():
