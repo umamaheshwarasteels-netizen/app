@@ -867,10 +867,14 @@ def api_create_sale():
             credit_note_amount = payment_split.get('credit_note', 0)
             total_amount = subtotal - item_discounts - credit_note_amount
             
-            # Generate bill number
-            cursor.execute("SELECT COUNT(*) as count FROM bills WHERE store_id = %s", (store_id,))
-            count = cursor.fetchone()['count']
-            bill_number = f"BILL-{store_id}-{count + 1:06d}"
+            # Generate bill number (use MAX to avoid duplicates after deletions)
+            cursor.execute("""
+                SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(bill_number, '-', -1) AS UNSIGNED)), 0) as max_num 
+                FROM bills 
+                WHERE store_id = %s AND bill_number LIKE 'BILL-%%'
+            """, (store_id,))
+            max_num = cursor.fetchone()['max_num']
+            bill_number = f"BILL-{store_id}-{max_num + 1:06d}"
             
             # Get customer details if provided
             customer_name = None
