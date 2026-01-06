@@ -3671,9 +3671,9 @@ def api_store_info():
 @staff_required
 def api_reports_bills():
     """
-    Get all bills for a date range (for detailed PDF export)
+    Get all bills for a date range with complete details including items (for detailed PDF export)
     Query params: start_date, end_date (YYYY-MM-DD format)
-    Returns: List of bills with basic information including store_name
+    Returns: List of bills with complete information including items
     """
     try:
         start_date = request.args.get('start_date')
@@ -3692,17 +3692,25 @@ def api_reports_bills():
             cursor = connection.cursor(dictionary=True)
             
             # Query to get all bills for the specified date range with store name
-            query = """
+            bills_query = """
                 SELECT 
                     b.bill_id,
                     b.bill_number,
                     b.customer_name,
                     b.customer_contact,
+                    b.subtotal,
+                    b.discount_type,
+                    b.discount_value,
+                    b.discount_amount,
                     b.total_amount,
                     b.payment_split,
+                    b.notes,
                     b.created_at,
                     u.full_name as staff_name,
-                    s.store_name
+                    s.store_name,
+                    s.address as store_address,
+                    s.contact as store_contact,
+                    s.email as store_email
                 FROM bills b
                 LEFT JOIN users u ON b.staff_id = u.user_id
                 LEFT JOIN stores s ON b.store_id = s.store_id
@@ -3711,21 +3719,69 @@ def api_reports_bills():
                 ORDER BY b.created_at DESC
             """
             
-            cursor.execute(query, (store_id, start_date, end_date))
-            results = cursor.fetchall()
+            cursor.execute(bills_query, (store_id, start_date, end_date))
+            bills = cursor.fetchall()
+            
+            if not bills:
+                cursor.close()
+                connection.close()
+                return jsonify([])
+            
+            # Get all bill IDs
+            bill_ids = [bill['bill_id'] for bill in bills]
+            
+            # Fetch all items for all bills in a single query
+            placeholders = ','.join(['%s'] * len(bill_ids))
+            items_query = f"""
+                SELECT 
+                    bi.bill_id,
+                    bi.bill_item_id,
+                    bi.product_name,
+                    bi.quantity,
+                    bi.unit_price,
+                    bi.item_discount,
+                    bi.total
+                FROM bill_items bi
+                WHERE bi.bill_id IN ({placeholders})
+                ORDER BY bi.bill_id, bi.bill_item_id
+            """
+            
+            cursor.execute(items_query, tuple(bill_ids))
+            all_items = cursor.fetchall()
             
             cursor.close()
             connection.close()
             
-            # Convert datetime and Decimal objects for JSON serialization
-            for row in results:
-                if 'created_at' in row and row['created_at']:
-                    row['created_at'] = row['created_at'].isoformat()
-                for key in row:
-                    if isinstance(row[key], Decimal):
-                        row[key] = float(row[key])
+            # Group items by bill_id
+            items_by_bill = {}
+            for item in all_items:
+                bill_id = item['bill_id']
+                if bill_id not in items_by_bill:
+                    items_by_bill[bill_id] = []
+                # Convert Decimal to float for items
+                item_dict = {}
+                for key in item:
+                    if key != 'bill_id':
+                        if isinstance(item[key], Decimal):
+                            item_dict[key] = float(item[key])
+                        else:
+                            item_dict[key] = item[key]
+                items_by_bill[bill_id].append(item_dict)
             
-            return jsonify(results)
+            # Add items to each bill and convert types
+            for bill in bills:
+                bill['items'] = items_by_bill.get(bill['bill_id'], [])
+                
+                # Convert datetime
+                if 'created_at' in bill and bill['created_at']:
+                    bill['created_at'] = bill['created_at'].isoformat()
+                
+                # Convert Decimal to float
+                for key in bill:
+                    if isinstance(bill[key], Decimal):
+                        bill[key] = float(bill[key])
+            
+            return jsonify(bills)
             
         except Exception as e:
             if connection:
